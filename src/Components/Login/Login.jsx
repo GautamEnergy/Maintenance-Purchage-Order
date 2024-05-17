@@ -2,32 +2,7 @@ import React, { useState } from 'react';
 import '../Style.css';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        try {
-            const response = await fetch('YOUR_API_ENDPOINT', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (response.ok) {
-                // Login successful, handle accordingly (e.g., redirect user)
-                console.log('Login successful');
-            } else {
-                // Login failed, handle accordingly (e.g., display error message)
-                console.error('Login failed');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
 
     return (
         <div className="neumorphic-card">
