@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../Style.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -42,7 +44,9 @@ const Login = () => {
                 const token = res.data.token;
                 console.log("Admin logged in successfully!");
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                window.alert("Login successful!");
+                //window.alert("Login successful!");
+                navigate('/nav');
+
 
             } else {
                 setError("Invalid email or password. Please try again.");

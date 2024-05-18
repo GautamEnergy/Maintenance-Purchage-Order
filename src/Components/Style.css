@@ -5,12 +5,12 @@
 }
 
 body {
-    margin: 0;
+    margin: 0px;
     height: 100vh;
     background-color: #e0e0e0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     color: #343434;
     font-family: 'Poppins', sans-serif;
 }
