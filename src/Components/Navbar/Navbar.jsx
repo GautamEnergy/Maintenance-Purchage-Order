@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './Navbar.css'; // Import your CSS file here
+import './Navbar.css';
+import PurchageForm from '../PurchageOrder/PurchageOrderAddEdit';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,8 +20,11 @@ const Sidebar = () => {
                     <li><a href="#"><img src="./Assets/Icons/switch.png" alt="logout" /></a></li>
                 </ul>
             </div>
+            <PurchageForm />
         </nav>
+
     );
+
 };
 
 export default Sidebar;
