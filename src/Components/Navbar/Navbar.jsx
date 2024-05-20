@@ -4,14 +4,19 @@ import PurchageForm from '../PurchageOrder/PurchageOrderAddEdit';
 
 const Navbar = () => {
     return (
-        <nav className="navbar navbar-expand-md navbar-light fixed-top" style={{ backgroundColor: '#ffffff', height: '62px' }}>
-            <div className="container-fluid">
-                <a className="navbar-brand" href="#">
-                    <img src="./Assets/Logo/Logo.png" alt="logo" style={{ height: '42px', marginLeft: '15px' }} />
-                </a>
-                <button className="btn btn-outline-danger ml-auto mr-3" style={{ height: '42px', borderRadius: '5px' }}>Logout</button>
-            </div>
-        </nav>
+        <>
+            <nav className="navbar navbar-expand-md navbar-light fixed-top" style={{ backgroundColor: '#F8F5F5', height: '62px' }}>
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="#">
+                        <img src="./Assets/Logo/Logo.png" alt="logo" style={{ height: '42px', marginLeft: '15px' }} />
+                    </a>
+                    <button className="btn btn-outline-danger ml-auto mr-3" style={{ height: '42px', borderRadius: '5px' }}>Logout</button>
+                </div>
+
+            </nav>
+            <PurchageForm /></>
+
+
     );
 }
 
