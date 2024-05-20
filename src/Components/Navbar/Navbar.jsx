@@ -1,32 +1,18 @@
-import React, { useState } from 'react';
-import './Navbar.css';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import PurchageForm from '../PurchageOrder/PurchageOrderAddEdit';
 
-const Sidebar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
-
+const Navbar = () => {
     return (
-        <nav>
-            <div className="menu">
-                <div className="logo">
-                    <img className='logo-navbar' src="./Assets/Logo/logo.png" alt="logo" />
-                </div>
-                <ul>
-                    {/* <li><a href="#"><i className="fas fa-qrcode"></i>Dashboard</a></li> */}
-                    <li><a href="#"><img src="./Assets/Icons/switch.png" alt="logout" /></a></li>
-                </ul>
+        <nav className="navbar navbar-expand-md navbar-light fixed-top" style={{ backgroundColor: '#ffffff', height: '62px' }}>
+            <div className="container-fluid">
+                <a className="navbar-brand" href="#">
+                    <img src="./Assets/Logo/Logo.png" alt="logo" style={{ height: '42px', marginLeft: '15px' }} />
+                </a>
+                <button className="btn btn-outline-danger ml-auto mr-3" style={{ height: '42px', borderRadius: '5px' }}>Logout</button>
             </div>
-            <PurchageForm />
         </nav>
-
     );
+}
 
-};
-
-export default Sidebar;
-
-
+export default Navbar;
