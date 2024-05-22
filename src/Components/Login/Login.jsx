@@ -14,8 +14,9 @@ const Login = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const ProfileImg = localStorage.getItem("ProfileImg");
+        const Name = localStorage.getItem("Name");
 
-        if (token && ProfileImg) {
+        if (token && ProfileImg && Name) {
             setLoginOpen(false);
         } else {
             setLoginOpen(true);
@@ -46,13 +47,16 @@ const Login = () => {
             if (res.data.msg === "Login Successfull") {
                 const token = res.data.token;
                 const ProfileImg = res.data.PersonData[0].ProfileImg;
+                const Name = res.data.PersonData[0].Name;
 
 
                 // console.log(res.data.PersonData[0].ProfileImg);
                 localStorage.setItem('profilePic', ProfileImg);
+                localStorage.setItem('Name', Name);
 
                 console.log("Token:", token);
                 console.log("ProfileImg:", ProfileImg);
+                console.log("Name:", Name);
 
                 console.log("Admin logged in successfully!");
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
