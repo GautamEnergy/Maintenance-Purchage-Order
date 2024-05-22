@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PurchageForm from '../PurchageOrder/PurchageOrderAddEdit';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 const Navbar = () => {
     const [profileImg, setProfileImg] = useState('');
     const [name, setName] = useState('');
@@ -65,7 +68,9 @@ const Navbar = () => {
                                     onClick={toggleCard}
                                 />
                                 {showCard && (
-                                    <div className="card" style={{ position: 'absolute', backgroundColor: '#E4E5E3', top: '50px', right: '10px', width: '100px' }}>
+                                    <div className="card"
+                                        style={{ position: 'absolute', backgroundColor: '#E4E5E3', top: '50px', right: '10px', width: '150px', padding: '10px', borderRadius: '10px' }}
+                                    >
                                         <img
                                             src={profileImg}
                                             alt="profile"
@@ -79,17 +84,15 @@ const Navbar = () => {
                                                 display: 'block',
                                             }}
                                         />
-                                        <div style={{ textAlign: 'center', marginBottom: '10px' }}>{name}</div>
+                                        <div style={{ textAlign: 'center', marginBottom: '10px' }}>Hi, {name}</div>
                                         <button className="btn btn-outline-danger btn-sm" style={{ borderRadius: '5px', margin: '0 auto', display: 'block' }}>
-                                            Logout
+                                            <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '5px' }} /> Logout
                                         </button>
                                     </div>
                                 )}
                             </div>
                         )}
                     </div>
-
-                    {/* <button className="btn btn-outline-danger ml-auto mr-3" style={{ height: '42px', borderRadius: '5px' }}>Logout</button> */}
                 </div>
             </nav>
             <PurchageForm />
