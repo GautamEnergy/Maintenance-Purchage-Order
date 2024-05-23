@@ -4,6 +4,8 @@ import PurchageForm from '../PurchageOrder/PurchageOrderAddEdit';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const Navbar = () => {
     const [profileImg, setProfileImg] = useState('');
@@ -12,36 +14,25 @@ const Navbar = () => {
 
     useEffect(() => {
         const profileImgUrl = localStorage.getItem("profilePic");
-        const storedName = localStorage.getItem("Name");
+        const Name = localStorage.getItem("Name");
 
         if (profileImgUrl) {
             setProfileImg(profileImgUrl);
         }
 
-        if (storedName) {
-            setName(storedName);
+        if (Name) {
+            setName(Name);
         }
+
     }, []);
 
-    const cardRef = useRef(null);
 
+    // ---------------------------------   Hovering Notification ---------------------------------------
     const toggleCard = () => {
         setShowCard(!showCard);
     };
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (cardRef.current && !cardRef.current.contains(event.target)) {
-                setShowCard(false);
-            }
-        };
 
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     return (
         <>
@@ -52,21 +43,26 @@ const Navbar = () => {
                     </a>
                     <div className="d-flex align-items-center">
                         {profileImg && (
-                            <div ref={cardRef} style={{ position: 'relative' }}>
-                                <img
-                                    src={profileImg}
-                                    alt="profile"
-                                    style={{
-                                        height: '42px',
-                                        width: '42px',
-                                        borderRadius: '50%',
-                                        objectFit: 'cover',
-                                        cursor: 'pointer',
-                                        marginRight: '10px',
-                                        border: '2px solid #ccc',
-                                    }}
-                                    onClick={toggleCard}
-                                />
+                            <div style={{ position: 'relative' }}>
+                                <OverlayTrigger
+                                    placement="bottom"
+                                    overlay={<Tooltip id="profile-tooltip">Hi, {name}</Tooltip>}
+                                >
+                                    <img
+                                        src={profileImg}
+                                        alt="profile"
+                                        style={{
+                                            height: '42px',
+                                            width: '42px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            cursor: 'pointer',
+                                            marginRight: '10px',
+                                            border: '2px solid #ccc',
+                                        }}
+                                        onClick={toggleCard}
+                                    />
+                                </OverlayTrigger>
                                 {showCard && (
                                     <div className="card"
                                         style={{ position: 'absolute', backgroundColor: '#E4E5E3', top: '50px', right: '10px', width: '150px', padding: '10px', borderRadius: '10px' }}
@@ -75,8 +71,8 @@ const Navbar = () => {
                                             src={profileImg}
                                             alt="profile"
                                             style={{
-                                                height: '42px',
-                                                width: '42px',
+                                                height: '62px',
+                                                width: '62px',
                                                 borderRadius: '50%',
                                                 objectFit: 'cover',
                                                 border: '2px solid #ccc',
