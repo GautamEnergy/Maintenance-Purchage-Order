@@ -66,7 +66,7 @@ const PurchageForm = () => {
             <Container className="mt-4" style={{ flex: 1 }}>
                 <Card>
                     <Card.Header>
-                        <h4>Add Purchage Order</h4>
+                        <h4 style={{ color: 'red' }}>Add Purchage Order</h4>
                     </Card.Header>
                     <Card.Body>
                         <Form onSubmit={handleSubmit}>
