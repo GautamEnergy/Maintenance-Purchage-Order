@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from "./Components/Login/Login"
 import Navbar from "./Components/Navbar/Navbar";
 import PurchageForm from "./Components/PurchageOrder/PurchageOrderAddEdit";
+import OptionalField from "./Components/OptionalField/OptionalField";
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/nav" element={<Navbar />} />
         <Route path="/purchage" element={<PurchageForm />} />
+        <Route path="/OptionalField" element={<OptionalField />} />
 
         {/* <Route path="/about" element={<about />} /> */}
       </Routes>
