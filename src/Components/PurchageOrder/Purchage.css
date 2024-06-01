@@ -8,11 +8,11 @@ body {
 .mainCard {
     width: 100%;
     margin: 10px;
-    /* background: #4077c8; */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    /* background-color: #d95252; */
 }
 
 .mainCard h2 {
@@ -20,27 +20,27 @@ body {
 }
 
 .fullPage {
-    width: 975px;
+    width: 100%;
     border-radius: 15px;
-    margin: 100px 0;
+    margin: 50px 0;
     color: #fff;
     font-weight: 700;
     font-size: 16px;
     position: relative;
-    background-image: url('../../../public/Assets/Images/form-v9.jpg');
-    /* Corrected path */
+    background-color: #999;
+    /* background-image: url('../../../public/Assets/Images/form-v9.jpg'); */
     background-size: cover;
 }
 
 .fullPage .form-detail {
-    padding: 30px 135px 30px 100px;
+    padding: 30px;
 }
 
 .fullPage .form-detail h2 {
     font-size: 35px;
     text-align: center;
     padding: 16px 0 13px;
-    margin-bottom: 55px;
+    margin-bottom: 30px;
 }
 
 .fullPage .form-detail h2::after {
@@ -56,11 +56,13 @@ body {
 
 .fullPage .subCard {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
 }
 
 .fullPage .row {
-    width: 45%;
+    width: 48%;
+    margin-bottom: 20px;
 }
 
 .fullPage .form-detail .row-last {
@@ -68,12 +70,12 @@ body {
 }
 
 .fullPage .form-detail .input-text {
-    margin-bottom: 45px;
+    margin-bottom: 20px;
 }
 
 .fullPage .form-detail input {
     width: 100%;
-    padding: 14.5px 0px 14.5px 30px;
+    padding: 14.5px 15px;
     border: 2px solid #ccc;
     outline: none;
     border-radius: 27.5px;
@@ -90,10 +92,10 @@ body {
 .fullPage .form-detail .register {
     background: #f25d5d;
     border-radius: 25px;
-    width: 180px;
+    width: 100%;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     border: none;
-    margin: 20px 0 73px 35px;
+    margin: 20px 0 73px;
     cursor: pointer;
     color: #fff;
     font-weight: 700;
@@ -104,34 +106,24 @@ body {
     background: #d95252;
 }
 
-.fullPage .form-detail .row-last input {
-    padding: 14px;
-}
-
 input::placeholder {
     color: #e5e5e5;
     font-size: 16px;
 }
 
 /* Responsive */
-@media screen and (max-width: 1199px) {
-    .fullPage {
-        margin: 185px 20px;
-    }
-}
-
 @media screen and (max-width: 767px) {
-    .fullPage .subCard {
-        flex-direction: column;
-    }
-
     .fullPage .row {
         width: 100%;
+    }
+
+    .fullPage .form-detail {
+        padding: 20px;
     }
 }
 
 @media screen and (max-width: 575px) {
-    .fullPage .form-detail {
-        padding: 30px 45px 30px 10px;
+    .fullPage .row {
+        width: 100%;
     }
 }
