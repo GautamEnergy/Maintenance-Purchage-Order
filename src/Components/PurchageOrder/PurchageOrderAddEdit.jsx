@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Row, Col, Button, Navbar, Container, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Purchage.css';
 import ItemTable from '../Table/table';
+import OptionalField from '../OptionalField/OptionalField';
 
 const currentDate = new Date().toLocaleDateString();
 const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-
-const options = [
-    { value: 'mat1', label: 'Material 1' },
-    { value: 'mat2', label: 'Material 2' },
-    { value: 'mat3', label: 'Material 3' },
-];
 
 const purchaseTypes = [
     { value: 'type1', label: 'Type 1' },
@@ -23,8 +18,8 @@ const parties = [
 ];
 
 const material = [
-    { value: 'material1', label: 'material 1' },
-    { value: 'material2', label: 'material 2' },
+    { value: 'material1', label: 'Material 1' },
+    { value: 'material2', label: 'Material 2' },
 ];
 
 const PurchageForm = () => {
@@ -62,116 +57,141 @@ const PurchageForm = () => {
     };
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '44px' }}>
-            <Container className="mt-4" style={{ flex: 1 }}>
-                <Card>
-                    <Card.Header>
-                        <h4 style={{ color: '#7199DA' }}>Add Purchage Order</h4>
-                    </Card.Header>
-                    <Card.Body>
-                        <Form onSubmit={handleSubmit}>
-                            <Row className="mb-3">
-                                <Form.Group as={Col} xs={12} sm={4} controlId="series">
-                                    <Form.Label>Series</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={series}
-                                        onChange={handleSeriesChange}
+        <>
+            <div className="mainCard">
+                <div className="fullPage">
+                    <form className="form-detail" onSubmit={handleSubmit}>
+                        <h2>Purchase Order</h2>
+                        <div className="subCard">
+                            <div className="row">
+                                <input
+                                    type="text"
+                                    name="series"
+                                    id="series"
+                                    className="input-text"
+                                    placeholder="Series"
+                                    value={series}
+                                    onChange={handleSeriesChange}
+                                    required
+                                />
+                            </div>
+                            <div className="row">
+                                <input
+                                    type="text"
+                                    name="date"
+                                    id="date"
+                                    className="input-text"
+                                    value={`${currentDate} (${currentDay})`}
+                                    readOnly
+                                />
+                            </div>
+                        </div>
+                        <div className="subCard">
+                            <div className="row">
+                                <input
+                                    type="text"
+                                    name="vochNo"
+                                    id="vochNo"
+                                    className="input-text"
+                                    placeholder="Voch No."
+                                    value={vochNo}
+                                    onChange={handleVochNoChange}
+                                    required
+                                />
+                            </div>
+                            <div className="row">
+                                <input
+                                    type="text"
+                                    name="purcType"
+                                    id="purcType"
+                                    className="input-text"
+                                    list="purcTypeOptions"
+                                    placeholder="Purc Type"
+                                    value={purcType}
+                                    onChange={handlePurcTypeChange}
+                                    required
+                                />
+                                <datalist id="purcTypeOptions">
+                                    {purchaseTypes.map((option) => (
+                                        <option key={option.value} value={option.label} />
+                                    ))}
+                                </datalist>
+                            </div>
+                        </div>
+                        <div className="subCard">
+                            <div className="row">
+                                <input
+                                    type="text"
+                                    name="party"
+                                    id="party"
+                                    className="input-text"
+                                    list="partyOptions"
+                                    placeholder="Party"
+                                    value={party}
+                                    onChange={handlePartyChange}
+                                    required
+                                />
+                                <datalist id="partyOptions">
+                                    {parties.map((option) => (
+                                        <option key={option.value} value={option.label} />
+                                    ))}
+                                </datalist>
+                            </div>
+                            <div className="row">
+                                <input
+                                    type="text"
+                                    name="matCent"
+                                    id="matCent"
+                                    className="input-text"
+                                    list="MatCent"
+                                    placeholder="Mat Cent"
+                                    value={matCent}
+                                    onChange={handleMatCentChange}
+                                    required
+                                />
+                                <datalist id="MatCent">
+                                    {material.map((option) => (
+                                        <option key={option.value} value={option.label} />
+                                    ))}
+                                </datalist>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <input
+                                type="text"
+                                name="narration"
+                                id="narration"
+                                className="input-text"
+                                placeholder="Narration"
+                                value={narration}
+                                onChange={handleNarrationChange}
+                                required
+                            />
+                        </div>
+                        {/* <div className="row-last">
+                            <input
+                                type="submit"
+                                name="register"
+                                className="register"
+                                value="Save"
+                            />
+                        </div> */}
+                    </form>
 
-                                    />
-                                </Form.Group>
-
-                                <Form.Group as={Col} xs={12} sm={4} controlId="date">
-                                    <Form.Label>Date</Form.Label>
-                                    <Form.Control type="text" value={`${currentDate} (${currentDay})`} readOnly />
-                                </Form.Group>
-
-                                <Form.Group as={Col} xs={12} sm={4} controlId="vochNo">
-                                    <Form.Label>Voch No.</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={vochNo}
-                                        onChange={handleVochNoChange}
-
-                                    />
-                                </Form.Group>
-                            </Row>
-
-                            <Row className="mb-3">
-                                <Form.Group as={Col} xs={12} sm={4} controlId="purcType">
-                                    <Form.Label>Purc Type</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        list="purcTypeOptions"
-                                        value={purcType}
-                                        onChange={handlePurcTypeChange}
-
-                                    />
-                                    <datalist id="purcTypeOptions">
-                                        {purchaseTypes.map((option) => (
-                                            <option key={option.value} value={option.label} />
-                                        ))}
-                                    </datalist>
-                                </Form.Group>
-
-                                <Form.Group as={Col} xs={12} sm={4} controlId="party">
-                                    <Form.Label>Party</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        list="partyOptions"
-                                        value={party}
-                                        onChange={handlePartyChange}
-
-                                    />
-                                    <datalist id="partyOptions">
-                                        {parties.map((option) => (
-                                            <option key={option.value} value={option.label} />
-                                        ))}
-                                    </datalist>
-                                </Form.Group>
-
-                                <Form.Group as={Col} xs={12} sm={4} controlId="matCent">
-                                    <Form.Label>Mat Cent</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        list="MatCent"
-                                        value={matCent}
-                                        onChange={handleMatCentChange}
-
-                                    />
-                                    <datalist id="MatCent">
-                                        {material.map((option) => (
-                                            <option key={option.value} value={option.label} />
-                                        ))}
-                                    </datalist>
-                                </Form.Group>
-
-
-
-                            </Row>
-
-                            <Row className="mb-3">
-                                <Form.Group as={Col} xs={12} sm={6} controlId="narration">
-                                    <Form.Label>Narration</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={narration}
-                                        onChange={handleNarrationChange}
-
-                                    />
-                                </Form.Group>
-                            </Row>
-                        </Form>
-                    </Card.Body>
-                </Card>
-            </Container>
-
-            <Container style={{ flex: 1 }}>
+                </div>
+            </div>
+            <section1>
                 <ItemTable />
-            </Container>
+            </section1>
+
+            <section2>
+                <OptionalField />
+            </section2>
 
 
-        </div>
+        </>
+
+
     );
 };
 

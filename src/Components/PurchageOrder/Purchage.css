@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800;900&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+}
+
+.mainCard {
+    width: 100%;
+    margin: 10px;
+    /* background: #4077c8; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.mainCard h2 {
+    color: #f8cd0dd7;
+}
+
+.fullPage {
+    width: 975px;
+    border-radius: 15px;
+    margin: 100px 0;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    position: relative;
+    background-image: url('../../../public/Assets/Images/form-v9.jpg');
+    /* Corrected path */
+    background-size: cover;
+}
+
+.fullPage .form-detail {
+    padding: 30px 135px 30px 100px;
+}
+
+.fullPage .form-detail h2 {
+    font-size: 35px;
+    text-align: center;
+    padding: 16px 0 13px;
+    margin-bottom: 55px;
+}
+
+.fullPage .form-detail h2::after {
+    background: #fff;
+    width: 73px;
+    height: 3px;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.fullPage .subCard {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fullPage .row {
+    width: 45%;
+}
+
+.fullPage .form-detail .row-last {
+    text-align: center;
+}
+
+.fullPage .form-detail .input-text {
+    margin-bottom: 45px;
+}
+
+.fullPage .form-detail input {
+    width: 100%;
+    padding: 14.5px 0px 14.5px 30px;
+    border: 2px solid #ccc;
+    outline: none;
+    border-radius: 27.5px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.fullPage .form-detail input:focus {
+    border: 2px solid #999;
+}
+
+.fullPage .form-detail .register {
+    background: #f25d5d;
+    border-radius: 25px;
+    width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    border: none;
+    margin: 20px 0 73px 35px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.fullPage .form-detail .register:hover {
+    background: #d95252;
+}
+
+.fullPage .form-detail .row-last input {
+    padding: 14px;
+}
+
+input::placeholder {
+    color: #e5e5e5;
+    font-size: 16px;
+}
+
+/* Responsive */
+@media screen and (max-width: 1199px) {
+    .fullPage {
+        margin: 185px 20px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .fullPage .subCard {
+        flex-direction: column;
+    }
+
+    .fullPage .row {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .fullPage .form-detail {
+        padding: 30px 45px 30px 10px;
+    }
+}

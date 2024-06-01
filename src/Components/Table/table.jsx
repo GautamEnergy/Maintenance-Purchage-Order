@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Container, Table, Form } from 'react-bootstrap';
-import OptionalField from '../OptionalField/OptionalField';
 
 const ItemTable = () => {
     const [items, setItems] = useState([
@@ -90,9 +89,7 @@ const ItemTable = () => {
                 </button>
             </Container>
 
-            <section>
-                <OptionalField />
-            </section>
+
         </>
 
 
