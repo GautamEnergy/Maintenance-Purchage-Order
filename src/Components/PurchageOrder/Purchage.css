@@ -27,8 +27,8 @@ body {
     font-weight: 700;
     font-size: 16px;
     position: relative;
-    background-color: #999;
-    /* background-image: url('../../../public/Assets/Images/form-v9.jpg'); */
+    /* background-color: #999; */
+    background-image: url('../../../public/Assets/Images/black.webp');
     background-size: cover;
 }
 
@@ -65,9 +65,6 @@ body {
     margin-bottom: 20px;
 }
 
-.fullPage .form-detail .row-last {
-    text-align: center;
-}
 
 .fullPage .form-detail .input-text {
     margin-bottom: 20px;

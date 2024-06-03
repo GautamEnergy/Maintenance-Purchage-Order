@@ -168,25 +168,23 @@ const PurchageForm = () => {
                                 required
                             />
                         </div>
-                        {/* <div className="row-last">
-                            <input
-                                type="submit"
-                                name="register"
-                                className="register"
-                                value="Save"
-                            />
-                        </div> */}
+
                     </form>
 
                 </div>
             </div>
-            <section1>
-                <ItemTable />
-            </section1>
+            <div>
+                <section>
+                    <section1>
+                        <ItemTable />
+                    </section1>
+                    <OptionalField />
+                </section>
 
-            <section2>
-                <OptionalField />
-            </section2>
+
+
+
+            </div>
 
 
         </>
