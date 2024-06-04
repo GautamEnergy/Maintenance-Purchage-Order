@@ -4,8 +4,9 @@ import './Purchage.css';
 import ItemTable from '../Table/table';
 import OptionalField from '../OptionalField/OptionalField';
 
-const currentDate = new Date().toLocaleDateString();
-const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+// const currentDate = new Date().toLocaleDateString();
+const currentDate = new Date().toDateString();
+// const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
 const purchaseTypes = [
     { value: 'type1', label: 'Type 1' },
@@ -29,6 +30,7 @@ const PurchageForm = () => {
     const [party, setParty] = useState('');
     const [matCent, setMatCent] = useState('');
     const [narration, setNarration] = useState('');
+
 
     const handleSeriesChange = (e) => setSeries(e.target.value);
     const handleVochNoChange = (e) => setVochNo(e.target.value);
@@ -81,12 +83,11 @@ const PurchageForm = () => {
                                     name="date"
                                     id="date"
                                     className="input-text"
-                                    value={`${currentDate} (${currentDay})`}
+                                    value={`${currentDate} `}
+                                    // value={`${currentDate} (${currentDay})`}
                                     readOnly
                                 />
                             </div>
-                        </div>
-                        <div className="subCard">
                             <div className="row">
                                 <input
                                     type="text"
@@ -99,6 +100,9 @@ const PurchageForm = () => {
                                     required
                                 />
                             </div>
+                        </div>
+                        <div className="subCard">
+
                             <div className="row">
                                 <input
                                     type="text"
@@ -117,8 +121,6 @@ const PurchageForm = () => {
                                     ))}
                                 </datalist>
                             </div>
-                        </div>
-                        <div className="subCard">
                             <div className="row">
                                 <input
                                     type="text"
@@ -155,6 +157,10 @@ const PurchageForm = () => {
                                     ))}
                                 </datalist>
                             </div>
+                        </div>
+                        <div className="subCard">
+
+
                         </div>
                         <div className="row">
                             <input
