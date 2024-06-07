@@ -3,11 +3,11 @@ import { Container, Table, Form } from 'react-bootstrap';
 
 const ItemTable = () => {
     const [items, setItems] = useState([
-        { id: 1, item: '', qty: 0, price: 0, amount: 0 }
+        { id: 1, item: '', qty: '', price: '', amount: '' }
     ]);
 
     const handleAddRow = () => {
-        const newItem = { id: Date.now(), item: '', qty: 0, price: 0, amount: 0 };
+        const newItem = { id: Date.now(), item: '', qty: '', price: '', amount: '' };
         setItems([...items, newItem]);
     };
 
@@ -31,7 +31,8 @@ const ItemTable = () => {
                         <tr>
                             <th>S.N. no.</th>
                             <th>Item</th>
-                            <th>Qty</th>
+                            <th>Qty </th>
+                            <th>Unit</th>
                             <th>Price Rs</th>
                             <th>Amount Rs</th>
                             <th>Action</th>
@@ -55,6 +56,7 @@ const ItemTable = () => {
                                         {/* Add more items as needed */}
                                     </Form.Control>
                                 </td>
+
                                 <td>
                                     <Form.Control
                                         type="number"
@@ -63,9 +65,10 @@ const ItemTable = () => {
                                         onChange={e => handleItemChange(e, item.id)}
                                     />
                                 </td>
+                                <td>Pcs</td>
                                 <td>
                                     <Form.Control
-                                        type="text"
+                                        type="number"
                                         name="price"
                                         value={item.price}
                                         onChange={e => handleItemChange(e, item.id)}
@@ -88,12 +91,13 @@ const ItemTable = () => {
                     Add Row
                 </button>
             </Container>
-
-
         </>
-
-
     );
 };
 
 export default ItemTable;
+
+
+
+
+
