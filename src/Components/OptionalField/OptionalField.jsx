@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import './OptionalField.css';
+import Billing from '../Billing/Billing';
 
 const OptionalField = () => {
     return (
@@ -24,7 +25,7 @@ const OptionalField = () => {
                     </div>
 
                     <div className="user-box">
-                        <Form.Control type="number" placeholder="Enter cell number" required />
+                        <Form.Control type="text" placeholder="Enter cell number" required />
                         <Form.Label>Cell No.</Form.Label>
                     </div>
 
@@ -39,6 +40,8 @@ const OptionalField = () => {
 
                 </Form>
             </div>
+
+            <Billing />
 
 
         </>
