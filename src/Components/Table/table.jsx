@@ -3,11 +3,11 @@ import { Container, Table, Form } from 'react-bootstrap';
 
 const ItemTable = () => {
     const [items, setItems] = useState([
-        { id: 1, item: '', qty: '', price: '', amount: '' }
+        { id: 1, item: '', qty: '', price: '', amount: 0 }
     ]);
 
     const handleAddRow = () => {
-        const newItem = { id: Date.now(), item: '', qty: '', price: '', amount: '' };
+        const newItem = { id: Date.now(), item: '', qty: '', price: '', amount: 0 };
         setItems([...items, newItem]);
     };
 
@@ -23,6 +23,9 @@ const ItemTable = () => {
         setItems(updatedItems);
     };
 
+    // Calculate total amount
+    const totalAmount = items.reduce((total, item) => total + (item.qty * item.price), 0);
+
     return (
         <>
             <Container className="my-4">
@@ -31,7 +34,7 @@ const ItemTable = () => {
                         <tr>
                             <th>S.N. no.</th>
                             <th>Item</th>
-                            <th>Qty </th>
+                            <th>Qty</th>
                             <th>Unit</th>
                             <th>Price Rs</th>
                             <th>Amount Rs</th>
@@ -86,6 +89,13 @@ const ItemTable = () => {
                             </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="5" className="text-right"><strong>Total Amount</strong></td>
+                            <td><strong>{totalAmount}</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 </Table>
                 <button className="btn btn-primary" onClick={handleAddRow}>
                     Add Row
@@ -96,8 +106,3 @@ const ItemTable = () => {
 };
 
 export default ItemTable;
-
-
-
-
-
