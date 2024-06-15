@@ -5,6 +5,8 @@ import Login from "./Components/Login/Login"
 import Navbar from "./Components/Navbar/Navbar";
 import PurchageForm from "./Components/PurchageOrder/PurchageOrderAddEdit";
 import OptionalField from "./Components/OptionalField/OptionalField";
+import NewParty from "./Components/New Party/NewParty";
+import Billing from "./Components/Billing/Billing";
 
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
         <Route path="/nav" element={<Navbar />} />
         <Route path="/purchage" element={<PurchageForm />} />
         <Route path="/OptionalField" element={<OptionalField />} />
+        <Route path="/billing" element={<Billing />} />
+        <Route path="/newParty" element={<NewParty />} />
 
         {/* <Route path="/about" element={<about />} /> */}
       </Routes>

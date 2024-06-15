@@ -1,3 +1,4 @@
+/* Global styles */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800;900&display=swap');
 
 body {
@@ -12,7 +13,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* background-color: #d95252; */
 }
 
 .mainCard h2 {
@@ -27,9 +27,9 @@ body {
     font-weight: 700;
     font-size: 16px;
     position: relative;
-    /* background-color: #999; */
     background-image: url('../../../public/Assets/Images/black.webp');
     background-size: cover;
+    overflow: hidden;
 }
 
 .fullPage .form-detail {
@@ -54,7 +54,19 @@ body {
     transform: translateX(-50%);
 }
 
-.fullPage .subCard {
+.fullPage .subCard1 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.fullPage .subCard2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.fullPage .subCard3 {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -64,7 +76,6 @@ body {
     width: 33%;
     margin-bottom: 20px;
 }
-
 
 .fullPage .form-detail .input-text {
     margin-bottom: 20px;
@@ -80,6 +91,7 @@ body {
     font-size: 16px;
     font-weight: 700;
     background: rgba(255, 255, 255, 0.2);
+    color: #fff;
 }
 
 .fullPage .form-detail input:focus {
@@ -102,6 +114,31 @@ body {
 .fullPage .form-detail .register:hover {
     background: #d95252;
 }
+
+.fullPage .NewParty {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0px 8px 16px 0px rgba(84, 193, 30, 0.2);
+    display: flex;
+    align-items: center;
+}
+
+.fullPage .NewParty img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.fullPage .NewParty:hover {
+    background-color: #a20000;
+}
+
 
 input::placeholder {
     color: #e5e5e5;
