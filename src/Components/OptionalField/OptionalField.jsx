@@ -34,9 +34,9 @@ const OptionalField = () => {
                         <Form.Label>Warranty</Form.Label>
                     </div>
 
-                    <Button variant="primary" type="submit" className="submit-button">
+                    {/* <Button variant="primary" type="submit" className="submit-button">
                         OK
-                    </Button>
+                    </Button> */}
 
                 </Form>
             </div>
