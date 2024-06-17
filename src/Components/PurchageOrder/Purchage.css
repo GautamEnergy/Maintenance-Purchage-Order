@@ -106,7 +106,7 @@ body {
     border: none;
     margin: 20px 0 73px;
     cursor: pointer;
-    color: #fff;
+    /* color: #fff; */
     font-weight: 700;
     font-size: 16px;
 }
@@ -116,37 +116,30 @@ body {
 }
 
 .fullPage .NewParty {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    border: none;
     cursor: pointer;
     border-radius: 15px;
-    padding: 10px;
+    padding: 5px;
     box-shadow: 0px 8px 16px 0px rgba(84, 193, 30, 0.2);
     display: flex;
-    align-items: center;
+    ;
+    background-color: #c3cdd7;
 }
 
+/* 
 .fullPage .NewParty img {
     width: 20px;
     height: 20px;
     vertical-align: middle;
     margin-right: 8px;
-}
-
-.fullPage .NewParty:hover {
-    background-color: #a20000;
-}
-
+} */
 
 input::placeholder {
-    color: #e5e5e5;
+    color: #222020;
     font-size: 16px;
 }
 
 /* Responsive */
-@media screen and (max-width: 767px) {
+/* @media screen and (max-width: 767px) {
     .fullPage .row {
         width: 100%;
     }
@@ -160,4 +153,51 @@ input::placeholder {
     .fullPage .row {
         width: 100%;
     }
+} */
+
+/* 2. Responsive styles */
+/* @media screen and (max-width: 991px) {
+    .fullPage .row {
+        width: 48%;
+        padding: 0 10px;
+        margin-bottom: 20px;
+    }
 }
+
+@media screen and (max-width: 767px) {
+    .fullPage .row {
+        width: 100%;
+        padding: 0 10px;
+        margin-bottom: 10px;
+    }
+
+    .fullPage .form-detail {
+        padding: 20px;
+    }
+
+    .fullPage .form-detail h2 {
+        font-size: 28px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .fullPage .form-detail {
+        padding: 20px;
+    }
+
+    .fullPage .form-detail h2 {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .fullPage .form-detail h2 {
+        font-size: 22px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .fullPage .form-detail h2 {
+        font-size: 20px;
+    }
+} */

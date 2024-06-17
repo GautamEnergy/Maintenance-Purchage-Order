@@ -5,6 +5,7 @@ import ItemTable from '../Table/table';
 import OptionalField from '../OptionalField/OptionalField';
 import NewParty from '../New Party/NewParty';
 
+import { FaUser } from 'react-icons/fa';
 
 
 // const currentDate = new Date().toLocaleDateString();
@@ -63,22 +64,38 @@ const PurchageForm = () => {
         setNarration('');
     };
 
+    // useEffect(() => {
+    //     if (showNewPartyModal) {
+    //         const handleClickOutside = (event) => {
+
+    //             if (event.target.className.includes('modal')) {
+    //                 setShowNewPartyModal(false);
+    //             }
+    //         };
+    //         window.addEventListener('click', handleClickOutside);
+    //         return () => {
+    //             window.removeEventListener('click', handleClickOutside);
+    //         };
+    //     }
+    // }, [showNewPartyModal]);
+
     useEffect(() => {
         if (showNewPartyModal) {
-            // Add event listener to close modal on outside click
             const handleClickOutside = (event) => {
-                if (event.target.className.includes('modal')) {
+                const className = event.target.className;
+                // Check if className is a string before using includes
+                if (typeof className === 'string' && className.includes('modal')) {
                     setShowNewPartyModal(false);
                 }
             };
+
             window.addEventListener('click', handleClickOutside);
+
             return () => {
                 window.removeEventListener('click', handleClickOutside);
             };
         }
     }, [showNewPartyModal]);
-
-
 
     return (
         <>
@@ -86,6 +103,8 @@ const PurchageForm = () => {
                 <div className="fullPage">
                     <form className="form-detail" onSubmit={handleSubmit}>
                         <h2>Purchase Order</h2>
+
+
                         <div className="subCard1">
                             <div className="row">
                                 <input
@@ -123,8 +142,9 @@ const PurchageForm = () => {
                                 />
                             </div>
                         </div>
-                        <div className="subCard2">
 
+
+                        <div className="subCard2">
                             <div className="row">
                                 <input
                                     type="text"
@@ -143,7 +163,9 @@ const PurchageForm = () => {
                                     ))}
                                 </datalist>
                             </div>
-                            <div className="row">
+                            <div className="row "
+                                style={{ position: 'relative' }}
+                            >
                                 <input
                                     type="text"
                                     name="party"
@@ -155,12 +177,23 @@ const PurchageForm = () => {
                                     onChange={handlePartyChange}
 
                                 />
+
+                                <button type='button' className="NewParty" onClick={() => setShowNewPartyModal(true)}
+                                    style={{ position: 'absolute', top: 12, width: '30px', right: 10 }}>
+                                    <FaUser className="icon" />
+                                    {/* <img src='./Assets/Icons/plus1.png' alt="Party" className="icon" /> */}
+
+                                </button>
+
+
                                 <datalist id="partyOptions">
                                     {parties.map((option) => (
                                         <option key={option.value} value={option.label} />
                                     ))}
                                 </datalist>
                             </div>
+
+
                             <div className="row">
                                 <input
                                     type="text"
@@ -180,6 +213,8 @@ const PurchageForm = () => {
                                 </datalist>
                             </div>
                         </div>
+
+
                         <div className="subCard3">
                             <div className="row">
                                 <input
@@ -195,12 +230,10 @@ const PurchageForm = () => {
 
                         </div>
                     </form>
-                    <button className="NewParty" onClick={() => setShowNewPartyModal(true)}>
-                        {/* New Party */}
-                        <img src='./Assets/Icons/add2.png' alt="Party" />
-                    </button>
                 </div>
             </div>
+
+
             {showNewPartyModal && (
                 <div className="modal fade show" style={{ display: 'block' }}>
                     <NewParty />
@@ -209,9 +242,7 @@ const PurchageForm = () => {
             )}
 
             <section>
-                <section1>
-                    <ItemTable />
-                </section1>
+                <ItemTable />
                 <OptionalField />
             </section>
 
