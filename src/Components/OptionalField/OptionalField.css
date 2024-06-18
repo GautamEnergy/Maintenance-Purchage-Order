@@ -154,7 +154,7 @@
 /* Larger screens (e.g., desktops) */
 @media (min-width: 1025px) {
     .First-Card {
-        width: 900px;
+        width: 1045px;
         padding: 40px;
     }
 
