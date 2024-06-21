@@ -10,27 +10,27 @@ const OptionalField = () => {
                 <h2>Optional Field</h2>
                 <Form>
                     <div className="user-box">
-                        <Form.Control type="text" placeholder="Enter payment terms" required />
+                        <Form.Control type="text" required />
                         <Form.Label>Payment Terms</Form.Label>
                     </div>
 
                     <div className="user-box">
-                        <Form.Control type="text" placeholder="Enter delivery terms" required />
+                        <Form.Control type="text" required />
                         <Form.Label>Delivery Terms</Form.Label>
                     </div>
 
                     <div className="user-box">
-                        <Form.Control type="text" placeholder="Enter contact person" required />
+                        <Form.Control type="text" required />
                         <Form.Label>Contact Person</Form.Label>
                     </div>
 
                     <div className="user-box">
-                        <Form.Control type="text" placeholder="Enter cell number" required />
+                        <Form.Control type="text" required />
                         <Form.Label>Cell No.</Form.Label>
                     </div>
 
                     <div className="user-box">
-                        <Form.Control type="text" placeholder="Enter warranty details" required />
+                        <Form.Control type="text" required />
                         <Form.Label>Warranty</Form.Label>
                     </div>
 

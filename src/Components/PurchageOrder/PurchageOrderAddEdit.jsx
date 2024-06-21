@@ -6,6 +6,7 @@ import OptionalField from '../OptionalField/OptionalField';
 import NewParty from '../New Party/NewParty';
 
 import { FaUser } from 'react-icons/fa';
+import ItemMaster from '../Add Item Master/ItemMaster';
 
 
 // const currentDate = new Date().toLocaleDateString();
@@ -242,6 +243,7 @@ const PurchageForm = () => {
             )}
 
             <section>
+                {/* <ItemMaster /> */}
                 <ItemTable />
                 <OptionalField />
             </section>
