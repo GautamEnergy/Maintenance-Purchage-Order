@@ -5,6 +5,7 @@ import ItemTable from '../Table/table';
 import OptionalField from '../OptionalField/OptionalField';
 import NewParty from '../New Party/NewParty';
 import { FaUser } from 'react-icons/fa';
+import Billing from '../Billing/Billing';
 
 const currentDate = new Date().toDateString();
 
@@ -245,6 +246,7 @@ const PurchageForm = () => {
 
             <section>
                 <ItemTable />
+                <Billing />
                 <OptionalField />
             </section>
         </>
