@@ -7,11 +7,15 @@ import PurchageForm from "./Components/PurchageOrder/PurchageOrderAddEdit";
 import OptionalField from "./Components/OptionalField/OptionalField";
 import NewParty from "./Components/New Party/NewParty";
 import Billing from "./Components/Billing/Billing";
+import Dashboard from "./Pages/Dashboard";
+import AddMachine from "./Components/AddMachine/AddMachine";
+import AddSpare from "./Components/AddSpare/AddSpare";
 
 
 function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/nav" element={<Navbar />} />
@@ -19,6 +23,10 @@ function App() {
         <Route path="/OptionalField" element={<OptionalField />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/newParty" element={<NewParty />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/machine" element={<AddMachine />} />
+        <Route path="/spare" element={<AddSpare />} />
+
 
         {/* <Route path="/about" element={<about />} /> */}
       </Routes>
