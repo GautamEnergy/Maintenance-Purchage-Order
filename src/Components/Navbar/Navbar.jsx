@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import PurchageForm from '../PurchageOrder/PurchageOrderAddEdit';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -91,7 +89,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav>
-            <PurchageForm />
+
         </>
     );
 };

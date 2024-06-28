@@ -103,7 +103,7 @@ const NewParty = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="first-mainCard mt-5">
+            <form onSubmit={handleSubmit} className="Section1">
                 <div className="header">
                     <h4 className="text-center">
                         <b>Add New Party</b></h4>  <FaTimes className="close-icon" onClick={handleClose} />
