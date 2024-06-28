@@ -5,22 +5,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../AddMachine/AddMachine.css';
 
 const AddMachine = () => {
-    const [MachineName, setMachineName] = useState('');    
+    const [MachineName, setMachineName] = useState('');
     const [MachineModelNo, setMachineModelNo] = useState('');
     const [MachineNo, setMachineNo] = useState('');
     const [MachineBrandName, setMachineBrandName] = useState('');
-
     const [Status, setStatus] = useState('Active');
-
     const [error, setError] = useState('');
-
-
 
     const notifySuccess = () => toast.success("New Machine Added Successfully!", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
-
-   
-
     const addNewMachine = async (machineData) => {
         try {
             const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddMachine', {
@@ -32,7 +25,7 @@ const AddMachine = () => {
             });
             if (response.ok) {
                 notifySuccess();
-                setMachineName('');   
+                setMachineName('');
                 setMachineModelNo('');
                 setMachineNo('');
                 setMachineBrandName('')
@@ -49,7 +42,7 @@ const AddMachine = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (MachineName &&  MachineModelNo && MachineNo && MachineBrandName && Status) {
+        if (MachineName && MachineModelNo && MachineNo && MachineBrandName && Status) {
             const machineData = {
                 MachineName,
                 MachineModelNo,
@@ -71,10 +64,11 @@ const AddMachine = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="first-mainCard mt-5">
+            <form onSubmit={handleSubmit} className="Section1">
                 <div className="header">
                     <h4 className="text-center">
-                        <b>Add New Machine</b></h4>  <FaTimes className="close-icon" onClick={handleClose} />
+                        <b>Add New Machine</b></h4>
+                    {/* <FaTimes className="close-icon" onClick={handleClose} /> */}
                 </div>
                 <div className="form-group">
                     <label>Machine Name</label>
@@ -93,9 +87,9 @@ const AddMachine = () => {
                         onChange={(e) => setMachineModelNo(e.target.value)}
                         required
                     />
-                    
+
                 </div>
-                
+
                 <div className="form-group">
                     <label>Machine Number.</label>
                     <input
@@ -103,9 +97,9 @@ const AddMachine = () => {
                         className="form-text"
                         name="machinenumber"
                         value={MachineNo}
-                        onChange={(e) => { setMachineNo(e.target.value)}}
-                           
-                        
+                        onChange={(e) => { setMachineNo(e.target.value) }}
+
+
                         required
                     />
                 </div>
@@ -120,7 +114,7 @@ const AddMachine = () => {
                         required
                     />
                 </div>
-                
+
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>
             <ToastContainer position="top-center" autoClose={2000} />
