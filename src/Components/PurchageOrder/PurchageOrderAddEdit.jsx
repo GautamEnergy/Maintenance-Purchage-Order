@@ -8,7 +8,6 @@ import { FaUser } from 'react-icons/fa';
 import Billing from '../Billing/Billing';
 
 const currentDate = new Date().toDateString();
-
 const purchaseTypes = [
     { value: 'I/GST-5%', label: 'I/GST-5%' },
     { value: 'I/GST-12%', label: 'I/GST-12%' },
@@ -248,7 +247,9 @@ const PurchageForm = () => {
                 <ItemTable />
                 <Billing />
                 <OptionalField />
+
             </section>
+            {/* <Dashboard /> */}
         </>
     );
 };
