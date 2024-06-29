@@ -1,7 +1,6 @@
-body {
+/* body {
     font-family: Arial, sans-serif;
     margin: 0;
-    /* background-color: #6a6c6e; */
     padding: 0;
 }
 
@@ -80,4 +79,131 @@ body {
 
 .text-center {
     color: #a20000;
+} */
+
+
+
+----------------- style.css --------------- body {
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+    background-color: #f2f2f2;
+    color: #333;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ParentPage {
+    width: 800px;
+    height: 100%;
+    padding: 40px;
+    background-color: #3a3a3a;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;
+}
+
+.ParentPage .ChildDetails {
+    width: 100%;
+    padding: 20px;
+}
+
+.ParentPage .ChildDetails h2 {
+    font-size: 28px;
+    margin-top: 76px;
+    margin-bottom: 20px;
+    position: relative;
+    text-align: center;
+}
+
+.ParentPage .ChildDetails h2::after {
+    content: "";
+    width: 80%;
+    height: 3px;
+    background-color: #fff;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.ParentPage .Childtext {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.ParentPage .Childtext label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ParentPage .Childinput {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #777;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.ParentPage .Childinput::placeholder {
+    color: #ccc;
+}
+
+.ParentPage .Childinput:focus {
+    border-color: #ddd;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.ParentPage .register {
+    background-color: #f25d5d;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 14px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+}
+
+.ParentPage .register:hover {
+    background-color: #e04e4e;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.Toastify__toast-container {
+    top: 1rem;
+    width: fit-content;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.Toastify__toast {
+    background-color: #333;
+    color: #fff;
+}
+
+.Toastify__toast--success {
+    background-color: #4caf50;
+}
+
+.Toastify__toast--error {
+    background-color: #f44336;
 }
