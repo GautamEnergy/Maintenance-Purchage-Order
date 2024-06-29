@@ -13,10 +13,17 @@ const Login = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        const PersonID = localStorage.getItem("CurrentUser");
+
+
+        // console.log('asddasda')
+        // console.log(localStorage.getItem("CurrentUser"))
+
+
         const ProfileImg = localStorage.getItem("ProfileImg");
         const Name = localStorage.getItem("Name");
 
-        if (token && ProfileImg && Name) {
+        if (token && ProfileImg && Name && PersonID) {
             setLoginOpen(false);
         } else {
             setLoginOpen(true);
@@ -43,32 +50,43 @@ const Login = () => {
                 loginid: email,
                 password: password,
             });
-            console.log("Workingggggggggggggggggggggggg")
+            console.log("Response Data:", res.data);
+
             if (res.data.msg === "Login Successfull") {
                 const token = res.data.token;
-                const ProfileImg = res.data.PersonData[0].ProfileImg;
-                const Name = res.data.PersonData[0].Name;
 
+                // Log the PersonData structure to understand it
+                console.log("PersonData:", res.data.PersonData);
 
-                // console.log(res.data.PersonData[0].ProfileImg);
-                localStorage.setItem('profilePic', ProfileImg);
-                localStorage.setItem('Name', Name);
+                // Assuming PersonData is an array, we will log the first item
+                if (Array.isArray(res.data.PersonData) && res.data.PersonData.length > 0) {
+                    const firstPerson = res.data.PersonData[0];
+                    console.log("First Person Data:", firstPerson);
 
-                console.log("Token:", token);
-                console.log("ProfileImg:", ProfileImg);
-                console.log("Name:", Name);
+                    const ProfileImg = firstPerson.ProfileImg;
+                    const PersonID = firstPerson.PersonID;
+                    const Name = firstPerson.Name;
 
-                console.log("Admin logged in successfully!");
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                //window.alert("Login successful!");
-                navigate('/nav');
+                    localStorage.setItem('profilePic', ProfileImg);
+                    localStorage.setItem('CurrentUser', PersonID);
+                    localStorage.setItem('Name', Name);
 
+                    console.log("Token:", token);
+                    console.log("ProfileImg:", ProfileImg);
+                    console.log("CurrentUser:", PersonID);
+                    console.log("Name:", Name);
 
+                    console.log("Admin logged in successfully!");
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    navigate('/dashboard');
+                } else {
+                    setError("Unexpected response structure. PersonData is not an array or is empty.");
+                }
             } else {
                 setError("Invalid email or password. Please try again.");
             }
         } catch (error) {
-            console.error("Error logging in admin:", error.msg);
+            console.error("Error logging in admin:", error);
             setError("network error");
         }
     };
@@ -80,7 +98,6 @@ const Login = () => {
                 <div className="neumorphic-input-wrapper">
                     <label htmlFor="email">Login Id</label>
                     <input
-                        // type="email"
                         name="email"
                         id="email"
                         value={email}
@@ -109,3 +126,4 @@ const Login = () => {
 }
 
 export default Login;
+
