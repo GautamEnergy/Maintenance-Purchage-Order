@@ -364,7 +364,7 @@ const NewParty = () => {
     };
 
     const handleback = () => {
-
+        navigate('/dashboard')
     };
 
     return (
