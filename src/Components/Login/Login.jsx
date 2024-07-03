@@ -105,11 +105,11 @@ const Login = () => {
             } else if (error.response.status == 400) {
 
                 error.response.data.msg == 'Wrong Password' ?
-                    notifyError('Password is not valid') :
+                    notifyError('Wrong Password Entered') :
                     error.response.data.msg == 'Internal Error' ?
                         notifyError('Internal Error') :
                         error.response.data.msg == 'Wrong EmployeeId' ?
-                            notifyError('Wrong LoginId Entered') :
+                            notifyError('This LoginId Does not exists') :
                             notifyError('Something Went Wrong')
             }
 
@@ -130,7 +130,7 @@ const Login = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        placeholder="Please enter email"
+                        placeholder="Please enter login ID"
                     />
                 </div>
                 <div className="neumorphic-input-wrapper">
