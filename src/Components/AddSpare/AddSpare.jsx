@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import Select from 'react-select';
@@ -13,8 +13,8 @@ const AddSpare = () => {
     const [MachineNames, setMachineNames] = useState([]);
     const [Status, setStatus] = useState('Active');
     const [MasterSparePartName, setMasterSparePartName] = useState('');
-    const [image, setImage] = useState(null);
-    const [pdf, setPdf] = useState(null);
+    const [image, setImage] = useState(undefined);
+    const [pdf, setPdf] = useState(undefined);
     const [error, setError] = useState('');
     const [personID, setPersonID] = useState('');
     const [machineList, setMachineList] = useState([]);
@@ -26,6 +26,9 @@ const AddSpare = () => {
     const [imageController, setImageController] = useState('');
     const [drawingPdfController, setDrawingPdfController] = useState('');
     const [Machine, SetMachine] = useState([])
+    const imageInputRef = useRef(null);
+    const pdfInputRef = useRef(null);
+
     let machineData = []
 
     const navigate = useNavigate();
@@ -70,11 +73,11 @@ const AddSpare = () => {
                 body: JSON.stringify(SpareData),
             });
             console.log("jiiiiiaAppppppp");
-            console.log(response.data)
+
             console.log(response)
             if (response.ok) {
                 const responseData = await response.json();
-                notifySuccess();
+
                 setSparePartName('');
                 setSparePartModelNo('');
                 setBrand('');
@@ -82,8 +85,8 @@ const AddSpare = () => {
                 setMachineNames([]);
                 setStatus('Active');
                 setMasterSparePartName('');
-                setImage(null);
-                setPdf(null);
+                setImage('');
+                setPdf('');
                 setError('');
                 return responseData;
             } else {
@@ -91,11 +94,13 @@ const AddSpare = () => {
                 console.log(errorData)
                 if (errorData.msg = 'Duplicate Spare Model Number') {
                     notifyError(errorData.message || 'This Spare Part Model Number already exists');
+                } else {
+                    notifyError(errorData.message);
                 }
 
             }
         } catch (error) {
-            notifyError('Failed to add new Spare: ' + error.message);
+            return error
         }
     };
 
@@ -131,15 +136,29 @@ const AddSpare = () => {
                 formData.append('SparePartId', UUID.SparePartId)
                 console.log('ggggggggggggggggggg');
 
+                if (image && pdf && image.size > 0 && pdf.size > 0) {
+                    let upload = await uploadPDF(formData)
 
-                if (image.size || pdf.size) {
-                    let upload = await uploadPDF(formData);
-                    console.log(upload)
+                } else if (image && image.size > 0) {
+                    let upload = await uploadPDF(formData)
 
+                } else if (pdf && pdf.size > 0) {
+                    let upload = await uploadPDF(formData)
                 }
+                setImage(undefined);
+                setPdf(undefined);
 
-
+                // Manually clear file input fields
+                if (imageInputRef.current) {
+                    imageInputRef.current.value = '';
+                }
+                if (pdfInputRef.current) {
+                    pdfInputRef.current.value = '';
+                }
+                console.log('immage')
+                notifySuccess('Spare Part Added Succesfully')
             } catch (err) {
+
                 console.log(err)
             }
         } else {
@@ -210,16 +229,16 @@ const AddSpare = () => {
 
             if (response.status === 200) {
                 setIsLoading(false);
-                toast.success('Spare Part Added Successfully.', { position: 'top-center' });
                 console.log(response.data)
                 return response.data;
             } else {
                 setIsLoading(false);
-                toast.error('Error In Server', { position: 'top-center' });
+
                 return response.data
             }
         } catch (err) {
             setIsLoading(false);
+            notifyError('Error, While Sending File')
             console.error('Error', err);
             return err;
         }
@@ -233,7 +252,7 @@ const AddSpare = () => {
     return (
         <div className="fullPage">
             <div className="form-detail">
-                <h2>Add New Spare</h2>
+                <h2>Add New Spare Part</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="subCard2">
                         <div className="system input-text">
@@ -330,11 +349,11 @@ const AddSpare = () => {
 
                         <div className="system input-text" >
                             <label className="file-label">Image</label>
-                            <input type="file" accept="image/*" onChange={handleImageChange} />
+                            <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} />
                         </div>
                         <div className="system input-text" style={{ width: '360px', marginRight: '76vh' }}>
                             <label className="file-label">PDF</label>
-                            <input type="file" accept="application/pdf" onChange={handlePdfChange} />
+                            <input type="file" accept="application/pdf" onChange={handlePdfChange} ref={pdfInputRef} />
                         </div>
                     </div>
                     <div style={{ marginLeft: '510px' }}>

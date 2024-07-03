@@ -39,7 +39,7 @@ const Login = () => {
 
     const validateInput = () => {
         if (!email || !password) {
-            setError("Please enter both email and password.");
+            // setError("Please enter both email and password.");
             return false;
         }
         return true;

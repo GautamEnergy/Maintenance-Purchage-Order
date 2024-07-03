@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AppContext } from './ContextAPI'
+import { AppContext } from './ContextAPI';
 import Login from './Components/Login/Login';
 import Navbar from './Components/Navbar/Navbar';
 import PurchageForm from './Components/PurchageOrder/PurchageOrderAddEdit';
@@ -13,15 +13,23 @@ import AddSpare from './Components/AddSpare/AddSpare';
 
 const App = () => {
   const { token } = useContext(AppContext);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        {token || localStorage.getItem('Token') ?
-          <Route path="/*" element={<AppWithNavbar />} /> : <Route path="/*" element={<Login />} />}
-
+        <Route path="/" element={token || localStorage.getItem('Token') ? <TempDash /> : <Login />} />
+        <Route path="/*" element={token || localStorage.getItem('Token') ? <AppWithNavbar /> : <Login />} />
       </Routes>
     </Router>
+  );
+};
+
+const TempDash = () => {
+  return (
+    <>
+      <Navbar />
+      <Dashboard />
+    </>
   );
 };
 
@@ -37,9 +45,10 @@ const AppWithNavbar = () => (
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/machine" element={<AddMachine />} />
       <Route path="/spare" element={<AddSpare />} />
-      {/* <Route path="/about" element={<about />} /> */}
+      {/* <Route path="/about" element={<About />} /> */}
     </Routes>
   </>
 );
 
 export default App;
+
