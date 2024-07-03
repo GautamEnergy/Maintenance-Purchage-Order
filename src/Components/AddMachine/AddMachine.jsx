@@ -1,124 +1,155 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { FaTimes } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
-import '../AddMachine/AddMachine.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const AddMachine = () => {
-    const [MachineName, setMachineName] = useState('');
-    const [MachineModelNo, setMachineModelNo] = useState('');
-    const [MachineNo, setMachineNo] = useState('');
-    const [MachineBrandName, setMachineBrandName] = useState('');
-    const [Status, setStatus] = useState('Active');
+    const [machineName, setMachineName] = useState('');
+    const [machineModelNo, setMachineModelNo] = useState('');
+    const [machineNo, setMachineNo] = useState('');
+    const [machineBrandName, setMachineBrandName] = useState('');
+    const [status, setStatus] = useState('Active');
     const [error, setError] = useState('');
+    const [personID, setPersonID] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const personID = localStorage.getItem("CurrentUser");
+        if (personID) {
+            setPersonID(personID);
+        }
+    }, []);
 
     const notifySuccess = () => toast.success("New Machine Added Successfully!", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
+
     const addNewMachine = async (machineData) => {
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddMachine', {
+            const res = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddMachine', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(machineData),
             });
-            if (response.ok) {
+            let response = await res.json();
+            if (res.ok) {
                 notifySuccess();
                 setMachineName('');
                 setMachineModelNo('');
                 setMachineNo('');
-                setMachineBrandName('')
-                setStatus('Active');
+                setMachineBrandName('');
+                setPersonID('');
                 setError('');
             } else {
-                const errorData = await response.json();
-                notifyError(errorData.message || 'Failed to add new machine');
+                if (res.status == 409) {
+                    response.msg == 'Duplicate Machine Name' ? notifyError('This Machine Name Already Exists') :
+                        notifyError('This Machine Model Number Already Exists');
+
+                } else {
+                    notifyError('Something Went Wrong');
+                }
             }
         } catch (error) {
+
             notifyError('Failed to add new machine: ' + error.message);
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (MachineName && MachineModelNo && MachineNo && MachineBrandName && Status) {
-            const machineData = {
-                MachineName,
-                MachineModelNo,
-                MachineNo,
-                MachineBrandName,
-                Status,
+        if (!personID) {
+            setError('PersonID is required.');
+            return;
+        }
 
+        if (machineName && machineModelNo && machineNo && machineBrandName && status) {
+            const machineData = {
+                MachineName: machineName,
+                MachineBrandName: machineBrandName,
+                MachineModelNumber: machineModelNo,
+                MachineNumber: machineNo,
+                CurrentUser: personID,
+                Status: status,
             };
-            console.log('Form data submitted:', machineData);
             addNewMachine(machineData);
         } else {
             setError('Please fill in all required fields.');
         }
     };
 
-    const handleClose = () => {
-        console.log('Close button clicked');
-    };
+    const handleback = (e) => {
+        navigate('/dashboard');
+    }
 
     return (
-        <>
-            <form onSubmit={handleSubmit} className="Section1">
-                <div className="header">
-                    <h4 className="text-center">
-                        <b>Add New Machine</b></h4>
-                    {/* <FaTimes className="close-icon" onClick={handleClose} /> */}
+        <div className="mainCard">
+            <div className="fullPage">
+                <div className="form-detail">
+                    <h2>Add New Machine</h2>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    <div className="subCard1">
+                        <div className="row">
+                            <label>Machine Name</label>
+                            <input
+                                type="text"
+                                className="input-text"
+                                name="MachineName"
+                                value={machineName}
+                                onChange={(e) => setMachineName(e.target.value)}
+                                placeholder="Enter Machine Name"
+                                required
+                            />
+                        </div>
+                        <div className="row">
+                            <label>Machine Model Number</label>
+                            <input
+                                type="text"
+                                className="input-text"
+                                name="MachineModelNo"
+                                value={machineModelNo}
+                                onChange={(e) => setMachineModelNo(e.target.value)}
+                                placeholder="Enter Machine Model Number"
+                                required
+                            />
+                        </div>
+                        <div className="row">
+                            <label>Machine Number</label>
+                            <input
+                                type="text"
+                                className="input-text"
+                                name="MachineNo"
+                                value={machineNo}
+                                onChange={((el) => {
+                                    setMachineNo(el.target.value)
+                                    setError('')
+                                })}
+                                placeholder="Enter Machine Number"
+                                required
+                            />
+                        </div>
+                        <div className="row">
+                            <label>Machine Brand Name</label>
+                            <input
+                                type="text"
+                                className="input-text"
+                                name="MachineBrandName"
+                                value={machineBrandName}
+                                onChange={(e) => setMachineBrandName(e.target.value)}
+                                placeholder="Enter Machine Brand Name"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div style={{ marginLeft: '510px' }}>
+                        <button type="back" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</button>
+                        <button type="submit" className="register" onClick={handleSubmit} style={{ width: '83px', height: '43px', background: '#0C53F5' }}>Submit</button>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label>Machine Name</label>
-                    <input type="text" className="form-text" name="MachineName"
-                        value={MachineName}
-                        onChange={(e) => setMachineName(e.target.value)}
-                        required />
-                </div>
-                <div className="form-group">
-                    <label>Machine Model Number</label>
-                    <input
-                        type="text"
-                        className="form-text"
-                        name="gstNo"
-                        value={MachineModelNo}
-                        onChange={(e) => setMachineModelNo(e.target.value)}
-                        required
-                    />
-
-                </div>
-
-                <div className="form-group">
-                    <label>Machine Number.</label>
-                    <input
-                        type="text"
-                        className="form-text"
-                        name="machinenumber"
-                        value={MachineNo}
-                        onChange={(e) => { setMachineNo(e.target.value) }}
-
-
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Machine Brand Name </label>
-                    <input
-                        type="brand"
-                        className="form-text"
-                        name="brand"
-                        value={MachineBrandName}
-                        onChange={(e) => setMachineBrandName(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
+            </div>
             <ToastContainer position="top-center" autoClose={2000} />
-        </>
+        </div>
     );
 };
 

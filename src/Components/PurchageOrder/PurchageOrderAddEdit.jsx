@@ -6,6 +6,7 @@ import OptionalField from '../OptionalField/OptionalField';
 import NewParty from '../New Party/NewParty';
 import { FaUser } from 'react-icons/fa';
 import Billing from '../Billing/Billing';
+import { useNavigate } from 'react-router-dom';
 
 const currentDate = new Date().toDateString();
 const purchaseTypes = [
@@ -62,6 +63,7 @@ const PurchageForm = () => {
     const [narration, setNarration] = useState('');
     const [showNewPartyModal, setShowNewPartyModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
+    const navigate = useNavigate();
 
     const handlePartyChange = (e) => setParty(e.target.value);
     const handleMatCentChange = (e) => setMatCent(e.target.value);
@@ -103,6 +105,11 @@ const PurchageForm = () => {
             };
         }
     }, [showNewPartyModal]);
+
+    const handleback = (e) => {
+        navigate('/dashboard');
+    }
+
 
     return (
         <>
@@ -249,7 +256,11 @@ const PurchageForm = () => {
                 <OptionalField />
 
             </section>
-            {/* <Dashboard /> */}
+
+
+            <button type="submit" className="register" onClick={handleSubmit} style={{ width: '83px', height: '43px', background: '#8FE740' }}>Submit</button>
+            <button type="back" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#a20000', margin: '24px' }}>Back</button>
+
         </>
     );
 };

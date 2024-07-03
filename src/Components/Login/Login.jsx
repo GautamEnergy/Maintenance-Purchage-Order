@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AppContext } from '../../ContextAPI'
 import '../Style.css';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Login = () => {
+    const { setToken } = useContext(AppContext);
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,6 +16,7 @@ const Login = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        const department = localStorage.getItem("department");
         const PersonID = localStorage.getItem("CurrentUser");
 
 
@@ -30,6 +34,9 @@ const Login = () => {
         }
     }, []);
 
+    const notifySuccess = (message) => toast.success(message, { autoClose: 5000 });
+    const notifyError = (message) => toast.error(message, { autoClose: 5000 });
+
     const validateInput = () => {
         if (!email || !password) {
             setError("Please enter both email and password.");
@@ -46,9 +53,10 @@ const Login = () => {
         console.log(password);
 
         try {
-            const res = await axios.post("http://srv515471.hstgr.cloud:8080/Employee/Login", {
+            const res = await axios.post("http://srv515471.hstgr.cloud:9090/Employee/Login", {
                 loginid: email,
                 password: password,
+                department: 'Machine Maintenance'
             });
             console.log("Response Data:", res.data);
 
@@ -72,6 +80,10 @@ const Login = () => {
                     localStorage.setItem('Name', Name);
 
                     console.log("Token:", token);
+
+                    localStorage.setItem('Token', token)
+                    setToken(token);
+
                     console.log("ProfileImg:", ProfileImg);
                     console.log("CurrentUser:", PersonID);
                     console.log("Name:", Name);
@@ -86,10 +98,25 @@ const Login = () => {
                 setError("Invalid email or password. Please try again.");
             }
         } catch (error) {
-            console.error("Error logging in admin:", error);
-            setError("network error");
+            console.log(error.response.data.msg)
+            if (error.response.status == 401) {
+
+                notifyError('This login id is not valid')
+            } else if (error.response.status == 400) {
+
+                error.response.data.msg == 'Wrong Password' ?
+                    notifyError('Password is not valid') :
+                    error.response.data.msg == 'Internal Error' ?
+                        notifyError('Internal Error') :
+                        error.response.data.msg == 'Wrong EmployeeId' ?
+                            notifyError('Wrong LoginId Entered') :
+                            notifyError('Something Went Wrong')
+            }
+
         }
     };
+
+
 
     return (
         <div className="neumorphic-card">
@@ -121,6 +148,7 @@ const Login = () => {
                 {error && <div className="error">{error}</div>}
                 <button type="submit" onClick={userlogin}>Sign in</button>
             </form>
+            <ToastContainer position="top-center" autoClose={2000} />
         </div>
     );
 }

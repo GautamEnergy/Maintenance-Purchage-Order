@@ -1,38 +1,45 @@
-import React from "react";
-import "./App.css";
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from "./Components/Login/Login"
-import Navbar from "./Components/Navbar/Navbar";
-import PurchageForm from "./Components/PurchageOrder/PurchageOrderAddEdit";
-import OptionalField from "./Components/OptionalField/OptionalField";
-import NewParty from "./Components/New Party/NewParty";
-import Billing from "./Components/Billing/Billing";
-import Dashboard from "./Pages/Dashboard";
-import AddMachine from "./Components/AddMachine/AddMachine";
-import AddSpare from "./Components/AddSpare/AddSpare";
+import { AppContext } from './ContextAPI'
+import Login from './Components/Login/Login';
+import Navbar from './Components/Navbar/Navbar';
+import PurchageForm from './Components/PurchageOrder/PurchageOrderAddEdit';
+import OptionalField from './Components/OptionalField/OptionalField';
+import NewParty from './Components/New Party/NewParty';
+import Billing from './Components/Billing/Billing';
+import Dashboard from './Pages/Dashboard';
+import AddMachine from './Components/AddMachine/AddMachine';
+import AddSpare from './Components/AddSpare/AddSpare';
 
-
-function App() {
+const App = () => {
+  const { token } = useContext(AppContext);
   return (
     <Router>
-      <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/nav" element={<Navbar />} />
-        <Route path="/purchage" element={<PurchageForm />} />
-        <Route path="/OptionalField" element={<OptionalField />} />
-        <Route path="/billing" element={<Billing />} />
-        <Route path="/newParty" element={<NewParty />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/machine" element={<AddMachine />} />
-        <Route path="/spare" element={<AddSpare />} />
+        {token || localStorage.getItem('Token') ?
+          <Route path="/*" element={<AppWithNavbar />} /> : <Route path="/*" element={<Login />} />}
 
-
-        {/* <Route path="/about" element={<about />} /> */}
       </Routes>
     </Router>
   );
-}
+};
 
+const AppWithNavbar = () => (
+  <>
+    <Navbar />
+    <Routes>
+      <Route path="/nav" element={<Navbar />} />
+      <Route path="/purchage" element={<PurchageForm />} />
+      <Route path="/OptionalField" element={<OptionalField />} />
+      <Route path="/billing" element={<Billing />} />
+      <Route path="/newParty" element={<NewParty />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/machine" element={<AddMachine />} />
+      <Route path="/spare" element={<AddSpare />} />
+      {/* <Route path="/about" element={<about />} /> */}
+    </Routes>
+  </>
+);
 
-export default App; 
+export default App;

@@ -40,6 +40,8 @@ body {
     text-align: center;
     padding: 16px 0 13px;
     margin-bottom: 30px;
+    font-weight: bold;
+    color: white;
 }
 
 .fullPage .form-detail h2::after {

@@ -8,7 +8,9 @@ const Dashboard = () => {
       <div className="dashbordrow">
         <div className="dashbord-card">
           <div className="wrap">
-            <Link to="/purchage" className="card-link">
+            <Link
+              //  to="/purchage" 
+              className="card-link">
               <span className="card">Purchase Order</span>
             </Link>
           </div>
