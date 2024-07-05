@@ -60,7 +60,7 @@ const AddSpare = () => {
     const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
         console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/Equ', {
+            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/Equ', {
 
                 SparePartName: sparePartName,
                 MachineName: selectedMachines.map(machine => machine.value)
@@ -89,7 +89,7 @@ const AddSpare = () => {
 
         // console.log(SpareData);
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddSparePart', {
+            const response = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddSparePart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -257,7 +257,7 @@ const AddSpare = () => {
     const getMachineListData = async () => {
         // console.log("hmmmmmmmmmmm");
         // console.log(JSON.parse(localStorage.getItem('MachineId')));
-        const url = `http://srv515471.hstgr.cloud:8080/Maintenance/MachineDetailById`;
+        const url = `http://srv515471.hstgr.cloud:9090/Maintenance/MachineDetailById`;
         try {
             const response = await axios.get(url, {
                 headers: {
@@ -295,7 +295,7 @@ const AddSpare = () => {
 
 
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/SparePartsImage', formData, {
+            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/SparePartsImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -433,9 +433,9 @@ const AddSpare = () => {
                             />
                         </div>
                         <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">No. Of PCS use in 1 Time</label>
+                            <label className="file-label">No. Of PCS Uses In One Time</label>
                             <input
-                                type="text"
+                                type="number"
                                 name="Pieces"
                                 value={PCS}
                                 onChange={(e) => setPCS(e.target.value)}
@@ -444,9 +444,9 @@ const AddSpare = () => {
                             />
                         </div>
                         <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Cycle Time</label>
+                            <label className="file-label">Cycle Time in Days</label>
                             <input
-                                type="text"
+                                type="number"
                                 name="Cycle Time"
                                 value={CycleTime}
                                 onChange={(e) => setCycleTime(e.target.value)}
@@ -454,7 +454,6 @@ const AddSpare = () => {
                                 required
                             />
                         </div>
-                        {/* Equivalent Section */}
                         <div className="system input-text" style={{ width: '410px' }}>
                             <label className="file-label">Equivalent SparePart</label>
                             <Select
@@ -499,7 +498,6 @@ const AddSpare = () => {
                                 ref={imageInputRef}
                                 multiple
                             />
-                            {/* Render the file information */}
                             <div>
                                 {files.map((file, index) => (
                                     <div key={index}>
