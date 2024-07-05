@@ -53,7 +53,7 @@ const NewParty = () => {
 
     const addNewParty = async (partyData) => {
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddParty', {
+            const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddParty', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

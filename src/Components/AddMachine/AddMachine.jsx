@@ -26,7 +26,7 @@ const AddMachine = () => {
 
     const addNewMachine = async (machineData) => {
         try {
-            const res = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddMachine', {
+            const res = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddMachine', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

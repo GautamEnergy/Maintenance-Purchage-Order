@@ -130,3 +130,53 @@ input::placeholder {
     color: #222020;
     font-size: 16px;
 }
+
+@media only screen and (max-width: 768px) {
+    .fullPage .form-detail {
+        padding: 20px;
+    }
+
+    .fullPage .form-detail h2 {
+        font-size: 30px;
+    }
+
+    .fullPage .row {
+        width: 100%;
+
+    }
+
+    .fullPage .form-detail input,
+    .fullPage .form-detail .register {
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    .fullPage .form-detail {
+        padding: 30px 50px;
+    }
+
+    .fullPage .form-detail h2 {
+        font-size: 32px;
+    }
+
+    .fullPage .row {
+        width: 48%;
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .fullPage .form-detail {
+        padding: 30px;
+    }
+
+    .fullPage .form-detail h2 {
+        font-size: 35px;
+    }
+
+    .fullPage .row {
+        width: 31%;
+        margin-bottom: 20px;
+    }
+}

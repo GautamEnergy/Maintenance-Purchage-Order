@@ -6,15 +6,17 @@ const Dashboard = () => {
   return (
     <div className="dashbord">
       <div className="dashbordrow">
+
         <div className="dashbord-card">
           <div className="wrap">
             <Link
-              //  to="/purchage" 
+              // to="/purchage"
               className="card-link">
               <span className="card">Purchase Order</span>
             </Link>
           </div>
         </div>
+
         <div className="dashbord-card">
           <div className="wrap">
             <Link to="/spare" className="card-link">
@@ -22,6 +24,7 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
+
         <div className="dashbord-card">
           <div className="wrap">
             <Link to="/machine" className="card-link">
@@ -29,6 +32,7 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
+
         <div className="dashbord-card">
           <div className="wrap">
             <Link to="/newParty" className="card-link">
@@ -36,6 +40,7 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
+
       </div>
     </div>
   );
