@@ -29,6 +29,8 @@ const AddSpare = () => {
     const [drawingPdfController, setDrawingPdfController] = useState('');
     const [Machine, SetMachine] = useState([])
     const [files, setFiles] = useState([]);
+    const [EquivalentSpareParts, setEquivalentSpareParts] = useState([]);
+    const [EquivalentSparePartsOptions, setEquivalentSparePartsOptions] = useState([]);
     const imageInputRef = useRef(null);
     const pdfInputRef = useRef(null);
 
@@ -55,6 +57,25 @@ const AddSpare = () => {
             reader.onerror = (error) => reject(error);
         });
     };
+    const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
+        console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
+        try {
+            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/Equ', {
+
+                SparePartName: sparePartName,
+                MachineName: selectedMachines.map(machine => machine.value)
+
+            });
+            const formattedSpareParts = response.data.map(part => ({
+                value: part.SparePartId,
+                label: part.Value
+            }));
+            setEquivalentSparePartsOptions(formattedSpareParts);
+        } catch (error) {
+            console.error('Error fetching equivalent spare parts:', error);
+        }
+    };
+
 
     useEffect(() => {
         const personID = localStorage.getItem("CurrentUser");
@@ -116,6 +137,9 @@ const AddSpare = () => {
             return;
         }
         if (SparePartName && SparePartModelNo && Brand && Specification && MachineNames.length > 0 && Status) {
+            const EquivalentSparePartValues = EquivalentSpareParts.map(part => part.value);
+            console.log("jajajjajaj");
+            console.log(EquivalentSparePartValues);
             const SpareData = {
                 MasterSparePartName: MasterSparePartName,
                 SparePartName,
@@ -125,6 +149,10 @@ const AddSpare = () => {
                 MachineName: MachineNames.map((el) => {
                     return el.value
                 }),
+                CycleTime,
+                NumberOfPcs: PCS,
+
+                Equivalent: EquivalentSparePartValues,
                 SparePartModelNo,
                 Status,
                 CurrentUser: personID,
@@ -192,6 +220,38 @@ const AddSpare = () => {
 
     const handleBack = (e) => {
         navigate('/dashboard');
+    };
+    // const handleMachineNameChange = (selectedOptions) => {
+    //     setMachineNames(selectedOptions);
+    //     if (SparePartName && selectedOptions.length > 0) {
+    //         fetchEquivalentSpareParts(SparePartName, selectedOptions);
+    //     } else {
+    //         setEquivalentSpareParts([]);
+    //     }
+    // };
+
+    // const handleSparePartNameChange = (e) => {
+    //     const { value } = e.target;
+    //     setSparePartName(value);
+    //     if (value && MachineNames.length > 0) {
+    //         fetchEquivalentSpareParts(value, MachineNames);
+    //     } else {
+    //         setEquivalentSpareParts([]);
+    //     }
+    // };
+    const handleMachineNameChange = (selectedOptions) => {
+        setMachineNames(selectedOptions);
+    };
+
+    const handleSparePartNameChange = (e) => {
+        const { value } = e.target;
+        setSparePartName(value);
+    };
+
+    const handleEquivalentSparePartsOpen = () => {
+        if (SparePartName && MachineNames.length > 0) {
+            fetchEquivalentSpareParts(SparePartName, MachineNames);
+        }
     };
 
     const getMachineListData = async () => {
@@ -280,13 +340,24 @@ const AddSpare = () => {
                                 required
                             />
                         </div>
-                        <div className="system input-text">
+                        {/* <div className="system input-text">
                             <label className="file-label">Spare Part Name</label>
                             <input
                                 type="text"
                                 name="SparePartName"
                                 value={SparePartName}
                                 onChange={(e) => setSparePartName(e.target.value)}
+                                placeholder="Spare Part Name"
+                                required
+                            /> */}
+                        {/* </div> */}
+                        <div className="system input-text">
+                            <label className="file-label">Spare Part Name</label>
+                            <input
+                                type="text"
+                                name="SparePartName"
+                                value={SparePartName}
+                                onChange={handleSparePartNameChange}
                                 placeholder="Spare Part Name"
                                 required
                             />
@@ -329,7 +400,8 @@ const AddSpare = () => {
                             <Select style={{ color: 'red' }}
                                 isMulti
                                 value={MachineNames}
-                                onChange={(selectedOptions) => setMachineNames(selectedOptions)}
+                                //onChange={(selectedOptions) => setMachineNames(selectedOptions)}
+                                onChange={handleMachineNameChange}
                                 placeholder="Select Machine Name"
                                 options={Machine}
                                 styles={{
@@ -361,34 +433,63 @@ const AddSpare = () => {
                             />
                         </div>
                         <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Number Of PCS uses in One Time</label>
+                            <label className="file-label">No. Of PCS use in 1 Time</label>
                             <input
-                                type="number"
+                                type="text"
                                 name="Pieces"
                                 value={PCS}
                                 onChange={(e) => setPCS(e.target.value)}
-                                placeholder="Number Of Pcs Use In One Time"
+                                placeholder="No. Of PCS use in 1 Time"
                                 required
                             />
                         </div>
                         <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Cycle Time In Days</label>
+                            <label className="file-label">Cycle Time</label>
                             <input
-                                type="number"
+                                type="text"
                                 name="Cycle Time"
                                 value={CycleTime}
                                 onChange={(e) => setCycleTime(e.target.value)}
-                                placeholder="Cycle Time In Days"
+                                placeholder="Cycle Time"
                                 required
                             />
                         </div>
-
-
-
-                        {/* <div className="system input-text" >
-                            <label className="file-label">Image</label>
-                            <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} />
-                        </div> */}
+                        {/* Equivalent Section */}
+                        <div className="system input-text" style={{ width: '410px' }}>
+                            <label className="file-label">Equivalent SparePart</label>
+                            <Select
+                                isMulti
+                                options={EquivalentSparePartsOptions}
+                                onMenuOpen={handleEquivalentSparePartsOpen}
+                                value={EquivalentSpareParts}
+                                onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
+                                styles={{
+                                    control: (base, state) => ({
+                                        ...base,
+                                        height: 53,
+                                        minHeight: 23,
+                                        borderRadius: 33,
+                                        backgroundColor: '#ccc',
+                                        borderColor: '#6a6c6e',
+                                        borderWidth: '2px',
+                                        boxShadow: 'none',
+                                        '&:hover': {
+                                            borderColor: '#6a6c6e',
+                                        },
+                                    }),
+                                    menu: (base) => ({
+                                        ...base,
+                                        backgroundColor: '#f0f0f0',
+                                        color: 'black',
+                                    }),
+                                    menuList: (base) => ({
+                                        ...base,
+                                        backgroundColor: '#f0f0f0',
+                                    }),
+                                }}
+                                required
+                            />
+                        </div>
                         <div className="system input-text">
                             <label className="file-label">Image</label>
                             <input
