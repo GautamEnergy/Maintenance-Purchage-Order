@@ -361,24 +361,24 @@ const AddSpare = () => {
                             />
                         </div>
                         <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">No. Of PCS use in 1 Time</label>
+                            <label className="file-label">Number Of PCS uses in One Time</label>
                             <input
-                                type="text"
+                                type="number"
                                 name="Pieces"
                                 value={PCS}
                                 onChange={(e) => setPCS(e.target.value)}
-                                placeholder="No. Of PCS use in 1 Time"
+                                placeholder="Number Of Pcs Use In One Time"
                                 required
                             />
                         </div>
                         <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Cycle Time</label>
+                            <label className="file-label">Cycle Time In Days</label>
                             <input
-                                type="text"
+                                type="number"
                                 name="Cycle Time"
                                 value={CycleTime}
                                 onChange={(e) => setCycleTime(e.target.value)}
-                                placeholder="Cycle Time"
+                                placeholder="Cycle Time In Days"
                                 required
                             />
                         </div>
