@@ -10,6 +10,8 @@ const AddSpare = () => {
     const [SparePartModelNo, setSparePartModelNo] = useState('');
     const [Brand, setBrand] = useState('');
     const [Specification, setSpecification] = useState('');
+    const [CycleTime, setCycleTime] = useState('');
+    const [PCS, setPCS] = useState('');
     const [MachineNames, setMachineNames] = useState([]);
     const [Status, setStatus] = useState('Active');
     const [MasterSparePartName, setMasterSparePartName] = useState('');
@@ -26,6 +28,7 @@ const AddSpare = () => {
     const [imageController, setImageController] = useState('');
     const [drawingPdfController, setDrawingPdfController] = useState('');
     const [Machine, SetMachine] = useState([])
+    const [files, setFiles] = useState([]);
     const imageInputRef = useRef(null);
     const pdfInputRef = useRef(null);
 
@@ -65,7 +68,7 @@ const AddSpare = () => {
 
         // console.log(SpareData);
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddSparePart', {
+            const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddSparePart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,9 +86,11 @@ const AddSpare = () => {
                 setBrand('');
                 setSpecification('');
                 setMachineNames([]);
+                setCycleTime('');
+                setPCS('');
                 setStatus('Active');
                 setMasterSparePartName('');
-                setImage('');
+                setFiles([]);
                 setPdf('');
                 setError('');
                 return responseData;
@@ -131,21 +136,24 @@ const AddSpare = () => {
                 let UUID = await addNewSpare(SpareData);
                 console.log(UUID)
                 let formData = new FormData()
-                formData.append('SparePartImage', image);
+                files.forEach(file => formData.append('SparePartImage', file));
                 formData.append('DrawingImage', pdf);
                 formData.append('SparePartId', UUID.SparePartId)
                 console.log('ggggggggggggggggggg');
 
-                if (image && pdf && image.size > 0 && pdf.size > 0) {
-                    let upload = await uploadPDF(formData)
+                // if (files && pdf && files.size > 0 && pdf.size > 0) {
+                //     let upload = await uploadPDF(formData)
 
-                } else if (image && image.size > 0) {
-                    let upload = await uploadPDF(formData)
+                // } else if (files && files.size > 0) {
+                //     let upload = await uploadPDF(formData)
 
-                } else if (pdf && pdf.size > 0) {
-                    let upload = await uploadPDF(formData)
+                // } else if (pdf && pdf.size > 0) {
+                //     let upload = await uploadPDF(formData)
+                // }
+                if ((files && files.length > 0) || (pdf && pdf.size > 0)) {
+                    let upload = await uploadPDF(formData);
                 }
-                setImage(undefined);
+                setFiles([]);
                 setPdf(undefined);
 
                 // Manually clear file input fields
@@ -166,9 +174,15 @@ const AddSpare = () => {
         }
     };
 
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
+    const handleImageChange = (event) => {
+        const selectedFiles = event.target.files;
+        const filesArray = [];
 
+        for (let i = 0; i < selectedFiles.length; i++) {
+            filesArray.push(selectedFiles[i]);
+        }
+
+        setFiles(filesArray);
     };
 
     const handlePdfChange = (e) => {
@@ -183,7 +197,7 @@ const AddSpare = () => {
     const getMachineListData = async () => {
         // console.log("hmmmmmmmmmmm");
         // console.log(JSON.parse(localStorage.getItem('MachineId')));
-        const url = `http://srv515471.hstgr.cloud:9090/Maintenance/MachineDetailById`;
+        const url = `http://srv515471.hstgr.cloud:8080/Maintenance/MachineDetailById`;
         try {
             const response = await axios.get(url, {
                 headers: {
@@ -216,12 +230,12 @@ const AddSpare = () => {
 
     const uploadPDF = async (formData) => {
         console.log("oyeyeyeyyeyeyey")
-        // console.log(formData.DrawingImage);
+        console.log(formData.SparePartImage);
 
 
 
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/SparePartsImage', formData, {
+            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/SparePartsImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -346,10 +360,53 @@ const AddSpare = () => {
 
                             />
                         </div>
+                        <div className="system input-text" style={{ width: '400px' }}>
+                            <label className="file-label">No. Of PCS use in 1 Time</label>
+                            <input
+                                type="text"
+                                name="Pieces"
+                                value={PCS}
+                                onChange={(e) => setPCS(e.target.value)}
+                                placeholder="No. Of PCS use in 1 Time"
+                                required
+                            />
+                        </div>
+                        <div className="system input-text" style={{ width: '400px' }}>
+                            <label className="file-label">Cycle Time</label>
+                            <input
+                                type="text"
+                                name="Cycle Time"
+                                value={CycleTime}
+                                onChange={(e) => setCycleTime(e.target.value)}
+                                placeholder="Cycle Time"
+                                required
+                            />
+                        </div>
 
-                        <div className="system input-text" >
+
+
+                        {/* <div className="system input-text" >
                             <label className="file-label">Image</label>
                             <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} />
+                        </div> */}
+                        <div className="system input-text">
+                            <label className="file-label">Image</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                ref={imageInputRef}
+                                multiple
+                            />
+                            {/* Render the file information */}
+                            <div>
+                                {files.map((file, index) => (
+                                    <div key={index}>
+
+
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                         <div className="system input-text" style={{ width: '360px', marginRight: '76vh' }}>
                             <label className="file-label">PDF</label>
