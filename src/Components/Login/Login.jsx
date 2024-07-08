@@ -121,7 +121,7 @@ const Login = () => {
 
     return (
         <div className="neumorphic-card">
-            <img src={logo} style={{width:"70%",marginLeft:"45px"}}/>
+            <img src={logo} style={{ width: "70%", marginLeft: "45px" }} />
             <form onSubmit={(event) => event.preventDefault()} className="neumorphic-form">
                 <div className="neumorphic-input-wrapper">
                     <label htmlFor="email">Login Id</label>

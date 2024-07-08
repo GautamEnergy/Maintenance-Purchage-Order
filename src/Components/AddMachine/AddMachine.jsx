@@ -21,7 +21,7 @@ const AddMachine = () => {
         }
     }, []);
 
-    const notifySuccess = () => toast.success("New Machine Added Successfully!", { autoClose: 5000 });
+    const notifySuccess = () => toast.success("Machine added successfully !", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
     const addNewMachine = async (machineData) => {
@@ -44,8 +44,8 @@ const AddMachine = () => {
                 setError('');
             } else {
                 if (res.status == 409) {
-                    response.msg == 'Duplicate Machine Name' ? notifyError('This Machine Name Already Exists') :
-                        notifyError('This Machine Model Number Already Exists');
+                    response.msg == 'Duplicate Machine Name' ? notifyError('This machine name is already exists') :
+                        notifyError('This machine model number is already exists');
 
                 } else {
                     notifyError('Something Went Wrong');
@@ -60,7 +60,7 @@ const AddMachine = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!personID) {
-            setError('PersonID is required.');
+            setError('Already Exist');
             return;
         }
 

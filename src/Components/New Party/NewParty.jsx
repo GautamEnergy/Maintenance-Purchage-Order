@@ -22,6 +22,8 @@ const NewParty = () => {
     const [maxLength, setMaxLength] = useState(10);
     const [personID, setPersonID] = useState('');
     const [hideFields, setHideFields] = useState(false);
+    const [isEmailValid, setIsEmailValid] = useState(true);
+
     useEffect(() => {
         const personID = localStorage.getItem("CurrentUser");
         if (personID) {
@@ -40,11 +42,11 @@ const NewParty = () => {
     const handleGSTChange = (e) => {
         const gstValue = e.target.value.toUpperCase();
         setGSTNumber(gstValue);
-
         if (validateGST(gstValue)) {
             extractPANFromGST(gstValue);
             setError('');
         } else {
+            setError('Invalid GST number format');
             setPANNumber('');
         }
     };
@@ -72,8 +74,11 @@ const NewParty = () => {
             if (response.status === 409) {
                 notifyError(error.message || 'This party already exists.');
             } else if (response.ok) {
-                notifySuccess('Party Added Successfully!');
+                notifySuccess();
                 clearForm();
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 1000);
             } else {
                 const errorData = await response.json();
                 notifyError(errorData.message || 'Failed to add new party');
@@ -85,19 +90,21 @@ const NewParty = () => {
     };
 
     const clearForm = () => {
+        setCountry('');
         setPartyName('');
         setGSTNumber('');
         setPANNumber('');
         setMobileNumber('');
         setEmail('');
         setAddress('');
-        setCountry('');
         setState('');
         setPinCode('');
         setCountryCode('');
-        setStatus('Active');
+        setStatus('');
         setError('');
     };
+
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -110,24 +117,43 @@ const NewParty = () => {
         if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && Country && State && CountryCode && PinCode && Status) {
             const partyData = {
                 PartyName,
-                GSTNumber,
-                PANNumber,
+                GSTNumber: Country === 'China' ? '' : GSTNumber,
+                PANNumber: Country === 'China' ? '' : PANNumber,
                 MobileNumber,
                 Email,
                 Address,
                 Country,
-                State,
+                State: Country === 'China' ? '' : State,
                 CountryCode,
                 PinCode,
                 Status,
                 CurrentUser: personID,
             };
 
-            console.log('Form Data:', partyData);
+
             addNewParty(partyData);
-        } else {
-            setError('Please fill in all required fields.');
+
+        } else if (PartyName && MobileNumber && Email && Address && Country && CountryCode && PinCode && Status) {
+            const partyData = {
+                PartyName,
+                MobileNumber,
+                Email,
+                Address,
+                Country,
+                CountryCode,
+                PinCode,
+                Status,
+                CurrentUser: personID,
+            };
+            addNewParty(partyData);
         }
+        else {
+            console.log('Else')
+            notifyError('Please fill in all required fields.');
+        }
+
+
+
     };
 
     const handleback = () => {
@@ -153,15 +179,35 @@ const NewParty = () => {
     };
 
     const handleCountry = (selectedOption) => {
+        console.log('Checked it');
+
         const selectedCountry = selectedOption.value;
         setCountry(selectedCountry);
+
+        // console.log(selectedCountry)
+
         setHideFields(selectedCountry === 'China');
+        if (selectedOption.value == 'China') {
+            setState('');
+            setPANNumber('');
+            setGSTNumber('');
+        }
     };
 
     const countryCodes = [
         { code: '+91' },
         { code: '+86' },
     ];
+
+    const handleEmailChange = (e) => {
+        const emailValue = e.target.value;
+        setEmail(emailValue);
+
+        // Regex pattern for validating email
+        const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+        setIsEmailValid(emailPattern.test(emailValue));
+    };
+
 
 
     return (
@@ -249,7 +295,7 @@ const NewParty = () => {
                                         <select
                                             id="countryCode"
                                             className="input-text"
-                                            style={{ width: '80px', padding: '10px', fontSize: '14px', borderRadius: '23px' }}
+                                            style={{ width: '70px', padding: '10px', fontSize: '14px', borderRadius: '23px', marginTop: '23px', background: '#9AAFB1', }}
                                             value={CountryCode}
                                             onChange={handleCountryCodeChange}
                                         >
@@ -309,7 +355,7 @@ const NewParty = () => {
                                 )}
                             </div>
                             <div className="row">
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>Email</label>
                                     <input
                                         type="email"
@@ -318,9 +364,25 @@ const NewParty = () => {
                                         placeholder='Enter the Email'
                                         value={Email}
                                         onChange={(e) => setEmail(e.target.value)}
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                         required
                                     />
+                                </div> */}
+
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input
+                                        type="email"
+                                        className={`input-text ${isEmailValid ? '' : 'is-invalid'}`}
+                                        name="email"
+                                        placeholder='Enter the Email'
+                                        value={Email}
+                                        onChange={handleEmailChange}
+                                        required
+                                    />
+                                    {!isEmailValid && <span className="error-message" style={{ color: 'red' }}>Please enter a valid email address</span>}
                                 </div>
+
                                 <div className="form-group">
                                     <label>{!hideFields ? 'State' : 'Zip Code'}</label>
                                     <input
@@ -329,10 +391,23 @@ const NewParty = () => {
                                         name={!hideFields ? "state" : 'Zip Code'}
                                         placeholder={!hideFields ? 'Enter State' : 'Enter Zip Code'}
                                         value={!hideFields ? State : PinCode}
-                                        onChange={(e) => !hideFields ? setState(e.target.value) : setPinCode(e.target.value)}
+                                        // onChange={(e) => !hideFields ? setState(e.target.value) : setPinCode(e.target.value)}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (!hideFields) {
+                                                setState(value);
+                                            } else {
+                                                if (/^\d{0,6}$/.test(value)) {
+                                                    setPinCode(value);
+                                                }
+                                            }
+                                        }}
                                         required
                                     />
                                 </div>
+
+
+
                                 {!hideFields && (
                                     <div className="form-group">
                                         <label>PAN No.</label>
@@ -362,3 +437,4 @@ const NewParty = () => {
 };
 
 export default NewParty;
+

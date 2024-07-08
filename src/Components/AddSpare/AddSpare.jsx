@@ -19,49 +19,24 @@ const AddSpare = () => {
     const [pdf, setPdf] = useState(undefined);
     const [error, setError] = useState('');
     const [personID, setPersonID] = useState('');
-    const [machineList, setMachineList] = useState([]);
-    const [option, setOption] = useState([]);
-    const [sparePartId, setSparePartId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [imageBytes, setImageBytes] = useState(null);
-    const [drawingPdfFileBytes, setDrawingPdfFileBytes] = useState(null);
-    const [imageController, setImageController] = useState('');
-    const [drawingPdfController, setDrawingPdfController] = useState('');
     const [Machine, SetMachine] = useState([])
     const [files, setFiles] = useState([]);
     const [EquivalentSpareParts, setEquivalentSpareParts] = useState([]);
     const [EquivalentSparePartsOptions, setEquivalentSparePartsOptions] = useState([]);
     const imageInputRef = useRef(null);
     const pdfInputRef = useRef(null);
+    const navigate = useNavigate();
 
     let machineData = []
-
-    const navigate = useNavigate();
 
     const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
-
-    // console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-    // console.log(Machine)
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsArrayBuffer(file);
-            reader.onload = () => {
-                const buffer = reader.result;
-                const bytes = new Uint8Array(buffer);
-                const base64String = btoa(String.fromCharCode(...bytes));
-                resolve(base64String);
-            };
-            reader.onerror = (error) => reject(error);
-        });
-    };
     const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
         console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
         try {
             const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/Equ', {
-
                 SparePartName: sparePartName,
                 MachineName: selectedMachines.map(machine => machine.value)
 
@@ -86,8 +61,6 @@ const AddSpare = () => {
     }, []);
 
     const addNewSpare = async (SpareData) => {
-
-        // console.log(SpareData);
         try {
             const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddSparePart', {
                 method: 'POST',
@@ -96,12 +69,10 @@ const AddSpare = () => {
                 },
                 body: JSON.stringify(SpareData),
             });
-            console.log("jiiiiiaAppppppp");
-
-            console.log(response)
+            // console.log("jiiiiiaAppppppp");
+            // console.log(response)
             if (response.ok) {
                 const responseData = await response.json();
-
                 setSparePartName('');
                 setSparePartModelNo('');
                 setBrand('');
@@ -115,6 +86,7 @@ const AddSpare = () => {
                 setPdf('');
                 setError('');
                 return responseData;
+
             } else {
                 const errorData = await response.json();
                 console.log(errorData)
@@ -123,7 +95,6 @@ const AddSpare = () => {
                 } else {
                     notifyError(errorData.message);
                 }
-
             }
         } catch (error) {
             return error
@@ -146,18 +117,13 @@ const AddSpare = () => {
                 SpareNumber: SparePartModelNo,
                 BrandName: Brand,
                 Specification,
-                MachineName: MachineNames.map((el) => {
-                    return el.value
-                }),
+                MachineName: MachineNames.map((el) => { return el.value }),
                 CycleTime,
                 NumberOfPcs: PCS,
-
                 Equivalent: EquivalentSparePartValues,
                 SparePartModelNo,
                 Status,
                 CurrentUser: personID,
-                // Image: image ? await convertToBase64(image) : null,
-                // PDF: pdf ? await convertToBase64(pdf) : null
             };
 
             try {
@@ -165,26 +131,18 @@ const AddSpare = () => {
                 console.log(UUID)
                 let formData = new FormData()
                 files.forEach(file => formData.append('SparePartImage', file));
+
                 formData.append('DrawingImage', pdf);
                 formData.append('SparePartId', UUID.SparePartId)
-                console.log('ggggggggggggggggggg');
 
-                // if (files && pdf && files.size > 0 && pdf.size > 0) {
-                //     let upload = await uploadPDF(formData)
-
-                // } else if (files && files.size > 0) {
-                //     let upload = await uploadPDF(formData)
-
-                // } else if (pdf && pdf.size > 0) {
-                //     let upload = await uploadPDF(formData)
-                // }
                 if ((files && files.length > 0) || (pdf && pdf.size > 0)) {
                     let upload = await uploadPDF(formData);
                 }
+                console.log("spare response")
+
                 setFiles([]);
                 setPdf(undefined);
 
-                // Manually clear file input fields
                 if (imageInputRef.current) {
                     imageInputRef.current.value = '';
                 }
@@ -193,6 +151,9 @@ const AddSpare = () => {
                 }
                 console.log('immage')
                 notifySuccess('Spare Part Added Succesfully')
+
+
+                navigate('/dashboard');
             } catch (err) {
 
                 console.log(err)
@@ -205,11 +166,9 @@ const AddSpare = () => {
     const handleImageChange = (event) => {
         const selectedFiles = event.target.files;
         const filesArray = [];
-
         for (let i = 0; i < selectedFiles.length; i++) {
             filesArray.push(selectedFiles[i]);
         }
-
         setFiles(filesArray);
     };
 
@@ -221,24 +180,7 @@ const AddSpare = () => {
     const handleBack = (e) => {
         navigate('/dashboard');
     };
-    // const handleMachineNameChange = (selectedOptions) => {
-    //     setMachineNames(selectedOptions);
-    //     if (SparePartName && selectedOptions.length > 0) {
-    //         fetchEquivalentSpareParts(SparePartName, selectedOptions);
-    //     } else {
-    //         setEquivalentSpareParts([]);
-    //     }
-    // };
 
-    // const handleSparePartNameChange = (e) => {
-    //     const { value } = e.target;
-    //     setSparePartName(value);
-    //     if (value && MachineNames.length > 0) {
-    //         fetchEquivalentSpareParts(value, MachineNames);
-    //     } else {
-    //         setEquivalentSpareParts([]);
-    //     }
-    // };
     const handleMachineNameChange = (selectedOptions) => {
         setMachineNames(selectedOptions);
     };
@@ -304,12 +246,15 @@ const AddSpare = () => {
             if (response.status === 200) {
                 setIsLoading(false);
                 console.log(response.data)
+                console.log('image respnse')
+                // navigate('/dashboard');
                 return response.data;
             } else {
                 setIsLoading(false);
 
                 return response.data
             }
+
         } catch (err) {
             setIsLoading(false);
             notifyError('Error, While Sending File')
@@ -321,8 +266,7 @@ const AddSpare = () => {
         console.log('upload pdf & image checking');
         console.log(formData);
     };
-    // console.log("arararararra");
-    // console.log(MachineNames);
+
     return (
         <div className="fullPage">
             <div className="form-detail">
