@@ -48,7 +48,7 @@ const Navbar = () => {
         navigate('/dashboard');
     };
     return (
-        <nav className="navbar navbar-expand-md navbar-light fixed-top" style={{ backgroundColor: '#F8F5F5', height: '62px', borderBottom: '1px solid #e0e0e0' }}>
+        <nav className="navbar navbar-expand-md navbar-light fixed-top" style={{ backgroundColor: '#a20000', height: '62px', borderBottom: '1px solid #e0e0e0' }}>
             <div className="container-fluid">
                 <a className="navbar-brand" href="#">
                     <img src="./Assets/Logo/logo.png" onClick={handleicon} alt="logo" style={{ height: '42px', marginLeft: '15px' }} />

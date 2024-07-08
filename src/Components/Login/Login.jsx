@@ -4,6 +4,7 @@ import { AppContext } from '../../ContextAPI'
 import '../Style.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import logo from "../../Assets/Images/logogs.png"
 
 const Login = () => {
     const { setToken } = useContext(AppContext);
@@ -120,7 +121,7 @@ const Login = () => {
 
     return (
         <div className="neumorphic-card">
-            <img className='logo-designed' src="./Assets/Logo/logo.png" alt="logo" />
+            <img src={logo} style={{width:"70%",marginLeft:"45px"}}/>
             <form onSubmit={(event) => event.preventDefault()} className="neumorphic-form">
                 <div className="neumorphic-input-wrapper">
                     <label htmlFor="email">Login Id</label>
