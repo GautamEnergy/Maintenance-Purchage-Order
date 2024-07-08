@@ -60,7 +60,7 @@ const AddSpare = () => {
     const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
         console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/Equ', {
+            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/Equ', {
 
                 SparePartName: sparePartName,
                 MachineName: selectedMachines.map(machine => machine.value)
@@ -89,7 +89,7 @@ const AddSpare = () => {
 
         // console.log(SpareData);
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddSparePart', {
+            const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddSparePart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -257,7 +257,7 @@ const AddSpare = () => {
     const getMachineListData = async () => {
         // console.log("hmmmmmmmmmmm");
         // console.log(JSON.parse(localStorage.getItem('MachineId')));
-        const url = `http://srv515471.hstgr.cloud:9090/Maintenance/MachineDetailById`;
+        const url = `http://srv515471.hstgr.cloud:8080/Maintenance/MachineDetailById`;
         try {
             const response = await axios.get(url, {
                 headers: {
@@ -295,7 +295,7 @@ const AddSpare = () => {
 
 
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/SparePartsImage', formData, {
+            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/SparePartsImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -404,6 +404,7 @@ const AddSpare = () => {
                                 onChange={handleMachineNameChange}
                                 placeholder="Select Machine Name"
                                 options={Machine}
+
                                 styles={{
                                     control: (base, state) => ({
                                         ...base,
@@ -486,7 +487,6 @@ const AddSpare = () => {
                                         backgroundColor: '#f0f0f0',
                                     }),
                                 }}
-                                required
                             />
                         </div>
                         <div className="system input-text">
