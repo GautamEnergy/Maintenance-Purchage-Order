@@ -270,7 +270,8 @@ const NewParty = () => {
                                     value={MobileNumber}
                                     placeholder="Enter the Mobile Number"
                                     onChange={handleMobileNumberChange}
-                                    maxLength={10}
+                                    maxLength = {CountryCode == '+91' ? 10 :11 } 
+                                   
                                     style={inputStyle}
 
                                     required
@@ -432,8 +433,8 @@ const NewParty = () => {
                     </Row>
                     <Row>
                         <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</Button>
-                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Submit</Button>
+                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '20px' }}>Back</Button>
+                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '20px' }}>Submit</Button>
                         </Col>
                     </Row>
                 </Form>

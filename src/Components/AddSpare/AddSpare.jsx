@@ -152,10 +152,10 @@ const AddSpare = () => {
                     pdfInputRef.current.value = '';
                 }
                 console.log('immage')
-                notifySuccess('Spare Part Added Succesfully')
-
-
-                navigate('/dashboard');
+                notifySuccess();
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 1000);
             } catch (err) {
 
                 console.log(err)
@@ -322,7 +322,7 @@ const AddSpare = () => {
      
         <Container style ={{marginTop:"12%"}}className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
-        <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%',marginLeft:"40%" }} />
+        <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%',marginLeft:"4%" }} />
         <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
   Add New Spare Part
 </h2>
@@ -331,7 +331,7 @@ const AddSpare = () => {
             <Row>
               <Col md={4}>
                 <Form.Group controlId="MasterSparePartName">
-                  <Form.Label>Master Spare Part Name</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}> Master Spare Part Name</Form.Label>
                   <Form.Control
                     type="text"
                     name="MasterSparePartName"
@@ -346,7 +346,7 @@ const AddSpare = () => {
 
               <Col md={4}>
                 <Form.Group controlId="SparePartName">
-                  <Form.Label>Spare Part Name</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Spare Part Name</Form.Label>
                   <Form.Control
                     type="text"
                     name="SparePartName"
@@ -362,7 +362,7 @@ const AddSpare = () => {
 
               <Col md={4}>
                 <Form.Group controlId="SparePartModelNo">
-                  <Form.Label>Spare Part Model Number</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Spare Part Model Number</Form.Label>
                   <Form.Control
                     type="text"
                     name="SparePartModelNo"
@@ -379,7 +379,7 @@ const AddSpare = () => {
             <Row>
               <Col className='py-2' md={4}>
                 <Form.Group controlId="Brand">
-                  <Form.Label>Brand</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Brand</Form.Label>
                   <Form.Control
                     type="text"
                     name="brand"
@@ -394,7 +394,7 @@ const AddSpare = () => {
 
               <Col className='py-2' md={4}>
                 <Form.Group controlId="Specification">
-                  <Form.Label>Specification</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Specification</Form.Label>
                   <Form.Control
                     type="text"
                     name="specification"
@@ -409,7 +409,7 @@ const AddSpare = () => {
 
               <Col className='py-2' md={4}>
                 <Form.Group controlId="MachineNames">
-                  <Form.Label>Machine Name</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Machine Name</Form.Label>
                   <Select
                     isMulti
                     value={MachineNames}
@@ -427,7 +427,7 @@ const AddSpare = () => {
             <Row>
               <Col className='py-2' md={4}>
                 <Form.Group controlId="PCS">
-                  <Form.Label>No. Of PCS Uses In One Time</Form.Label>
+                  <Form.Label style={{fontWeight:"bold"}}>No.Of pcs Uses In 1 Time</Form.Label>
                   <Form.Control
                     type="number"
                     name="Pieces"
@@ -442,7 +442,7 @@ const AddSpare = () => {
 
               <Col className='py-2' md={4}>
                 <Form.Group controlId="CycleTime">
-                  <Form.Label>Cycle Time in Days</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Cycle Time in Days</Form.Label>
                   <Form.Control
                     type="number"
                     name="Cycle Time"
@@ -457,7 +457,7 @@ const AddSpare = () => {
 
               <Col className='py-2' md={4}>
                 <Form.Group controlId="EquivalentSpareParts">
-                  <Form.Label>Equivalent Spare Part</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Equivalent Spare Part</Form.Label>
                   <Select
                     isMulti
                     options={EquivalentSparePartsOptions}
@@ -473,7 +473,7 @@ const AddSpare = () => {
             <Row>
               <Col className='py-2' md={4}>
                 <Form.Group controlId="Image">
-                  <Form.Label>Image</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>Image</Form.Label>
                   <Form.Control
                     type="file"
                     accept="image/*"
@@ -492,7 +492,7 @@ const AddSpare = () => {
 
               <Col className='py-2' md={4}>
                 <Form.Group controlId="PDF">
-                  <Form.Label>PDF</Form.Label>
+                  <Form.Label  style={{fontWeight:"bold"}}>PDF</Form.Label>
                   <Form.Control type="file" accept="application/pdf" onChange={handlePdfChange} ref={pdfInputRef} style={inputStyle} />
                 </Form.Group>
               </Col>

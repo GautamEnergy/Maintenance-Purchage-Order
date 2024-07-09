@@ -16,6 +16,7 @@ const AddMachine = () => {
     const [personID, setPersonID] = useState('');
     const navigate = useNavigate();
 
+
     useEffect(() => {
         const personID = localStorage.getItem("CurrentUser");
         if (personID) {
@@ -37,13 +38,17 @@ const AddMachine = () => {
             });
             let response = await res.json();
             if (res.ok) {
-                notifySuccess();
+
                 setMachineName('');
                 setMachineModelNo('');
                 setMachineNo('');
                 setMachineBrandName('');
                 setPersonID('');
                 setError('');
+                notifySuccess();
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 1000);
             } else {
                 if (res.status == 409) {
                     response.msg == 'Duplicate Machine Name' ? notifyError('This machine name is already exists') :
@@ -90,10 +95,12 @@ const AddMachine = () => {
         borderRadius: '5px'
     };
 
+
+
     return (
         <Container style={{ marginTop: "12%" }} className="fullPage ">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "40%" }} />
+                <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
                 <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
                     Add New Machine
                 </h2>
@@ -108,10 +115,12 @@ const AddMachine = () => {
                                 name="MachineName"
                                 value={machineName}
                                 onChange={(e) => setMachineName(e.target.value)}
+
                                 placeholder="Enter Machine Name"
                                 style={inputStyle}
                                 required
                             />
+
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
@@ -162,7 +171,7 @@ const AddMachine = () => {
                     <Row>
                         <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
                             <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</Button>
-                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Submit</Button>
+                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '24px' }}>Submit</Button>
                         </Col>
                     </Row>
                 </Form>
