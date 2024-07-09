@@ -54,7 +54,7 @@ const Login = () => {
         console.log(password);
 
         try {
-            const res = await axios.post("http://srv515471.hstgr.cloud:8080/Employee/Login", {
+            const res = await axios.post("http://srv515471.hstgr.cloud:9090/Employee/Login", {
                 loginid: email,
                 password: password,
                 department: 'Machine Maintenance'
