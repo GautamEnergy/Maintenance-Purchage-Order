@@ -119,13 +119,13 @@ const NewParty = () => {
         if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && Country && State && CountryCode && PinCode && Status) {
             const partyData = {
                 PartyName,
-                GSTNumber: Country === 'China' ? '' : GSTNumber,
-                PANNumber: Country === 'China' ? '' : PANNumber,
+                GSTNumber: Country == 'China' ? '' : GSTNumber,
+                PANNumber: Country == 'China' ? '' : PANNumber,
                 MobileNumber,
                 Email,
                 Address,
                 Country,
-                State: Country === 'China' ? '' : State,
+                State: Country == 'China' ? '' : State,
                 CountryCode,
                 PinCode,
                 Status,
@@ -173,9 +173,9 @@ const NewParty = () => {
         const selectedCode = e.target.value;
         setCountryCode(selectedCode);
 
-        if (selectedCode === '+91') {
+        if (selectedCode == '+91') {
             setMaxLength(10);
-        } else if (selectedCode === '+86') {
+        } else if (selectedCode == '+86') {
             setMaxLength(11);
         }
     };
@@ -188,7 +188,7 @@ const NewParty = () => {
 
         // console.log(selectedCountry)
 
-        setHideFields(selectedCountry === 'China');
+        setHideFields(selectedCountry == 'China');
         if (selectedOption.value == 'China') {
             setState('');
             setPANNumber('');
@@ -270,8 +270,8 @@ const NewParty = () => {
                                     value={MobileNumber}
                                     placeholder="Enter the Mobile Number"
                                     onChange={handleMobileNumberChange}
-                                    maxLength = {CountryCode == '+91' ? 10 :11 } 
-                                   
+                                    maxLength={CountryCode == '+91' ? 10 : 11}
+
                                     style={inputStyle}
 
                                     required
