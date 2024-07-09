@@ -433,8 +433,8 @@ const NewParty = () => {
                     </Row>
                     <Row>
                         <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '20px' }}>Back</Button>
-                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '20px' }}>Submit</Button>
+                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '10px' }}>Back</Button>
+                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
                         </Col>
                     </Row>
                 </Form>

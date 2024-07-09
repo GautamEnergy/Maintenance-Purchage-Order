@@ -320,9 +320,9 @@ const AddSpare = () => {
 
     return (
      
-        <Container style ={{marginTop:"12%"}}className="fullPage ">
+        <Container style ={{marginTop:"12%",width:"120%"}}className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
-        <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%',marginLeft:"4%" }} />
+        <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%',marginLeft:"43%" }} />
         <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
   Add New Spare Part
 </h2>
@@ -499,14 +499,12 @@ const AddSpare = () => {
             </Row>
           </div>
 
-          <div className="d-flex justify-content-center mt-3">
-            <Button variant="secondary" onClick={handleBack} className="me-3">
-              Back
-            </Button>
-            <Button type="submit" variant="primary">
-              Submit
-            </Button>
-          </div>
+           <Row>
+                        <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button type="button" className="register" onClick={handleBack} style={{ width: '83px', height: '43px', background: '#545454', margin: '10px' }}>Back</Button>
+                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
+                        </Col>
+                    </Row>
         </Form>
 
         {error && <p className="error">{error}</p>}
