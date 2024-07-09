@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import img1 from "../../Assets/Images/LOGO.png"
 
 
 const AddMachine = () => {
@@ -82,74 +84,92 @@ const AddMachine = () => {
     const handleback = (e) => {
         navigate('/dashboard');
     }
+    const inputStyle = {
+        borderColor: 'black',
+        borderWidth: '1px',
+        borderRadius: '5px'
+    };
 
     return (
-        <div className="mainCard">
-            <div className="fullPage">
-                <div className="form-detail">
-                    <h2>Add New Machine</h2>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                    <div className="subCard1">
-                        <div className="row">
-                            <label>Machine Name</label>
-                            <input
+        <Container style={{ marginTop: "12%" }} className="fullPage ">
+            <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "40%" }} />
+                <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+                    Add New Machine
+                </h2>
+
+                <Form onSubmit={handleSubmit}>
+                    <Row className="subCard1">
+                        <Col md={4} className="py-2 form-group">
+                            <Form.Label>Machine Name</Form.Label>
+                            <Form.Control
                                 type="text"
                                 className="input-text"
                                 name="MachineName"
                                 value={machineName}
                                 onChange={(e) => setMachineName(e.target.value)}
                                 placeholder="Enter Machine Name"
+                                style={inputStyle}
                                 required
                             />
-                        </div>
-                        <div className="row">
-                            <label>Machine Model Number</label>
-                            <input
+                        </Col>
+
+                        <Col md={4} className="py-2 form-group">
+                            <Form.Label>Machine Model Number</Form.Label>
+                            <Form.Control
                                 type="text"
                                 className="input-text"
                                 name="MachineModelNo"
                                 value={machineModelNo}
                                 onChange={(e) => setMachineModelNo(e.target.value)}
                                 placeholder="Enter Machine Model Number"
+                                style={inputStyle}
                                 required
                             />
-                        </div>
-                        <div className="row">
-                            <label>Machine Number</label>
-                            <input
+                        </Col>
+
+                        <Col md={4} className="py-2 form-group">
+                            <Form.Label>Machine Number</Form.Label>
+                            <Form.Control
                                 type="text"
                                 className="input-text"
                                 name="MachineNo"
                                 value={machineNo}
-                                onChange={((el) => {
-                                    setMachineNo(el.target.value)
-                                    setError('')
-                                })}
+                                onChange={(el) => {
+                                    setMachineNo(el.target.value);
+                                    setError('');
+                                }}
                                 placeholder="Enter Machine Number"
+                                style={inputStyle}
                                 required
                             />
-                        </div>
-                        <div className="row">
-                            <label>Machine Brand Name</label>
-                            <input
+                        </Col>
+
+                        <Col md={4} className="py-2 form-group">
+                            <Form.Label>Machine Brand Name</Form.Label>
+                            <Form.Control
                                 type="text"
                                 className="input-text"
                                 name="MachineBrandName"
                                 value={machineBrandName}
                                 onChange={(e) => setMachineBrandName(e.target.value)}
                                 placeholder="Enter Machine Brand Name"
+                                style={inputStyle}
                                 required
                             />
-                        </div>
-                    </div>
-                    <div style={{ marginLeft: '510px' }}>
-                        <button type="back" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</button>
-                        <button type="submit" className="register" onClick={handleSubmit} style={{ width: '83px', height: '43px', background: '#0C53F5' }}>Submit</button>
-                    </div>
-                </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</Button>
+                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Submit</Button>
+                        </Col>
+                    </Row>
+                </Form>
             </div>
+
             <ToastContainer position="top-center" autoClose={2000} />
-        </div>
+        </Container>
     );
 };
 

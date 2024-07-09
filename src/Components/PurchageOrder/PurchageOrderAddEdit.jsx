@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Purchage.css';
 import ItemTable from '../Table/table';
 import OptionalField from '../OptionalField/OptionalField';
 import NewParty from '../New Party/NewParty';

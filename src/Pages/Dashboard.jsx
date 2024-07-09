@@ -3,7 +3,7 @@ import React from 'react';
 import { Container, Row, Col, Card, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import image1 from "../Assets/Images/logogs.png"
+import image1 from "../Assets/Images/LOGO.png"
 import './Dashboard.css'
 import img2 from "../Assets/Images/order-now.png"
 import img5 from "../Assets/Images/user.png";
@@ -12,9 +12,9 @@ import img3 from "../Assets/Images/engineering.png"
 
 export default function Dashboard() {
     return (
-        <Container className="py-4" style={{ background: "#E8F5D6", borderRadius: '1rem',marginTop:"100px" }}>
+        <Container className="py-4" style={{ background: "white", borderRadius: '1rem',marginTop:"100px" }}>
             <Row className="justify-content-center mb-5">
-                <Image src = {image1} alt="Value Care Logo"  style={{ width: '30%', height: '80px',marginTop:"40px" }} />
+                <Image src = {image1} alt="Value Care Logo"  style={{ width: '20%', height: '120px',marginTop:"10px" }} />
             </Row>
             {/* <Row className="justify-content-center mb-4">
                 <h1 className="text-center">What type of engagement do you anticipate with Value Care?</h1>

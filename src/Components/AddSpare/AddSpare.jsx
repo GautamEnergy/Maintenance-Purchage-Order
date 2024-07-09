@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { Container, Row, Col, Form, Button,Image } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import Select from 'react-select';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import img1 from "../../Assets/Images/LOGO.png"
 
 const AddSpare = () => {
     const [SparePartName, setSparePartName] = useState('');
@@ -266,206 +268,251 @@ const AddSpare = () => {
         console.log('upload pdf & image checking');
         console.log(formData);
     };
+    const inputStyle = {
+        borderColor: 'black',
+        borderWidth: '1px',
+        borderRadius: '5px'
+      };
+      const customSelectStyles = {
+        control: (base, state) => ({
+          ...base,
+          height: 'auto',
+          minHeight: '40px',
+          //borderRadius: '5px',
+          backgroundColor: 'white',
+          borderColor: '#black',
+          borderWidth: '1px',
+          boxShadow: 'none',
+          '&:hover': {
+            borderColor: '#0C53F5',
+          },
+        }),
+        menu: (base) => ({
+          ...base,
+          backgroundColor: '#f0f0f0',
+          color: 'black',
+        }),
+        menuList: (base) => ({
+          ...base,
+          backgroundColor: '#f0f0f0',
+        }),
+        multiValue: (base) => ({
+          ...base,
+          backgroundColor: '#e0e0e0',
+          color: 'black',
+          borderRadius: '3px',
+          padding: '1px',
+          margin: '1px',
+        }),
+        multiValueLabel: (base) => ({
+          ...base,
+          color: 'black',
+        }),
+        multiValueRemove: (base) => ({
+          ...base,
+          color: 'black',
+          ':hover': {
+            backgroundColor: '#d9534f',
+            color: 'white',
+          },
+        }),
+      };
 
     return (
-        <div className="fullPage">
-            <div className="form-detail">
-                <h2>Add New Spare Part</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="subCard2">
-                        <div className="system input-text">
-                            <label className="file-label">Master Spare Part Name</label>
-                            <input
-                                type="text"
-                                name="MasterSparePartName"
-                                value={MasterSparePartName}
-                                onChange={(e) => setMasterSparePartName(e.target.value)}
-                                placeholder="Master Spare Part Name"
-                                required
-                            />
-                        </div>
-                        {/* <div className="system input-text">
-                            <label className="file-label">Spare Part Name</label>
-                            <input
-                                type="text"
-                                name="SparePartName"
-                                value={SparePartName}
-                                onChange={(e) => setSparePartName(e.target.value)}
-                                placeholder="Spare Part Name"
-                                required
-                            /> */}
-                        {/* </div> */}
-                        <div className="system input-text">
-                            <label className="file-label">Spare Part Name</label>
-                            <input
-                                type="text"
-                                name="SparePartName"
-                                value={SparePartName}
-                                onChange={handleSparePartNameChange}
-                                placeholder="Spare Part Name"
-                                required
-                            />
-                        </div>
-                        <div className="system input-text">
-                            <label className="file-label">Spare Part Model Number</label>
-                            <input
-                                type="text"
-                                name="SparePartModelNo"
-                                value={SparePartModelNo}
-                                onChange={(e) => setSparePartModelNo(e.target.value)}
-                                placeholder="Spare Part Model Number"
-                                required
-                            />
-                        </div>
-                        <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Brand</label>
-                            <input
-                                type="text"
-                                name="brand"
-                                value={Brand}
-                                onChange={(e) => setBrand(e.target.value)}
-                                placeholder="Brand"
-                                required
-                            />
-                        </div>
-                        <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Specification</label>
-                            <input
-                                type="text"
-                                name="specification"
-                                value={Specification}
-                                onChange={(e) => setSpecification(e.target.value)}
-                                placeholder="Specification"
-                                required
-                            />
-                        </div>
-                        <div className="system input-text" style={{ width: '410px' }} >
-                            <label className="file-label" >Machine Name</label>
-                            <Select style={{ color: 'red' }}
-                                isMulti
-                                value={MachineNames}
-                                //onChange={(selectedOptions) => setMachineNames(selectedOptions)}
-                                onChange={handleMachineNameChange}
-                                placeholder="Select Machine Name"
-                                options={Machine}
+     
+        <Container style ={{marginTop:"12%"}}className="fullPage ">
+      <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
+        <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%',marginLeft:"40%" }} />
+        <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+  Add New Spare Part
+</h2>
+        <Form onSubmit={handleSubmit}>
+          <div className="subCard2">
+            <Row>
+              <Col md={4}>
+                <Form.Group controlId="MasterSparePartName">
+                  <Form.Label>Master Spare Part Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="MasterSparePartName"
+                    value={MasterSparePartName}
+                    onChange={(e) => setMasterSparePartName(e.target.value)}
+                    placeholder="Master Spare Part Name"
+                    required
+                    style={inputStyle}
+                  />
+                </Form.Group>
+              </Col>
 
-                                styles={{
-                                    control: (base, state) => ({
-                                        ...base,
-                                        height: 53,
-                                        minHeight: 23,
-                                        borderRadius: 33,
-                                        backgroundColor: '#ccc',
-                                        borderColor: '#6a6c6e',
-                                        borderWidth: '2px',
-                                        boxShadow: 'none',
-                                        '&:hover': {
-                                            borderColor: '#6a6c6e',
-                                        },
-                                    }),
-                                    menu: (base) => ({
-                                        ...base,
-                                        backgroundColor: '#f0f0f0',
-                                        color: 'black',
-                                    }),
-                                    menuList: (base) => ({
-                                        ...base,
-                                        backgroundColor: '#f0f0f0',
-                                    }),
-                                }}
-                                required
+              <Col md={4}>
+                <Form.Group controlId="SparePartName">
+                  <Form.Label>Spare Part Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="SparePartName"
+                    value={SparePartName}
+                    onChange={handleSparePartNameChange}
+                    placeholder="Spare Part Name"
+                    required
+                    style={inputStyle}
+                    
+                  />
+                </Form.Group>
+              </Col>
 
-                            />
-                        </div>
-                        <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">No. Of PCS Uses In One Time</label>
-                            <input
-                                type="number"
-                                name="Pieces"
-                                value={PCS}
-                                onChange={(e) => setPCS(e.target.value)}
-                                placeholder="No. Of PCS use in 1 Time"
-                                required
-                            />
-                        </div>
-                        <div className="system input-text" style={{ width: '400px' }}>
-                            <label className="file-label">Cycle Time in Days</label>
-                            <input
-                                type="number"
-                                name="Cycle Time"
-                                value={CycleTime}
-                                onChange={(e) => setCycleTime(e.target.value)}
-                                placeholder="Cycle Time"
-                                required
-                            />
-                        </div>
-                        <div className="system input-text" style={{ width: '410px' }}>
-                            <label className="file-label">Equivalent SparePart</label>
-                            <Select
-                                isMulti
-                                options={EquivalentSparePartsOptions}
-                                onMenuOpen={handleEquivalentSparePartsOpen}
-                                value={EquivalentSpareParts}
-                                onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
-                                styles={{
-                                    control: (base, state) => ({
-                                        ...base,
-                                        height: 53,
-                                        minHeight: 23,
-                                        borderRadius: 33,
-                                        backgroundColor: '#ccc',
-                                        borderColor: '#6a6c6e',
-                                        borderWidth: '2px',
-                                        boxShadow: 'none',
-                                        '&:hover': {
-                                            borderColor: '#6a6c6e',
-                                        },
-                                    }),
-                                    menu: (base) => ({
-                                        ...base,
-                                        backgroundColor: '#f0f0f0',
-                                        color: 'black',
-                                    }),
-                                    menuList: (base) => ({
-                                        ...base,
-                                        backgroundColor: '#f0f0f0',
-                                    }),
-                                }}
-                            />
-                        </div>
-                        <div className="system input-text">
-                            <label className="file-label">Image</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                ref={imageInputRef}
-                                multiple
-                            />
-                            <div>
-                                {files.map((file, index) => (
-                                    <div key={index}>
+              <Col md={4}>
+                <Form.Group controlId="SparePartModelNo">
+                  <Form.Label>Spare Part Model Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="SparePartModelNo"
+                    value={SparePartModelNo}
+                    onChange={(e) => setSparePartModelNo(e.target.value)}
+                    placeholder="Spare Part Model Number"
+                    required
+                    style={inputStyle}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
+            <Row>
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="Brand">
+                  <Form.Label>Brand</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="brand"
+                    value={Brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    placeholder="Brand"
+                    required
+                    style={inputStyle}
+                  />
+                </Form.Group>
+              </Col>
 
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="system input-text" style={{ width: '360px', marginRight: '76vh' }}>
-                            <label className="file-label">PDF</label>
-                            <input type="file" accept="application/pdf" onChange={handlePdfChange} ref={pdfInputRef} />
-                        </div>
-                    </div>
-                    <div style={{ marginLeft: '510px' }}>
-                        <button type="button" className="btn" onClick={handleBack} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</button>
-                        <button type="submit" className="btn" style={{ width: '83px', height: '43px', background: '#0C53F5', color: 'white' }}>Submit</button>
-                    </div>
-                </form>
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="Specification">
+                  <Form.Label>Specification</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="specification"
+                    value={Specification}
+                    onChange={(e) => setSpecification(e.target.value)}
+                    placeholder="Specification"
+                    required
+                    style={inputStyle}
+                  />
+                </Form.Group>
+              </Col>
 
-                {error && <p className="error">{error}</p>}
-                <ToastContainer position='top-center' />
-            </div >
-        </div >
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="MachineNames">
+                  <Form.Label>Machine Name</Form.Label>
+                  <Select
+                    isMulti
+                    value={MachineNames}
+                    onChange={handleMachineNameChange}
+                    placeholder="Select Machine"
+                    options={Machine}
+                    styles={customSelectStyles}
+                    required
+                    
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="PCS">
+                  <Form.Label>No. Of PCS Uses In One Time</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="Pieces"
+                    value={PCS}
+                    onChange={(e) => setPCS(e.target.value)}
+                    placeholder="No. Of PCS use in 1 Time"
+                    required
+                    style={inputStyle}
+                  />
+                </Form.Group>
+              </Col>
+
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="CycleTime">
+                  <Form.Label>Cycle Time in Days</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="Cycle Time"
+                    value={CycleTime}
+                    onChange={(e) => setCycleTime(e.target.value)}
+                    placeholder="Cycle Time"
+                    required
+                    style={inputStyle}
+                  />
+                </Form.Group>
+              </Col>
+
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="EquivalentSpareParts">
+                  <Form.Label>Equivalent Spare Part</Form.Label>
+                  <Select
+                    isMulti
+                    options={EquivalentSparePartsOptions}
+                    onMenuOpen={handleEquivalentSparePartsOpen}
+                    value={EquivalentSpareParts}
+                    onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
+                    styles={customSelectStyles}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="Image">
+                  <Form.Label>Image</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    ref={imageInputRef}
+                    multiple
+                    style={inputStyle}
+                  />
+                  <div>
+                    {files.map((file, index) => (
+                      <div key={index}>{/* Display file details or preview here */}</div>
+                    ))}
+                  </div>
+                </Form.Group>
+              </Col>
+
+              <Col className='py-2' md={4}>
+                <Form.Group controlId="PDF">
+                  <Form.Label>PDF</Form.Label>
+                  <Form.Control type="file" accept="application/pdf" onChange={handlePdfChange} ref={pdfInputRef} style={inputStyle} />
+                </Form.Group>
+              </Col>
+            </Row>
+          </div>
+
+          <div className="d-flex justify-content-center mt-3">
+            <Button variant="secondary" onClick={handleBack} className="me-3">
+              Back
+            </Button>
+            <Button type="submit" variant="primary">
+              Submit
+            </Button>
+          </div>
+        </Form>
+
+        {error && <p className="error">{error}</p>}
+        <ToastContainer position='top-center' />
+      </div>
+    </Container>
     );
 };
 

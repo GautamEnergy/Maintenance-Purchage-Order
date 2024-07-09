@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
+import img1 from "../../Assets/Images/LOGO.png"
 
 const NewParty = () => {
     const [PartyName, setPartyName] = useState('');
@@ -207,232 +209,240 @@ const NewParty = () => {
         const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
         setIsEmailValid(emailPattern.test(emailValue));
     };
+    const inputStyle = {
+        borderColor: 'black',
+        borderWidth: '1px',
+        borderRadius: '5px'
+    };
+
 
 
 
     return (
-        <div className="mainCard">
-            <div className="fullPage">
-                <div className="form-detail">
-                    <h2>Add New Party</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="subCard1">
-                            <div className="row">
-                                <div className="form-group">
-                                    <label>Party Name</label>
-                                    <input
-                                        type="text"
-                                        className="input-text"
-                                        name="partyName"
-                                        value={PartyName}
-                                        onChange={(e) => setPartyName(e.target.value)}
-                                        placeholder='Enter the New Party'
-                                        required
-                                    />
-                                    {error && error.includes('Party name must be unique') && <small className="text-danger">{error}</small>}
-                                </div>
 
-                                <div className="system input-text" style={{ width: '410px' }}>
-                                    <label className="file-label">Country</label>
-                                    <Select
-                                        onChange={handleCountry}
-                                        options={countryOptions}
-                                        placeholder="Select Country"
-                                        styles={{
-                                            control: (base, state) => ({
-                                                ...base,
-                                                height: 53,
-                                                minHeight: 23,
-                                                borderRadius: 33,
-                                                backgroundColor: '#ccc',
-                                                borderColor: '#6a6c6e',
-                                                borderWidth: '2px',
-                                                boxShadow: 'none',
-                                                '&:hover': {
-                                                    borderColor: '#6a6c6e',
-                                                },
-                                            }),
-                                            menu: (base) => ({
-                                                ...base,
-                                                backgroundColor: '#f0f0f0',
-                                                color: 'black',
-                                            }),
-                                            menuList: (base) => ({
-                                                ...base,
-                                                backgroundColor: '#f0f0f0',
-                                            }),
-                                        }}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    {Country !== "China" ? <>
-                                        <label>Pin Code</label>
-                                        <input
-                                            type="number"
-                                            className="input-text"
-                                            name="PinCode"
-                                            placeholder={Country == "India" ? 'Enter the Pin Code' : 'Enter the Pin Code'}
-                                            value={PinCode}
-                                            // onChange={(e) => setPinCode(e.target.value)}
-                                            onChange={(e) => {
-                                                const value = e.target.value;
-                                                if (/^\d{0,6}$/.test(value)) {
-                                                    setPinCode(value);
-                                                }
-                                            }}
-
-                                            required
-                                        />
-                                    </> : ''}
-
-                                </div>
+        <Container style={{ marginTop: "12%" }} className="fullPage ">
+            <div className="form-detail" style={{ backgroundColor: '#f8f8ff', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
+                <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+                    Add New Party
+                </h2>
+                <Form onSubmit={handleSubmit}>
+                    <Row className="subCard1">
+                        <Col md={4} className="form-group">
+                            <Form.Label>Party Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                className="input-text"
+                                name="partyName"
+                                value={PartyName}
+                                onChange={(e) => setPartyName(e.target.value)}
+                                placeholder='Enter the New Party'
+                                style={inputStyle}
+                                required
+                            />
+                            {error && error.includes('Party name must be unique') && <small className="text-danger">{error}</small>}
+                        </Col>
+                        <Col md={4} className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <Form.Control
+                                    as="select"
+                                    id="countryCode"
+                                    className="input-text"
+                                    style={{ width: '50px', padding: '8px', fontSize: '14px', marginTop: '23px', background: '#9AAFB1' }}
+                                    value={CountryCode}
+                                    onChange={handleCountryCodeChange}
+                                >
+                                    {countryCodes.map((country) => (
+                                        <option key={country.code} value={country.code}>
+                                            {country.code}
+                                        </option>
+                                    ))}
+                                </Form.Control>
                             </div>
-                            <div className="row">
-                                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <select
-                                            id="countryCode"
-                                            className="input-text"
-                                            style={{ width: '70px', padding: '10px', fontSize: '14px', borderRadius: '23px', marginTop: '23px', background: '#9AAFB1', }}
-                                            value={CountryCode}
-                                            onChange={handleCountryCodeChange}
-                                        >
-                                            {countryCodes.map((country) => (
-                                                <option key={country.code} value={country.code}>
-                                                    {country.code}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                        <label htmlFor="mobileNo">Mobile No.</label>
-                                        <input
-                                            type="text"
-                                            id="mobileNo"
-                                            className="input-text"
-                                            style={{ padding: '10px', fontSize: '14px' }}
-                                            name="mobileNo"
-                                            value={MobileNumber}
-                                            placeholder="Enter the Mobile Number"
-                                            onChange={handleMobileNumberChange}
-                                            maxLength={maxLength}
-                                            required
-                                        />
-                                        {errorMessage && (
-                                            <span style={{ color: 'red', fontSize: '12px' }}>{errorMessage}</span>
-                                        )}
-                                    </div>
-                                </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                <Form.Label htmlFor="mobileNo">Mobile No.</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    id="mobileNo"
+                                    className="input-text"
+                                    // style={{ padding: '8px', fontSize: '14px' }}
+                                    name="mobileNo"
+                                    value={MobileNumber}
+                                    placeholder="Enter the Mobile Number"
+                                    onChange={handleMobileNumberChange}
+                                    maxLength={10}
+                                    style={inputStyle}
 
-                                <div className="form-group">
-                                    <label>Address</label>
-                                    <input
-                                        type="text"
-                                        className="input-text"
-                                        name="address"
-                                        value={Address}
-                                        placeholder='Enter the Address'
-                                        onChange={(e) => setAddress(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                {!hideFields && (
-                                    <div className="form-group">
-                                        <label>GST No.</label>
-                                        <input
-                                            type="text"
-                                            className="input-text"
-                                            name="gstNo"
-                                            value={GSTNumber}
-                                            onChange={handleGSTChange}
-                                            placeholder='Enter the GST Number'
-                                            required
-                                        />
-                                        {error && !error.includes('Party name must be unique') && <small className="text-danger">{error}</small>}
-                                    </div>
+                                    required
+
+                                />
+                                {errorMessage && (
+                                    <span style={{ color: 'red', fontSize: '12px' }}>{errorMessage}</span>
                                 )}
                             </div>
-                            <div className="row">
-                                {/* <div className="form-group">
-                                    <label>Email</label>
-                                    <input
-                                        type="email"
-                                        className="input-text"
-                                        name="email"
-                                        placeholder='Enter the Email'
-                                        value={Email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                        required
-                                    />
-                                </div> */}
-
-                                <div className="form-group">
-                                    <label>Email</label>
-                                    <input
-                                        type="email"
-                                        className={`input-text ${isEmailValid ? '' : 'is-invalid'}`}
-                                        name="email"
-                                        placeholder='Enter the Email'
-                                        value={Email}
-                                        onChange={handleEmailChange}
-                                        required
-                                    />
-                                    {!isEmailValid && <span className="error-message" style={{ color: 'red' }}>Please enter a valid email address</span>}
-                                </div>
-
-                                <div className="form-group">
-                                    <label>{!hideFields ? 'State' : 'Zip Code'}</label>
-                                    <input
-                                        type={!hideFields ? "text" : 'number'}
-                                        className="input-text"
-                                        name={!hideFields ? "state" : 'Zip Code'}
-                                        placeholder={!hideFields ? 'Enter State' : 'Enter Zip Code'}
-                                        value={!hideFields ? State : PinCode}
-                                        // onChange={(e) => !hideFields ? setState(e.target.value) : setPinCode(e.target.value)}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            if (!hideFields) {
-                                                setState(value);
-                                            } else {
-                                                if (/^\d{0,6}$/.test(value)) {
-                                                    setPinCode(value);
-                                                }
-                                            }
-                                        }}
-                                        required
-                                    />
-                                </div>
+                        </Col>
+                        <Col md={4} className="form-group">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                type="email"
+                                className={`input-text ${isEmailValid ? '' : 'is-invalid'}`}
+                                name="email"
+                                placeholder='Enter the Email'
+                                value={Email}
+                                onChange={handleEmailChange}
+                                style={inputStyle}
+                                required
+                            />
+                            {!isEmailValid && <span className="error-message" style={{ color: 'red' }}>Please enter a valid email address</span>}
+                        </Col>
 
 
 
-                                {!hideFields && (
-                                    <div className="form-group">
-                                        <label>PAN No.</label>
-                                        <input
-                                            type="text"
-                                            className="input-text"
-                                            name="panNo"
-                                            value={PANNumber}
-                                            onChange={(e) => setPANNumber(e.target.value)}
-                                            placeholder='Enter the PAN Number'
-                                        />
-                                    </div>
-                                )}
-                            </div>
 
-                            <div style={{ marginLeft: '510px' }}>
-                                <button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</button>
-                                <button type="submit" className="register" onClick={handleSubmit} style={{ width: '83px', height: '43px', background: '#0C53F5' }}>Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+
+                    </Row>
+                    <Row>
+                        <Col md={4} className="py-2 form-group">
+                            <Form.Label>Country</Form.Label>
+                            <Select
+                                onChange={handleCountry}
+                                options={countryOptions}
+                                placeholder="Select Country"
+                                styles={{
+                                    control: (base, state) => ({
+                                        ...base,
+                                        height: 40,
+                                        minHeight: 23,
+                                        // borderRadius: 33,
+                                        backgroundColor: '#white',
+                                        borderColor: '#black',
+                                        borderWidth: '1px',
+                                        boxShadow: 'none',
+                                        '&:hover': {
+                                            borderColor: '#6a6c6e',
+                                        },
+                                    }),
+                                    menu: (base) => ({
+                                        ...base,
+                                        backgroundColor: '#f0f0f0',
+                                        color: 'black',
+                                    }),
+                                    menuList: (base) => ({
+                                        ...base,
+                                        backgroundColor: '#f0f0f0',
+                                    }),
+                                }}
+                                required
+                            />
+                        </Col>
+
+
+                        <Col md={4} className="py-2 form-group">
+                            <Form.Label>Address</Form.Label>
+                            <Form.Control
+                                type="text"
+                                className="input-text"
+                                name="address"
+                                value={Address}
+                                placeholder='Enter the Address'
+                                onChange={(e) => setAddress(e.target.value)}
+                                style={inputStyle}
+                                required
+                            />
+                        </Col>
+                        <Col md={4} className=" py-2 form-group">
+                            <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
+                            <Form.Control
+                                type={!hideFields ? "text" : 'number'}
+                                className="input-text"
+                                name={!hideFields ? "state" : 'Zip Code'}
+                                placeholder={!hideFields ? 'Enter State' : 'Enter Zip Code'}
+                                value={!hideFields ? State : PinCode}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (!hideFields) {
+                                        setState(value);
+                                    } else {
+                                        if (/^\d{0,6}$/.test(value)) {
+                                            setPinCode(value);
+                                        }
+                                    }
+                                }}
+                                style={inputStyle}
+                                required
+                            />
+                        </Col>
+
+
+                    </Row>
+                    <Row>
+                        {Country !== "China" && (
+                            <Col md={4} className="py-2 form-group">
+                                <Form.Label>Pin Code</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    className="input-text"
+                                    name="PinCode"
+                                    placeholder='Enter the Pin Code'
+                                    value={PinCode}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (/^\d{0,6}$/.test(value)) {
+                                            setPinCode(value);
+                                        }
+                                    }}
+                                    style={inputStyle}
+                                    required
+                                />
+                            </Col>
+                        )}
+
+
+                        {!hideFields && (
+                            <Col md={4} className="py-2 form-group">
+                                <Form.Label>GST No.</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    className="input-text"
+                                    name="gstNo"
+                                    value={GSTNumber}
+                                    onChange={handleGSTChange}
+                                    placeholder='Enter the GST Number'
+                                    style={inputStyle}
+                                    required
+                                />
+                                {error && !error.includes('Party name must be unique') && <small className="text-danger">{error}</small>}
+                            </Col>
+                        )}
+
+                        {!hideFields && (
+                            <Col md={4} className="py-2 form-group">
+                                <Form.Label>PAN No.</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    className="input-text"
+                                    name="panNo"
+                                    value={PANNumber}
+                                    onChange={(e) => setPANNumber(e.target.value)}
+                                    placeholder='Enter the PAN Number'
+                                    style={inputStyle}
+                                />
+                            </Col>
+                        )}
+                    </Row>
+                    <Row>
+                        <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Back</Button>
+                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#545454', margin: '24px' }}>Submit</Button>
+                        </Col>
+                    </Row>
+                </Form>
             </div>
-            <ToastContainer position="top-center" autoClose={2000} />
-        </div>
+
+
+            <ToastContainer />
+
+        </Container>
     );
 };
 
