@@ -50,7 +50,6 @@ const material = [
         pin: '249403',
         email: 'purchase@gautamsolar.com' && 'sohan@gautamsolar.com' && 'purchase@gautamsolar.com ',
     },
-
 ];
 
 const PurchageForm = () => {
@@ -105,84 +104,73 @@ const PurchageForm = () => {
         }
     }, [showNewPartyModal]);
 
-    const handleback = (e) => {
+    const handleBack = () => {
         navigate('/dashboard');
     }
 
-
     return (
         <>
-            <div className="mainCard">
-                <div className="fullPage">
-                    <form className="form-detail" onSubmit={handleSubmit}>
-                        <h2>Purchase Order</h2>
-
-                        <div className="subCard1">
-                            <div className="row">
+            <div className="container mt-5">
+                <div className="card">
+                    <div className="card-body">
+                        <form onSubmit={handleSubmit}>
+                            <h2 className="mb-4">Purchase Order</h2>
+                            <div className="mb-3">
                                 <input
                                     type="text"
                                     name="series"
                                     id="series"
-                                    className="input-text"
+                                    className="form-control"
                                     placeholder="Series"
                                     value="GST-2024-2025"
                                     disabled
                                     readOnly
                                 />
                             </div>
-                            <div className="row">
+                            <div className="mb-3">
                                 <input
                                     type="text"
                                     name="date"
                                     id="date"
-                                    className="input-text"
-                                    value={`${currentDate} `}
+                                    className="form-control"
+                                    value={`${currentDate}`}
                                     readOnly
                                 />
                             </div>
-                            <div className="row">
+                            <div className="mb-3">
                                 <input
                                     type="text"
                                     name="vochNo"
                                     id="vochNo"
-                                    className="input-text"
+                                    className="form-control"
                                     placeholder="Voch No."
                                     value="GST-2024-2025"
                                     readOnly
                                     disabled
                                 />
                             </div>
-                        </div>
-
-                        <div className="subCard2">
-                            <div className="row">
+                            <div className="mb-3">
                                 <select
-                                    style={{
-                                        borderRadius: '33px',
-                                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                                        border: '2px solid #ccc'
-                                    }}
                                     name="purcType"
                                     id="purcType"
-                                    className="input-text"
+                                    className="form-select"
                                     value={purcType}
                                     onChange={(e) => setPurcType(e.target.value)}
                                 >
                                     <option value="">Select Purc Type</option>
                                     {purchaseTypes.map((option) => (
-                                        <option key={option.value} value={option.value} >
+                                        <option key={option.value} value={option.value}>
                                             {option.label}
                                         </option>
                                     ))}
                                 </select>
                             </div>
-
-                            <div className="row" style={{ position: 'relative' }}>
+                            <div className="mb-3 position-relative">
                                 <input
                                     type="text"
                                     name="party"
                                     id="party"
-                                    className="input-text"
+                                    className="form-control"
                                     list="partyOptions"
                                     placeholder="Party"
                                     value={party}
@@ -190,9 +178,8 @@ const PurchageForm = () => {
                                 />
                                 <button
                                     type="button"
-                                    className="NewParty"
+                                    className="btn btn-link position-absolute top-0 end-0"
                                     onClick={() => setShowNewPartyModal(true)}
-                                    style={{ position: 'absolute', top: 12, width: '30px', right: 10 }}
                                 >
                                     <FaUser className="icon" />
                                 </button>
@@ -202,17 +189,11 @@ const PurchageForm = () => {
                                     ))}
                                 </datalist>
                             </div>
-
-                            <div className="row">
+                            <div className="mb-3">
                                 <select
-                                    style={{
-                                        borderRadius: '33px',
-                                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                                        border: '2px solid #ccc'
-                                    }}
                                     name="matCent"
                                     id="matCent"
-                                    className="input-text"
+                                    className="form-select"
                                     value={matCent}
                                     onChange={handleMatCentChange}
                                 >
@@ -224,42 +205,47 @@ const PurchageForm = () => {
                                     ))}
                                 </select>
                             </div>
-                        </div>
-
-                        <div className="subCard3">
-                            <div className="row">
+                            <div className="mb-3">
                                 <input
                                     type="text"
                                     name="narration"
                                     id="narration"
-                                    className="input-text"
+                                    className="form-control"
                                     placeholder="Narration"
                                     value={narration}
                                     onChange={handleNarrationChange}
                                 />
                             </div>
-                        </div>
-                    </form>
+                            <div className="d-flex justify-content-between">
+                                <button type="submit" className="btn btn-success">Submit</button>
+                                <button type="button" className="btn btn-danger" onClick={handleBack}>Back</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
             {showNewPartyModal && (
-                <div className="modal fade show" style={{ display: 'block' }}>
-                    <NewParty />
+                <div className="modal fade show d-block">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">New Party</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowNewPartyModal(false)}></button>
+                            </div>
+                            <div className="modal-body">
+                                <NewParty />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
-            <section>
+            <section className="mt-5">
                 <ItemTable />
                 <Billing />
                 <OptionalField />
-
             </section>
-
-
-            <button type="submit" className="register" onClick={handleSubmit} style={{ width: '83px', height: '43px', background: '#8FE740' }}>Submit</button>
-            <button type="back" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#a20000', margin: '24px' }}>Back</button>
-
         </>
     );
 };

@@ -20,7 +20,6 @@ const BillForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
-        // Add your form submission logic here
     };
 
     return (
@@ -89,10 +88,9 @@ const BillForm = () => {
                     </tr>
                 </tbody>
             </Table>
-            <Button variant="primary" type="submit">
-                Submit
-            </Button>
+
         </Form>
+
     );
 };
 

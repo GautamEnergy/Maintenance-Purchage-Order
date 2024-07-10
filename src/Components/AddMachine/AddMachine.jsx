@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import img1 from "../../Assets/Images/LOGO.png"
-
+import img1 from "../../Assets/Images/LOGO.png";
+import { AppContext } from '../../ContextAPI';
 
 const AddMachine = () => {
+    const { token, setToken } = useContext(AppContext);
     const [machineName, setMachineName] = useState('');
     const [machineModelNo, setMachineModelNo] = useState('');
     const [machineNo, setMachineNo] = useState('');
@@ -15,13 +16,24 @@ const AddMachine = () => {
     const [error, setError] = useState('');
     const [personID, setPersonID] = useState('');
     const navigate = useNavigate();
+    const [url, setUrl] = useState("");
 
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
         const personID = localStorage.getItem("CurrentUser");
+        const url = localStorage.getItem('url');
+        setUrl(url);
+
         if (personID) {
             setPersonID(personID);
         }
+        if (token) {
+            setToken(token);
+        }
+
+        // console.log(url);
+
     }, []);
 
     const notifySuccess = () => toast.success("Machine added successfully !", { autoClose: 5000 });
@@ -29,7 +41,7 @@ const AddMachine = () => {
 
     const addNewMachine = async (machineData) => {
         try {
-            const res = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddMachine', {
+            const res = await fetch(`${url}/Maintenance/AddMachine`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,7 +110,7 @@ const AddMachine = () => {
 
 
     return (
-        <Container style={{ marginTop: "12%",width:"90%" }} className="fullPage ">
+        <Container style={{ marginTop: "12%", width: "90%" }} className="fullPage ">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
                 <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>

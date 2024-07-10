@@ -21,7 +21,6 @@ const Login = () => {
         const department = localStorage.getItem("department");
         const PersonID = localStorage.getItem("CurrentUser");
         const url = localStorage.getItem('url');
-
         setUrl(url);
 
         // console.log('asddasda')

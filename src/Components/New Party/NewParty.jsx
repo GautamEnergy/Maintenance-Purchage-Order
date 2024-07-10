@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import img1 from "../../Assets/Images/LOGO.png"
+import img1 from "../../Assets/Images/LOGO.png";
+import { AppContext } from '../../ContextAPI';
 
 const NewParty = () => {
+    const { token, setToken } = useContext(AppContext);
     const [PartyName, setPartyName] = useState('');
     const [GSTNumber, setGSTNumber] = useState('');
     const [PANNumber, setPANNumber] = useState('');
@@ -19,18 +21,28 @@ const NewParty = () => {
     const [CountryCode, setCountryCode] = useState('+91');
     const [Status, setStatus] = useState('Active');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
     const [maxLength, setMaxLength] = useState(10);
     const [personID, setPersonID] = useState('');
     const [hideFields, setHideFields] = useState(false);
     const [isEmailValid, setIsEmailValid] = useState(true);
+    const navigate = useNavigate();
+    const [url, setUrl] = useState("");
+
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
         const personID = localStorage.getItem("CurrentUser");
+        const url = localStorage.getItem('url');
+        setUrl(url);
         if (personID) {
             setPersonID(personID);
         }
+        if (token) {
+            setToken(token);
+        }
+        console.log(personID)
+        console.log(url);
     }, []);
 
     const countryOptions = [
@@ -65,7 +77,7 @@ const NewParty = () => {
 
     const addNewParty = async (partyData) => {
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddParty', {
+            const response = await fetch(`${url}/Maintenance/AddParty`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
