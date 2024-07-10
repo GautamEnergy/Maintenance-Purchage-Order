@@ -16,6 +16,7 @@ const AddMachine = () => {
     const [error, setError] = useState('');
     const [personID, setPersonID] = useState('');
     const navigate = useNavigate();
+    const [fieldErrors, setFieldErrors] = useState({});
     const [url, setUrl] = useState("");
 
 
@@ -82,8 +83,17 @@ const AddMachine = () => {
             setError('Already Exist');
             return;
         }
+        const newFieldErrors = {};
 
-        if (machineName && machineModelNo && machineNo && machineBrandName && status) {
+        if (!machineName) newFieldErrors.machineName = 'Machine Name is required';
+        if (!machineModelNo) newFieldErrors.machineModelNo = 'Machine Model Number is required';
+        if (!machineNo) newFieldErrors.machineNo = 'Machine Number is required';
+        if (!machineBrandName) newFieldErrors.machineBrandName = 'Machine Brand Name is required';
+
+        setFieldErrors(newFieldErrors);
+
+       // if (machineName && machineModelNo && machineNo && machineBrandName && status) {
+        if (Object.keys(newFieldErrors).length === 0) {
             const machineData = {
                 MachineName: machineName,
                 MachineBrandName: machineBrandName,
@@ -97,12 +107,25 @@ const AddMachine = () => {
             setError('Please fill in all required fields.');
         }
     };
+    const handleFieldChange = (field, value) => {
+        const newFieldErrors = { ...fieldErrors };
+        delete newFieldErrors[field];
+
+        setFieldErrors(newFieldErrors);
+        setError('');
+    };
+
 
     const handleback = (e) => {
         navigate('/dashboard');
     }
     const inputStyle = {
         borderColor: 'black',
+        borderWidth: '1px',
+        borderRadius: '5px'
+    };
+    const inputStyles = {
+        borderColor: 'red',
         borderWidth: '1px',
         borderRadius: '5px'
     };
@@ -126,12 +149,15 @@ const AddMachine = () => {
                                 className="input-text"
                                 name="MachineName"
                                 value={machineName}
-                                onChange={(e) => setMachineName(e.target.value)}
+                                onChange={(e) =>{ setMachineName(e.target.value)
+                                    handleFieldChange('machineName', e.target.value);
+                                }}
 
                                 placeholder="Enter Machine Name"
-                                style={inputStyle}
-                                required
+                                style={!fieldErrors.machineName ? inputStyle : inputStyles}
+                               // required
                             />
+                             {fieldErrors.machineName && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineName}</div>}
 
                         </Col>
 
@@ -142,11 +168,14 @@ const AddMachine = () => {
                                 className="input-text"
                                 name="MachineModelNo"
                                 value={machineModelNo}
-                                onChange={(e) => setMachineModelNo(e.target.value)}
+                                onChange={(e) => {setMachineModelNo(e.target.value)
+                                     handleFieldChange('machineModelNo', e.target.value);
+                                }}
                                 placeholder="Enter Machine Model Number"
-                                style={inputStyle}
-                                required
+                                style={!fieldErrors.machineModelNo ? inputStyle : inputStyles}
+                               // required
                             />
+                             {fieldErrors.machineModelNo && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineModelNo}</div>}
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
@@ -158,12 +187,13 @@ const AddMachine = () => {
                                 value={machineNo}
                                 onChange={(el) => {
                                     setMachineNo(el.target.value);
-                                    setError('');
+                                    handleFieldChange('machineNo', el.target.value);
                                 }}
                                 placeholder="Enter Machine Number"
-                                style={inputStyle}
-                                required
+                                style={!fieldErrors.machineNo ? inputStyle : inputStyles}
+                               // required
                             />
+                             {fieldErrors.machineNo && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineNo}</div>}
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
@@ -173,11 +203,14 @@ const AddMachine = () => {
                                 className="input-text"
                                 name="MachineBrandName"
                                 value={machineBrandName}
-                                onChange={(e) => setMachineBrandName(e.target.value)}
+                                onChange={(e) => {setMachineBrandName(e.target.value)
+                                    handleFieldChange('machineBrandName', e.target.value);
+                                }}
                                 placeholder="Enter Machine Brand Name"
-                                style={inputStyle}
-                                required
+                                style={!fieldErrors.machineBrandName ?inputStyle : inputStyles}
+                               // required
                             />
+                             {fieldErrors.machineBrandName && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineBrandName}</div>}
                         </Col>
                     </Row>
                     <Row>

@@ -192,6 +192,14 @@ const AddSpare = () => {
       setError('Please fill in all required fields.');
     }
   };
+  const handleFieldChange = (field, value) => {
+    const newFieldErrors = { ...fieldErrors };
+    delete newFieldErrors[field];
+
+    setFieldErrors(newFieldErrors);
+    setError('');
+};
+
 
   const handleImageChange = (event) => {
     const selectedFiles = event.target.files;
@@ -213,11 +221,14 @@ const AddSpare = () => {
 
   const handleMachineNameChange = (selectedOptions) => {
     setMachineNames(selectedOptions);
+    handleFieldChange('MachineNames', selectedOptions.value);
   };
 
   const handleSparePartNameChange = (e) => {
     const { value } = e.target;
     setSparePartName(value);
+    handleFieldChange('SparePartName', e.target.value);
+  
   };
 
   const handleEquivalentSparePartsOpen = () => {
@@ -301,6 +312,11 @@ const AddSpare = () => {
     borderWidth: '1px',
     borderRadius: '5px'
   };
+  const inputStyles = {
+    borderColor: 'red',
+    borderWidth: '1px',
+    borderRadius: '5px'
+};
   const customSelectStyles = {
     control: (base, state) => ({
       ...base,
@@ -364,10 +380,12 @@ const AddSpare = () => {
                     type="text"
                     name="MasterSparePartName"
                     value={MasterSparePartName}
-                    onChange={(e) => setMasterSparePartName(e.target.value)}
+                    onChange={(e) => {setMasterSparePartName(e.target.value)
+                      handleFieldChange('MasterSparePartName', e.target.value);
+                    }}
                     placeholder="Master Spare Part Name"
                     // required
-                    style={inputStyle}
+                    style={!fieldErrors.MasterSparePartName?inputStyle : inputStyles}
                   />
                   {fieldErrors.MasterSparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MasterSparePartName}</div>}
                 </Form.Group>
@@ -383,7 +401,7 @@ const AddSpare = () => {
                     onChange={handleSparePartNameChange}
                     placeholder="Spare Part Name"
                     // required
-                    style={inputStyle}
+                    style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
 
                   />
                   {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
@@ -397,10 +415,12 @@ const AddSpare = () => {
                     type="text"
                     name="SparePartModelNo"
                     value={SparePartModelNo}
-                    onChange={(e) => setSparePartModelNo(e.target.value)}
+                    onChange={(e) => {setSparePartModelNo(e.target.value)
+                      handleFieldChange('SparePartModelNo', e.target.value);
+                    }}
                     placeholder="Spare Part Model Number"
                     // required
-                    style={inputStyle}
+                    style={!fieldErrors.SparePartModelNo ?inputStyle : inputStyles}
                   />
                   {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
                 </Form.Group>
@@ -415,10 +435,12 @@ const AddSpare = () => {
                     type="text"
                     name="brand"
                     value={Brand}
-                    onChange={(e) => setBrand(e.target.value)}
+                    onChange={(e) =>{ setBrand(e.target.value)
+                      handleFieldChange('Brand', e.target.value);
+                    }}
                     placeholder="Brand"
                     //  required
-                    style={inputStyle}
+                    style={!fieldErrors.Brand ? inputStyle : inputStyles}
 
                   />
                   {fieldErrors.Brand && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Brand}</div>}
@@ -433,10 +455,12 @@ const AddSpare = () => {
                     type="text"
                     name="specification"
                     value={Specification}
-                    onChange={(e) => setSpecification(e.target.value)}
+                    onChange={(e) =>{ setSpecification(e.target.value)
+                      handleFieldChange('Specification', e.target.value);
+                    }}
                     placeholder="Specification"
                     //  required
-                    style={inputStyle}
+                    style={!fieldErrors.Specification ? inputStyle : inputStyles}
                   />
                   {fieldErrors.Specification && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Specification}</div>}
                 </Form.Group>
@@ -451,7 +475,7 @@ const AddSpare = () => {
                     onChange={handleMachineNameChange}
                     placeholder="Select Machine"
                     options={Machine}
-                    styles={customSelectStyles}
+                    styles={!fieldErrors.MachineNames ?customSelectStyles :inputStyles}
                   //   required
 
                   />
@@ -468,10 +492,12 @@ const AddSpare = () => {
                     type="number"
                     name="Pieces"
                     value={PCS}
-                    onChange={(e) => setPCS(e.target.value)}
+                    onChange={(e) => {setPCS(e.target.value)
+                      handleFieldChange('PCS', e.target.value);
+                    }}
                     placeholder="No. Of PCS use in 1 Time"
                     //   required
-                    style={inputStyle}
+                    style={!fieldErrors.PCS ? inputStyle : inputStyles}
                   />
                   {fieldErrors.PCS && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.PCS}</div>}
 
@@ -485,10 +511,12 @@ const AddSpare = () => {
                     type="number"
                     name="Cycle Time"
                     value={CycleTime}
-                    onChange={(e) => setCycleTime(e.target.value)}
+                    onChange={(e) =>{ setCycleTime(e.target.value)
+                      handleFieldChange('CycleTime', e.target.value);
+                    }}
                     placeholder="Cycle Time"
                     //     required
-                    style={inputStyle}
+                    style={!fieldErrors.CycleTime ? inputStyle : inputStyles}
                   />
                   {fieldErrors.CycleTime && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.CycleTime}</div>}
                 </Form.Group>

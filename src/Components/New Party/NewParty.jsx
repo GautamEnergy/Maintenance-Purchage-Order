@@ -15,7 +15,7 @@ const NewParty = () => {
     const [MobileNumber, setMobileNumber] = useState('');
     const [Email, setEmail] = useState('');
     const [Address, setAddress] = useState('');
-    const [Country, setCountry] = useState('');
+    const [Country, setCountry] = useState({ value: 'India', label: 'India' });
     const [State, setState] = useState('');
     const [PinCode, setPinCode] = useState('');
     const [CountryCode, setCountryCode] = useState('+91');
@@ -28,6 +28,7 @@ const NewParty = () => {
     const [isEmailValid, setIsEmailValid] = useState(true);
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
+    const [errors, setErrors] = useState({});
 
 
     useEffect(() => {
@@ -63,6 +64,7 @@ const NewParty = () => {
             setError('Invalid GST number format');
             setPANNumber('');
         }
+        setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: '' }))
     };
 
     const extractPANFromGST = (gstNumber) => {
@@ -117,18 +119,44 @@ const NewParty = () => {
         setStatus('');
         setError('');
     };
+    const validateForm = () => {
+        const newErrors = {};
+        let isValid = true;
+
+        const requiredFields = {
+            PartyName: 'Party name is required',
+            MobileNumber: 'Mobile number is required',
+            Email: 'Email is required',
+            Address: 'Address is required',
+            Country: 'Country is required',
+            ...(Country !== 'China' && { PinCode: 'Pin code is required', GSTNumber: 'GST number is required', PANNumber: 'PAN number is required' }),
+            ...(!hideFields && { State: 'State is required' }),
+        };
+
+        Object.keys(requiredFields).forEach(field => {
+            if (!eval(field) || (field === 'Email' && !isEmailValid)) {
+                newErrors[field] = requiredFields[field];
+                isValid = false;
+            }
+        });
+
+        setErrors(newErrors);
+        return isValid;
+    };
 
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+
         console.log({
             PartyName, GSTNumber, PANNumber, MobileNumber, Email,
             Address, Country, State, CountryCode, PinCode, Status
         });
 
-        if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && Country && State && CountryCode && PinCode && Status) {
+        // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && Country && State && CountryCode && PinCode && Status) {
+        if (validateForm()) {
             const partyData = {
                 PartyName,
                 GSTNumber: Country == 'China' ? '' : GSTNumber,
@@ -147,20 +175,21 @@ const NewParty = () => {
 
             addNewParty(partyData);
 
-        } else if (PartyName && MobileNumber && Email && Address && Country && CountryCode && PinCode && Status) {
-            const partyData = {
-                PartyName,
-                MobileNumber,
-                Email,
-                Address,
-                Country,
-                CountryCode,
-                PinCode,
-                Status,
-                CurrentUser: personID,
-            };
-            addNewParty(partyData);
         }
+        // else if (PartyName && MobileNumber && Email && Address && Country && CountryCode && PinCode && Status) {
+        //     const partyData = {
+        //         PartyName,
+        //         MobileNumber,
+        //         Email,
+        //         Address,
+        //         Country,
+        //         CountryCode,
+        //         PinCode,
+        //         Status,
+        //         CurrentUser: personID,
+        //     };
+        //     addNewParty(partyData);
+        // }
         else {
             console.log('Else')
             notifyError('Please fill in all required fields.');
@@ -179,21 +208,26 @@ const NewParty = () => {
         if (onlyNums.length <= maxLength) {
             setMobileNumber(onlyNums);
         }
+        setErrors((prevErrors) => ({ ...prevErrors, MobileNumber: '' }))
+
     };
 
     const handleCountryCodeChange = (e) => {
         const selectedCode = e.target.value;
         setCountryCode(selectedCode);
 
+
         if (selectedCode == '+91') {
             setMaxLength(10);
         } else if (selectedCode == '+86') {
             setMaxLength(11);
         }
+
     };
 
     const handleCountry = (selectedOption) => {
         console.log('Checked it');
+        console.log(selectedOption);
 
         const selectedCountry = selectedOption.value;
         setCountry(selectedCountry);
@@ -206,6 +240,7 @@ const NewParty = () => {
             setPANNumber('');
             setGSTNumber('');
         }
+        setErrors((prevErrors) => ({ ...prevErrors, Country: '' }))
     };
 
     const countryCodes = [
@@ -220,9 +255,15 @@ const NewParty = () => {
         // Regex pattern for validating email
         const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
         setIsEmailValid(emailPattern.test(emailValue));
+        setErrors((prevErrors) => ({ ...prevErrors, Email: '' }))
     };
     const inputStyle = {
         borderColor: 'black',
+        borderWidth: '1px',
+        borderRadius: '5px'
+    };
+    const inputStyles = {
+        borderColor: 'red',
         borderWidth: '1px',
         borderRadius: '5px'
     };
@@ -247,12 +288,20 @@ const NewParty = () => {
                                 className="input-text"
                                 name="partyName"
                                 value={PartyName}
-                                onChange={(e) => setPartyName(e.target.value)}
+                                onChange={(e) => {
+                                    setPartyName(e.target.value);
+                                    
+                                  setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }))
+                                }}
                                 placeholder='Enter the New Party'
-                                style={inputStyle}
-                                required
+
+                                // required
+                                isInvalid={!!errors.PartyName}
+                                style={!errors.PartyName ? inputStyle : inputStyles}
                             />
-                            {error && error.includes('Party name must be unique') && <small className="text-danger">{error}</small>}
+                            <Form.Control.Feedback type="invalid">
+                                {errors.PartyName}
+                            </Form.Control.Feedback>
                         </Col>
                         <Col md={4} className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -260,7 +309,7 @@ const NewParty = () => {
                                     as="select"
                                     id="countryCode"
                                     className="input-text"
-                                    style={{ width: '50px', padding: '8px', fontSize: '14px', marginTop: '23px', background: '#9AAFB1' }}
+                                    style={{ width: '50px', padding: '10px', fontSize: '14px', marginTop: '15px', background: '#9AAFB1' }}
                                     value={CountryCode}
                                     onChange={handleCountryCodeChange}
                                 >
@@ -284,14 +333,16 @@ const NewParty = () => {
                                     onChange={handleMobileNumberChange}
                                     maxLength={CountryCode == '+91' ? 10 : 11}
 
-                                    style={inputStyle}
 
-                                    required
+                                    // required
+
+                                    isInvalid={!!errors.MobileNumber}
+                                    style={!errors.MobileNumber ? inputStyle : inputStyles}
 
                                 />
-                                {errorMessage && (
-                                    <span style={{ color: 'red', fontSize: '12px' }}>{errorMessage}</span>
-                                )}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.MobileNumber}
+                                </Form.Control.Feedback>
                             </div>
                         </Col>
                         <Col md={4} className="form-group">
@@ -303,10 +354,14 @@ const NewParty = () => {
                                 placeholder='Enter the Email'
                                 value={Email}
                                 onChange={handleEmailChange}
-                                style={inputStyle}
-                                required
+
+                                isInvalid={!!errors.Email}
+                                style={!errors.Email ? inputStyle : inputStyles}
+                            // required
                             />
-                            {!isEmailValid && <span className="error-message" style={{ color: 'red' }}>Please enter a valid email address</span>}
+                            <Form.Control.Feedback type="invalid">
+                                {errors.Email}
+                            </Form.Control.Feedback>
                         </Col>
 
 
@@ -319,6 +374,7 @@ const NewParty = () => {
                             <Form.Label>Country</Form.Label>
                             <Select
                                 onChange={handleCountry}
+                                defaultValue={Country}
                                 options={countryOptions}
                                 placeholder="Select Country"
                                 styles={{
@@ -345,8 +401,12 @@ const NewParty = () => {
                                         backgroundColor: '#f0f0f0',
                                     }),
                                 }}
-                                required
+                                //  required
+                                isInvalid={!!errors.Country}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.Country}
+                            </Form.Control.Feedback>
                         </Col>
 
 
@@ -358,10 +418,19 @@ const NewParty = () => {
                                 name="address"
                                 value={Address}
                                 placeholder='Enter the Address'
-                                onChange={(e) => setAddress(e.target.value)}
-                                style={inputStyle}
-                                required
+                                onChange={(e) => {
+                                    setAddress(e.target.value);
+                                    setErrors((prevErrors) => ({ ...prevErrors, Address: '' }));
+                                }}
+
+
+                                isInvalid={!!errors.Address}
+                                style={!errors.Address ? inputStyle : inputStyles}
+                            //  required
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.Address}
+                            </Form.Control.Feedback>
                         </Col>
                         <Col md={4} className=" py-2 form-group">
                             <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
@@ -380,10 +449,17 @@ const NewParty = () => {
                                             setPinCode(value);
                                         }
                                     }
+                                    setErrors((prevErrors) => ({ ...prevErrors, State: '' }));
                                 }}
-                                style={inputStyle}
-                                required
+
+
+                                isInvalid={!!errors.State}
+                                style={!errors.State ? inputStyle :inputStyles}
+                            //   required
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.State}
+                            </Form.Control.Feedback>
                         </Col>
 
 
@@ -403,10 +479,16 @@ const NewParty = () => {
                                         if (/^\d{0,6}$/.test(value)) {
                                             setPinCode(value);
                                         }
+                                        setErrors((prevErrors) => ({ ...prevErrors, PinCode: '' }));
                                     }}
-                                    style={inputStyle}
-                                    required
+
+                                    isInvalid={!!errors.PinCode}
+                                    style={!errors.PinCode ? inputStyle : inputStyles}
+                                //   required
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.PinCode}
+                                </Form.Control.Feedback>
                             </Col>
                         )}
 
@@ -421,10 +503,14 @@ const NewParty = () => {
                                     value={GSTNumber}
                                     onChange={handleGSTChange}
                                     placeholder='Enter the GST Number'
-                                    style={inputStyle}
-                                    required
+
+                                    //  required
+                                    isInvalid={!!errors.GSTNumber}
+                                    style={!errors.GSTNumber ? inputStyle : inputStyles}
                                 />
-                                {error && !error.includes('Party name must be unique') && <small className="text-danger">{error}</small>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.GSTNumber}
+                                </Form.Control.Feedback>
                             </Col>
                         )}
 
@@ -436,10 +522,19 @@ const NewParty = () => {
                                     className="input-text"
                                     name="panNo"
                                     value={PANNumber}
-                                    onChange={(e) => setPANNumber(e.target.value)}
+                                    onChange={(e) => {
+                                        setPANNumber(e.target.value)
+
+                                        setErrors((prevErrors) => ({ ...prevErrors, PANNumber: '' }));
+                                    }}
                                     placeholder='Enter the PAN Number'
-                                    style={inputStyle}
+                                    isInvalid={!!errors.PANNumber}
+
+                                    style={!errors.PANNumber ? inputStyle : inputStyles}
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.PANNumber}
+                                </Form.Control.Feedback>
                             </Col>
                         )}
                     </Row>
