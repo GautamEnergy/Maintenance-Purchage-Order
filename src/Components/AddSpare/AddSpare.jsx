@@ -28,6 +28,7 @@ const AddSpare = () => {
     const [EquivalentSparePartsOptions, setEquivalentSparePartsOptions] = useState([]);
     const imageInputRef = useRef(null);
     const pdfInputRef = useRef(null);
+    const [fieldErrors, setFieldErrors] = useState({});
     const navigate = useNavigate();
 
     let machineData = []
@@ -38,7 +39,7 @@ const AddSpare = () => {
     const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
         console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/Equ', {
+            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/Equ', {
                 SparePartName: sparePartName,
                 MachineName: selectedMachines.map(machine => machine.value)
 
@@ -64,7 +65,7 @@ const AddSpare = () => {
 
     const addNewSpare = async (SpareData) => {
         try {
-            const response = await fetch('http://srv515471.hstgr.cloud:9090/Maintenance/AddSparePart', {
+            const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddSparePart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +110,19 @@ const AddSpare = () => {
             setError('PersonID is required.');
             return;
         }
-        if (SparePartName && SparePartModelNo && Brand && Specification && MachineNames.length > 0 && Status) {
+        const newFieldErrors = {};
+        if (!MasterSparePartName) newFieldErrors.MasterSparePartName = 'Master Spare Part Name is required';
+        if (!SparePartName) newFieldErrors.SparePartName = 'Spare Part Name is required';
+        if (!SparePartModelNo) newFieldErrors.SparePartModelNo = 'Spare Part Model Number is required';
+        if (!Brand) newFieldErrors.Brand = 'Brand is required';
+        if (!Specification) newFieldErrors.Specification = 'Specification is required';
+        if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine Name is required';
+        if (!CycleTime) newFieldErrors.CycleTime = 'CycleTime is required';
+        if (!PCS) newFieldErrors.PCS = 'PCS is required';
+
+        setFieldErrors(newFieldErrors);
+       // if (SparePartName && SparePartModelNo && Brand && Specification && MachineNames.length > 0 && Status) {
+        if (Object.keys(newFieldErrors).length === 0) {
             const EquivalentSparePartValues = EquivalentSpareParts.map(part => part.value);
             console.log("jajajjajaj");
             console.log(EquivalentSparePartValues);
@@ -201,7 +214,7 @@ const AddSpare = () => {
     const getMachineListData = async () => {
         // console.log("hmmmmmmmmmmm");
         // console.log(JSON.parse(localStorage.getItem('MachineId')));
-        const url = `http://srv515471.hstgr.cloud:9090/Maintenance/MachineDetailById`;
+        const url = `http://srv515471.hstgr.cloud:8080/Maintenance/MachineDetailById`;
         try {
             const response = await axios.get(url, {
                 headers: {
@@ -239,7 +252,7 @@ const AddSpare = () => {
 
 
         try {
-            const response = await axios.post('http://srv515471.hstgr.cloud:9090/Maintenance/SparePartsImage', formData, {
+            const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/SparePartsImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -338,9 +351,10 @@ const AddSpare = () => {
                     value={MasterSparePartName}
                     onChange={(e) => setMasterSparePartName(e.target.value)}
                     placeholder="Master Spare Part Name"
-                    required
+                   // required
                     style={inputStyle}
                   />
+                  {fieldErrors.MasterSparePartName && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.MasterSparePartName}</div>}
                 </Form.Group>
               </Col>
 
@@ -353,10 +367,11 @@ const AddSpare = () => {
                     value={SparePartName}
                     onChange={handleSparePartNameChange}
                     placeholder="Spare Part Name"
-                    required
+                   // required
                     style={inputStyle}
                     
                   />
+                   {fieldErrors.SparePartName && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.SparePartName}</div>}
                 </Form.Group>
               </Col>
 
@@ -369,9 +384,10 @@ const AddSpare = () => {
                     value={SparePartModelNo}
                     onChange={(e) => setSparePartModelNo(e.target.value)}
                     placeholder="Spare Part Model Number"
-                    required
+                   // required
                     style={inputStyle}
                   />
+                   {fieldErrors.SparePartModelNo && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
                 </Form.Group>
               </Col>
             </Row>
@@ -386,9 +402,12 @@ const AddSpare = () => {
                     value={Brand}
                     onChange={(e) => setBrand(e.target.value)}
                     placeholder="Brand"
-                    required
+                  //  required
                     style={inputStyle}
+                    
                   />
+                  {fieldErrors.Brand && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.Brand}</div>}
+                  
                 </Form.Group>
               </Col>
 
@@ -401,9 +420,10 @@ const AddSpare = () => {
                     value={Specification}
                     onChange={(e) => setSpecification(e.target.value)}
                     placeholder="Specification"
-                    required
+                  //  required
                     style={inputStyle}
                   />
+                   {fieldErrors.Specification && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.Specification}</div>}
                 </Form.Group>
               </Col>
 
@@ -417,9 +437,10 @@ const AddSpare = () => {
                     placeholder="Select Machine"
                     options={Machine}
                     styles={customSelectStyles}
-                    required
+                 //   required
                     
                   />
+                   {fieldErrors.MachineNames && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.MachineNames}</div>}
                 </Form.Group>
               </Col>
             </Row>
@@ -434,9 +455,11 @@ const AddSpare = () => {
                     value={PCS}
                     onChange={(e) => setPCS(e.target.value)}
                     placeholder="No. Of PCS use in 1 Time"
-                    required
+                 //   required
                     style={inputStyle}
                   />
+                   {fieldErrors.PCS && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.PCS}</div>}
+                
                 </Form.Group>
               </Col>
 
@@ -449,9 +472,10 @@ const AddSpare = () => {
                     value={CycleTime}
                     onChange={(e) => setCycleTime(e.target.value)}
                     placeholder="Cycle Time"
-                    required
+               //     required
                     style={inputStyle}
                   />
+                   {fieldErrors.CycleTime && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.CycleTime}</div>}
                 </Form.Group>
               </Col>
 
@@ -507,7 +531,7 @@ const AddSpare = () => {
                     </Row>
         </Form>
 
-        {error && <p className="error">{error}</p>}
+        {/* {error && <p className="error">{error}</p>} */}
         <ToastContainer position='top-center' />
       </div>
     </Container>
