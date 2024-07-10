@@ -12,6 +12,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [url, setUrl] = useState("");
 
     const navigate = useNavigate();
 
@@ -19,7 +20,9 @@ const Login = () => {
         const token = localStorage.getItem("token");
         const department = localStorage.getItem("department");
         const PersonID = localStorage.getItem("CurrentUser");
+        const url = localStorage.getItem('url');
 
+        setUrl(url);
 
         // console.log('asddasda')
         // console.log(localStorage.getItem("CurrentUser"))
@@ -54,7 +57,7 @@ const Login = () => {
         console.log(password);
 
         try {
-            const res = await axios.post("http://srv515471.hstgr.cloud:9090/Employee/Login", {
+            const res = await axios.post(`${url}/Employee/Login`, {
                 loginid: email,
                 password: password,
                 department: 'Machine Maintenance'
