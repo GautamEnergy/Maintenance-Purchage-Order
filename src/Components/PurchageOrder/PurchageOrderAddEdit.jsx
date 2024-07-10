@@ -6,6 +6,7 @@ import NewParty from '../New Party/NewParty';
 import { FaUser } from 'react-icons/fa';
 import Billing from '../Billing/Billing';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const currentDate = new Date().toDateString();
 const purchaseTypes = [
@@ -53,19 +54,28 @@ const material = [
 ];
 
 const PurchageForm = () => {
-    const [series, setSeries] = useState('');
-    const [vochNo, setVochNo] = useState('');
+    const [series, setSeries] = useState('GST-2024-2025');
+    const [vochNo, setVochNo] = useState('GST-2024-2025');
     const [purcType, setPurcType] = useState('');
-    const [party, setParty] = useState('');
+    const [PartyName, setPartyName] = useState('');
     const [matCent, setMatCent] = useState('');
     const [narration, setNarration] = useState('');
     const [showNewPartyModal, setShowNewPartyModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const navigate = useNavigate();
 
-    const handlePartyChange = (e) => setParty(e.target.value);
-    const handleMatCentChange = (e) => setMatCent(e.target.value);
-    const handleNarrationChange = (e) => setNarration(e.target.value);
+
+
+
+    const totalPurchage = async (PurchaseData) => {
+        try {
+            const response = await axios.post('YOUR_API_ENDPOINT', PurchaseData);
+            console.log(response.data);
+            clearForm();
+        } catch (error) {
+            console.error('Error making API request:', error);
+        }
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -73,16 +83,33 @@ const PurchageForm = () => {
             series,
             vochNo,
             purcType,
-            party,
+            PartyName,
             matCent,
             narration,
+            currentDate,
         });
 
+        if (series && vochNo && purcType && PartyName && matCent && narration && currentDate) {
+            const PurchaseData = {
+                series,
+                vochNo,
+                purcType,
+                PartyName,
+                matCent,
+                narration,
+                currentDate,
+            }
+
+            totalPurchage(PurchaseData);
+        }
+    };
+
+    const clearForm = () => {
         // Reset form
         setSeries('');
         setVochNo('');
         setPurcType('');
-        setParty('');
+        setPartyName('');
         setMatCent('');
         setNarration('');
     };
@@ -111,7 +138,7 @@ const PurchageForm = () => {
     return (
         <>
             <div className="container mt-5">
-                <div className="card">
+                <div className="card" style={{ marginTop: '123px' }}>
                     <div className="card-body">
                         <form onSubmit={handleSubmit}>
                             <h2 className="mb-4">Purchase Order</h2>
@@ -122,9 +149,11 @@ const PurchageForm = () => {
                                     id="series"
                                     className="form-control"
                                     placeholder="Series"
-                                    value="GST-2024-2025"
+                                    value={series}
                                     disabled
                                     readOnly
+                                    style={{ border: '1px solid black' }}
+
                                 />
                             </div>
                             <div className="mb-3">
@@ -133,8 +162,10 @@ const PurchageForm = () => {
                                     name="date"
                                     id="date"
                                     className="form-control"
-                                    value={`${currentDate}`}
+                                    value={currentDate}
                                     readOnly
+                                    style={{ border: '1px solid black' }}
+
                                 />
                             </div>
                             <div className="mb-3">
@@ -144,13 +175,16 @@ const PurchageForm = () => {
                                     id="vochNo"
                                     className="form-control"
                                     placeholder="Voch No."
-                                    value="GST-2024-2025"
+                                    value={vochNo}
                                     readOnly
                                     disabled
+                                    style={{ border: '1px solid black' }}
+
                                 />
                             </div>
                             <div className="mb-3">
                                 <select
+                                    style={{ border: '1px solid black' }}
                                     name="purcType"
                                     id="purcType"
                                     className="form-select"
@@ -168,13 +202,15 @@ const PurchageForm = () => {
                             <div className="mb-3 position-relative">
                                 <input
                                     type="text"
-                                    name="party"
-                                    id="party"
+                                    name="PartyName"
+                                    id="PartyName"
                                     className="form-control"
                                     list="partyOptions"
                                     placeholder="Party"
-                                    value={party}
-                                    onChange={handlePartyChange}
+                                    value={PartyName}
+                                    onChange={(e) => setPartyName(e.target.value)}
+                                    style={{ border: '1px solid black' }}
+
                                 />
                                 <button
                                     type="button"
@@ -195,7 +231,10 @@ const PurchageForm = () => {
                                     id="matCent"
                                     className="form-select"
                                     value={matCent}
-                                    onChange={handleMatCentChange}
+                                    onChange={(e) => setMatCent(e.target.value)}
+                                    style={{ border: '1px solid black' }}
+
+
                                 >
                                     <option value="">Select Mat Cent</option>
                                     {material.map((option, index) => (
@@ -213,7 +252,9 @@ const PurchageForm = () => {
                                     className="form-control"
                                     placeholder="Narration"
                                     value={narration}
-                                    onChange={handleNarrationChange}
+                                    style={{ border: '1px solid black' }}
+                                    onChange={(e) => setNarration(e.target.value)}
+
                                 />
                             </div>
                             <div className="d-flex justify-content-between">
@@ -227,13 +268,13 @@ const PurchageForm = () => {
 
             {showNewPartyModal && (
                 <div className="modal fade show d-block">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
+                    <div className="modal-dialog" >
+                        <div className="modal-content" style={{ width: '700px' }}>
                             <div className="modal-header">
                                 <h5 className="modal-title">New Party</h5>
                                 <button type="button" className="btn-close" onClick={() => setShowNewPartyModal(false)}></button>
                             </div>
-                            <div className="modal-body">
+                            <div className="modal-body" style={{ marginBottom: '87px' }}>
                                 <NewParty />
                             </div>
                         </div>
