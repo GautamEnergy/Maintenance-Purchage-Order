@@ -310,7 +310,8 @@ const AddSpare = () => {
   const inputStyle = {
     borderColor: 'black',
     borderWidth: '1px',
-    borderRadius: '5px'
+    borderRadius: '5px',
+    boxShadow: 'none'
   };
   const inputStyles = {
     borderColor: 'red',
@@ -322,9 +323,11 @@ const AddSpare = () => {
       ...base,
       height: 'auto',
       minHeight: '40px',
+      width: '100%',
+      maxWidth : '300px',
       //borderRadius: '5px',
       backgroundColor: 'white',
-      borderColor: '#black',
+      borderColor: 'black',
       borderWidth: '1px',
       boxShadow: 'none',
       '&:hover': {
@@ -347,6 +350,7 @@ const AddSpare = () => {
       borderRadius: '3px',
       padding: '1px',
       margin: '1px',
+      maxWidth: '100%',
     }),
     multiValueLabel: (base) => ({
       ...base,
@@ -361,10 +365,24 @@ const AddSpare = () => {
       },
     }),
   };
+  const customSelectStyles1 = {
+    control: (base, state) => ({
+      ...base,
+      height: 'auto',
+      minHeight: '40px',
+      //borderRadius: '5px',
+      backgroundColor: 'white',
+      borderColor: 'red',
+      borderWidth: '1px',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: '#0C53F5',
+      },
+    }),}
 
   return (
 
-    <Container style={{ marginTop: "12%", width: "120%" }} className="fullPage ">
+    <Container style={{ marginTop: "12%", maxWidth: "120%" }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
         <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
@@ -475,7 +493,7 @@ const AddSpare = () => {
                     onChange={handleMachineNameChange}
                     placeholder="Select Machine"
                     options={Machine}
-                    styles={!fieldErrors.MachineNames ?customSelectStyles :inputStyles}
+                    styles={!fieldErrors.MachineNames ? customSelectStyles :customSelectStyles1}
                   //   required
 
                   />

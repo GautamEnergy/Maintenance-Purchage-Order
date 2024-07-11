@@ -260,7 +260,8 @@ const NewParty = () => {
     const inputStyle = {
         borderColor: 'black',
         borderWidth: '1px',
-        borderRadius: '5px'
+        borderRadius: '5px',
+        boxShadow : 'none'
     };
     const inputStyles = {
         borderColor: 'red',
@@ -548,7 +549,7 @@ const NewParty = () => {
             </div>
 
 
-            <ToastContainer />
+            {/* <ToastContainer /> */}
 
         </Container>
     );
