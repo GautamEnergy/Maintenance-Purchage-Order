@@ -137,6 +137,7 @@ const NewParty = () => {
             Country: 'Country is required',
             ...(Country !== 'China' && { PinCode: 'Pin code is required', GSTNumber: 'GST number is required', PANNumber: 'PAN number is required', State: 'State is required' }),
             ...(Country === 'China' && { PinCode: 'Zip code is required' }),
+            
         };
 
         Object.keys(requiredFields).forEach(field => {
@@ -144,6 +145,7 @@ const NewParty = () => {
                 newErrors[field] = requiredFields[field];
                 isValid = false;
             }
+            if (PinCode.length !== 6) {newErrors.PinCode = 'Pin Code is invalid'};
         });
 
 
@@ -163,18 +165,12 @@ const NewParty = () => {
             }));
             return;
         }
-        if (PinCode.length !== 6) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                PinCode: 'Pin code must be exactly 6 digits'
-            }));
-            return;
-        }
+       
        
     
 
         // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && Country && State && CountryCode && PinCode && Status) {
-        if (validateForm()) {
+       else if (validateForm()) {
             const partyData = {
                 PartyName,
                 GSTNumber: Country == 'China' ? '' : GSTNumber,
@@ -544,7 +540,7 @@ const NewParty = () => {
                                         } else if (value.length !== 6) {
                                             setErrors((prevErrors) => ({
                                                 ...prevErrors,
-                                                PinCode: 'Pin code must be exactly 6 digits'
+                                                PinCode: 'Pin code is invalid'
                                             }));
                                         } else {
                                             setErrors((prevErrors) => ({

@@ -61,7 +61,7 @@ const AddSpare = () => {
   const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
     console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
     try {
-      const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/Equ', {
+      const response = await axios.post(`${url}/Maintenance/Equ`, {
         SparePartName: sparePartName,
         MachineName: selectedMachines.map(machine => machine.value)
 
@@ -80,7 +80,7 @@ const AddSpare = () => {
 
   const addNewSpare = async (SpareData) => {
     try {
-      const response = await fetch('http://srv515471.hstgr.cloud:8080/Maintenance/AddSparePart', {
+      const response = await fetch(`${url}/Maintenance/AddSparePart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,17 +192,17 @@ const AddSpare = () => {
       setError('Please fill in all required fields.');
     }
   };
-  const handleFieldChange = (field, value) => {
-    const newFieldErrors = { ...fieldErrors };
-    if (!value) {
-        newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
-    } else {
-        delete newFieldErrors[field];
-    }
+ const handleFieldChange = (field, value) => {
+        const newFieldErrors = { ...fieldErrors };
+        if (!value) {
+            newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
+        } else {
+            delete newFieldErrors[field];
+        }
 
-    setFieldErrors(newFieldErrors);
-    setError('');
-};
+        setFieldErrors(newFieldErrors);
+        setError('');
+    };
   const handleImageChange = (event) => {
     const selectedFiles = event.target.files;
     const filesArray = [];
@@ -242,9 +242,9 @@ const AddSpare = () => {
   const getMachineListData = async () => {
     // console.log("hmmmmmmmmmmm");
     // console.log(JSON.parse(localStorage.getItem('MachineId')));
-    const url = `http://srv515471.hstgr.cloud:8080/Maintenance/MachineDetailById`;
+   // const url = `${url}/Maintenance/MachineDetailById`;
     try {
-      const response = await axios.get(url, {
+      const response = await axios.get(`${url}/Maintenance/MachineDetailById`, {
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -280,7 +280,7 @@ const AddSpare = () => {
 
 
     try {
-      const response = await axios.post('http://srv515471.hstgr.cloud:8080/Maintenance/SparePartsImage', formData, {
+      const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -333,13 +333,11 @@ const AddSpare = () => {
       borderColor: 'black',
       borderWidth: '1px',
       boxShadow: 'none',
-      '&:hover': {
-        borderColor: '#0C53F5',
-      },
+      
     }),
     menu: (base) => ({
       ...base,
-      backgroundColor: '#f0f0f0',
+      backgroundColor: 'black',
       color: 'black',
     }),
     menuList: (base) => ({
@@ -363,7 +361,7 @@ const AddSpare = () => {
       ...base,
       color: 'black',
       ':hover': {
-        backgroundColor: '#d9534f',
+        backgroundColor: 'black',
         color: 'white',
       },
     }),
@@ -378,9 +376,7 @@ const AddSpare = () => {
       borderColor: 'red',
       borderWidth: '1px',
       boxShadow: 'none',
-      '&:hover': {
-        borderColor: '#0C53F5',
-      },
+      
     }),}
 
   return (

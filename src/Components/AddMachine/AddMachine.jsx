@@ -109,16 +109,31 @@ const AddMachine = () => {
     };
     const handleFieldChange = (field, value) => {
         const newFieldErrors = { ...fieldErrors };
+    
         if (!value) {
-            newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
+            switch (field) {
+                case 'machineName':
+                    newFieldErrors[field] = 'Machine name is required';
+                    break;
+                case 'machineModelNo':
+                    newFieldErrors[field] = 'Model number is required';
+                    break;
+                case 'machineNo':
+                    newFieldErrors[field] = 'Machine number is required';
+                    break;
+                case 'machineBrandName':
+                    newFieldErrors[field] = 'Machine brand name is required';
+                    break;
+                default:
+                    newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
+            }
         } else {
             delete newFieldErrors[field];
         }
-
+    
         setFieldErrors(newFieldErrors);
         setError('');
     };
-
     const handleback = (e) => {
         navigate('/dashboard');
     }
