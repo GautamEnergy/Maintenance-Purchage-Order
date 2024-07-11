@@ -57,14 +57,20 @@ const NewParty = () => {
     const handleGSTChange = (e) => {
         const gstValue = e.target.value.toUpperCase();
         setGSTNumber(gstValue);
-        if (validateGST(gstValue)) {
-            extractPANFromGST(gstValue);
-            setError('');
-        } else {
-            setError('Invalid GST number format');
+
+        if (gstValue.trim() === '') {
+            setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: 'GST number is required' }));
             setPANNumber('');
+            setError(''); // Optional: If you want to clear any other error message
+        } else if (!validateGST(gstValue)) {
+            setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: 'GST number is invalid' }));
+            setPANNumber('');
+            setError('Invalid GST number format'); // Optional: If you want to show this error message elsewhere
+        } else {
+            setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: '' }));
+            extractPANFromGST(gstValue);
+            setError(''); // Optional: Clear any other error message
         }
-        setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: '' }))
     };
 
     const extractPANFromGST = (gstNumber) => {
@@ -129,8 +135,8 @@ const NewParty = () => {
             Email: 'Email is required',
             Address: 'Address is required',
             Country: 'Country is required',
-            ...(Country !== 'China' && { PinCode: 'Pin code is required', GSTNumber: 'GST number is required', PANNumber: 'PAN number is required' }),
-            ...(!hideFields && { State: 'State is required' }),
+            ...(Country !== 'China' && { PinCode: 'Pin code is required', GSTNumber: 'GST number is required', PANNumber: 'PAN number is required', State: 'State is required' }),
+            ...(Country === 'China' && { PinCode: 'Zip code is required' }),
         };
 
         Object.keys(requiredFields).forEach(field => {
@@ -140,20 +146,32 @@ const NewParty = () => {
             }
         });
 
+
         setErrors(newErrors);
         return isValid;
     };
 
 
 
+
     const handleSubmit = (e) => {
         e.preventDefault();
-
-
-        console.log({
-            PartyName, GSTNumber, PANNumber, MobileNumber, Email,
-            Address, Country, State, CountryCode, PinCode, Status
-        });
+         if (!isEmailValid) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                Email: 'Email is invalid'
+            }));
+            return;
+        }
+        if (PinCode.length !== 6) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                PinCode: 'Pin code must be exactly 6 digits'
+            }));
+            return;
+        }
+       
+    
 
         // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && Country && State && CountryCode && PinCode && Status) {
         if (validateForm()) {
@@ -205,20 +223,30 @@ const NewParty = () => {
 
     const handleMobileNumberChange = (e) => {
         const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-        if (onlyNums.length <= maxLength) {
-            setMobileNumber(onlyNums);
-        }
-        setErrors((prevErrors) => ({ ...prevErrors, MobileNumber: '' }))
-
+        setMobileNumber(onlyNums);
+        setErrors((prevErrors) => {
+            const updatedErrors = { ...prevErrors, MobileNumber: '' };
+            if (CountryCode === '+91' && onlyNums.length !== 10 && onlyNums.length !== 0) {
+                updatedErrors.MobileNumber = 'Mobile number is invalid';
+            } else if (CountryCode === '+86' && onlyNums.length !== 11 && onlyNums.length !== 0) {
+                updatedErrors.MobileNumber = 'Mobile number is invalid';
+            } else if (onlyNums.length === 0) {
+                updatedErrors.MobileNumber = 'Mobile number is required';
+            }
+            return updatedErrors;
+        });
     };
 
     const handleCountryCodeChange = (e) => {
+        setMobileNumber("");
         const selectedCode = e.target.value;
         setCountryCode(selectedCode);
 
 
+
         if (selectedCode == '+91') {
             setMaxLength(10);
+
         } else if (selectedCode == '+86') {
             setMaxLength(11);
         }
@@ -248,26 +276,39 @@ const NewParty = () => {
         { code: '+86' },
     ];
 
-    const handleEmailChange = (e) => {
-        const emailValue = e.target.value;
-        setEmail(emailValue);
+   const handleEmailChange = (e) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
 
-        // Regex pattern for validating email
-        const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-        setIsEmailValid(emailPattern.test(emailValue));
-        setErrors((prevErrors) => ({ ...prevErrors, Email: '' }))
-    };
+    // Regex pattern for validating email
+    const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+    const isValid = emailPattern.test(emailValue);
+    setIsEmailValid(isValid);
+
+    // Set error based on email validity
+    if (emailValue.trim() === '') {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            Email: 'Email is required'
+        }));
+    } else {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            Email: isValid ? '' : 'Email is invalid'
+        }));
+    }
+};
     const inputStyle = {
         borderColor: 'black',
         borderWidth: '1px',
         borderRadius: '5px',
-        boxShadow : 'none'
+        boxShadow: 'none'
     };
     const inputStyles = {
         borderColor: 'red',
         borderWidth: '1px',
         borderRadius: '5px',
-         boxShadow: 'none'
+        boxShadow: 'none'
     };
 
 
@@ -281,7 +322,7 @@ const NewParty = () => {
                 <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
                     Add New Party
                 </h2>
-                <Form onSubmit={handleSubmit}>
+                <Form noValidate onSubmit={handleSubmit}>
                     <Row className="subCard1">
                         <Col md={4} className="form-group">
                             <Form.Label>Party Name</Form.Label>
@@ -291,9 +332,13 @@ const NewParty = () => {
                                 name="partyName"
                                 value={PartyName}
                                 onChange={(e) => {
-                                    setPartyName(e.target.value);
-                                    
-                                  setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }))
+                                    const value = e.target.value;
+                                    setPartyName(value);
+                                    if (value.trim() === '') {
+                                        setErrors((prevErrors) => ({ ...prevErrors, PartyName: 'Party name is required' }));
+                                    } else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }));
+                                    }
                                 }}
                                 placeholder='Enter the New Party'
 
@@ -311,7 +356,7 @@ const NewParty = () => {
                                     as="select"
                                     id="countryCode"
                                     className="input-text"
-                                    style={{ width: '50px', padding: '10px', fontSize: '14px', marginTop: '15px', background: '#9AAFB1' }}
+                                    style={{ width: '45px', height: '38px', padding: '10px', fontSize: '14px', marginTop: '22px', background: 'White', border: "1px black solid", boxShadow: "none" }}
                                     value={CountryCode}
                                     onChange={handleCountryCodeChange}
                                 >
@@ -351,7 +396,7 @@ const NewParty = () => {
                             <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="email"
-                                className={`input-text ${isEmailValid ? '' : 'is-invalid'}`}
+                                className="input-text"
                                 name="email"
                                 placeholder='Enter the Email'
                                 value={Email}
@@ -421,8 +466,16 @@ const NewParty = () => {
                                 value={Address}
                                 placeholder='Enter the Address'
                                 onChange={(e) => {
-                                    setAddress(e.target.value);
-                                    setErrors((prevErrors) => ({ ...prevErrors, Address: '' }));
+                                    const value = e.target.value
+                                    setAddress(value);
+                                    if (value.trim() === '') {
+                                        setErrors((prevErrors) => ({ ...prevErrors, Address: 'Address is requird' }))
+                                    }
+                                    else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, Address: '' }));
+
+                                    }
+
                                 }}
 
 
@@ -446,21 +499,21 @@ const NewParty = () => {
                                     const value = e.target.value;
                                     if (!hideFields) {
                                         setState(value);
+                                        setErrors((prevErrors) => ({ ...prevErrors, State: value ? '' : 'State is required' }));
                                     } else {
                                         if (/^\d{0,6}$/.test(value)) {
                                             setPinCode(value);
+                                            setErrors((prevErrors) => ({ ...prevErrors, PinCode: value ? '' : 'Zip Code is required' }));
                                         }
                                     }
-                                    setErrors((prevErrors) => ({ ...prevErrors, State: '' }));
                                 }}
 
 
-                                isInvalid={!!errors.State}
-                                style={!errors.State ? inputStyle :inputStyles}
-                            //   required
+                                isInvalid={!hideFields ? !!errors.State : !!errors.PinCode}
+                                style={!hideFields ? (!errors.State ? inputStyle : inputStyles) : (!errors.PinCode ? inputStyle : inputStyles)}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.State}
+                                {!hideFields ? errors.State : errors.PinCode}
                             </Form.Control.Feedback>
                         </Col>
 
@@ -481,7 +534,24 @@ const NewParty = () => {
                                         if (/^\d{0,6}$/.test(value)) {
                                             setPinCode(value);
                                         }
-                                        setErrors((prevErrors) => ({ ...prevErrors, PinCode: '' }));
+                                        if (value.trim() === '') {
+                                            setErrors((prevErrors) => ({ ...prevErrors, PinCode: 'Pin code is required' }));
+                                        } if (value.trim() === '') {
+                                            setErrors((prevErrors) => ({
+                                                ...prevErrors,
+                                                PinCode: 'Pin code is required'
+                                            }));
+                                        } else if (value.length !== 6) {
+                                            setErrors((prevErrors) => ({
+                                                ...prevErrors,
+                                                PinCode: 'Pin code must be exactly 6 digits'
+                                            }));
+                                        } else {
+                                            setErrors((prevErrors) => ({
+                                                ...prevErrors,
+                                                PinCode: ''
+                                            }));
+                                        }
                                     }}
 
                                     isInvalid={!!errors.PinCode}
@@ -525,9 +595,18 @@ const NewParty = () => {
                                     name="panNo"
                                     value={PANNumber}
                                     onChange={(e) => {
-                                        setPANNumber(e.target.value)
+                                        const value = e.target.value
+                                        setPANNumber(value)
+                                        if(PANNumber.trim() === ''){
+                                            setErrors((prevErrors) => ({ ...prevErrors, PANNumber: 'PAN number is required' }));
 
-                                        setErrors((prevErrors) => ({ ...prevErrors, PANNumber: '' }));
+                                        }
+                                        else{
+                                            setErrors((prevErrors) => ({ ...prevErrors, PANNumber: '' }));
+
+                                        }
+
+                                       
                                     }}
                                     placeholder='Enter the PAN Number'
                                     isInvalid={!!errors.PANNumber}
