@@ -266,7 +266,8 @@ const NewParty = () => {
     const inputStyles = {
         borderColor: 'red',
         borderWidth: '1px',
-        borderRadius: '5px'
+        borderRadius: '5px',
+         boxShadow: 'none'
     };
 
 

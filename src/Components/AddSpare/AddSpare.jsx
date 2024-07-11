@@ -126,13 +126,13 @@ const AddSpare = () => {
       return;
     }
     const newFieldErrors = {};
-    if (!MasterSparePartName) newFieldErrors.MasterSparePartName = 'Master Spare Part Name is required';
-    if (!SparePartName) newFieldErrors.SparePartName = 'Spare Part Name is required';
-    if (!SparePartModelNo) newFieldErrors.SparePartModelNo = 'Spare Part Model Number is required';
+    if (!MasterSparePartName) newFieldErrors.MasterSparePartName = 'Master spare part name is required';
+    if (!SparePartName) newFieldErrors.SparePartName = 'Spare part name is required';
+    if (!SparePartModelNo) newFieldErrors.SparePartModelNo = 'Model number is required';
     if (!Brand) newFieldErrors.Brand = 'Brand is required';
     if (!Specification) newFieldErrors.Specification = 'Specification is required';
-    if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine Name is required';
-    if (!CycleTime) newFieldErrors.CycleTime = 'CycleTime is required';
+    if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine name is required';
+    if (!CycleTime) newFieldErrors.CycleTime = 'Cycle time is required';
     if (!PCS) newFieldErrors.PCS = 'PCS is required';
 
     setFieldErrors(newFieldErrors);
@@ -194,13 +194,15 @@ const AddSpare = () => {
   };
   const handleFieldChange = (field, value) => {
     const newFieldErrors = { ...fieldErrors };
-    delete newFieldErrors[field];
+    if (!value) {
+        newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
+    } else {
+        delete newFieldErrors[field];
+    }
 
     setFieldErrors(newFieldErrors);
     setError('');
 };
-
-
   const handleImageChange = (event) => {
     const selectedFiles = event.target.files;
     const filesArray = [];
@@ -316,7 +318,8 @@ const AddSpare = () => {
   const inputStyles = {
     borderColor: 'red',
     borderWidth: '1px',
-    borderRadius: '5px'
+    borderRadius: '5px',
+     boxShadow: 'none'
 };
   const customSelectStyles = {
     control: (base, state) => ({
