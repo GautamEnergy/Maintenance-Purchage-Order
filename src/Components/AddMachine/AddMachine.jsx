@@ -87,7 +87,7 @@ const AddMachine = () => {
 
         if (!machineName) newFieldErrors.machineName = 'Machine name is required';
         if (!machineModelNo) newFieldErrors.machineModelNo = 'Model number is required';
-        if (!machineNo) newFieldErrors.machineNo = 'Machine number is required';
+        if (!machineNo) newFieldErrors.machineNo = 'Machine serial number is required';
         if (!machineBrandName) newFieldErrors.machineBrandName = 'Machine brand name is required';
 
         setFieldErrors(newFieldErrors);
@@ -119,7 +119,7 @@ const AddMachine = () => {
                     newFieldErrors[field] = 'Model number is required';
                     break;
                 case 'machineNo':
-                    newFieldErrors[field] = 'Machine number is required';
+                    newFieldErrors[field] = 'Machine serial number is required';
                     break;
                 case 'machineBrandName':
                     newFieldErrors[field] = 'Machine brand name is required';
@@ -198,7 +198,7 @@ const AddMachine = () => {
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
-                            <Form.Label>Machine Number</Form.Label>
+                            <Form.Label>Machine Serial Number</Form.Label>
                             <Form.Control
                                 type="text"
                                 className="input-text"
@@ -208,7 +208,7 @@ const AddMachine = () => {
                                     setMachineNo(el.target.value);
                                     handleFieldChange('machineNo', el.target.value);
                                 }}
-                                placeholder="Enter Machine Number"
+                                placeholder="Enter Machine Serial Number"
                                 style={!fieldErrors.machineNo ? inputStyle : inputStyles}
                                // required
                             />

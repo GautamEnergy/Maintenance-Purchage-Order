@@ -192,17 +192,17 @@ const AddSpare = () => {
       setError('Please fill in all required fields.');
     }
   };
- const handleFieldChange = (field, value) => {
-        const newFieldErrors = { ...fieldErrors };
-        if (!value) {
-            newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
-        } else {
-            delete newFieldErrors[field];
-        }
+  const handleFieldChange = (field, value) => {
+    const newFieldErrors = { ...fieldErrors };
 
-        setFieldErrors(newFieldErrors);
-        setError('');
-    };
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      newFieldErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
+    } else {
+      delete newFieldErrors[field];
+    }
+
+    setFieldErrors(newFieldErrors);
+  };
   const handleImageChange = (event) => {
     const selectedFiles = event.target.files;
     const filesArray = [];
@@ -221,9 +221,10 @@ const AddSpare = () => {
     navigate('/dashboard');
   };
 
-  const handleMachineNameChange = (selectedOptions) => {
-    setMachineNames(selectedOptions);
-    handleFieldChange('MachineNames', selectedOptions.value);
+  const handleMachineNameChange = (selectedMachines) => {
+    console.log(selectedMachines);
+    setMachineNames(selectedMachines);
+    handleFieldChange('MachineNames', selectedMachines);
   };
 
   const handleSparePartNameChange = (e) => {
@@ -240,8 +241,10 @@ const AddSpare = () => {
   };
 
   const getMachineListData = async () => {
-    // console.log("hmmmmmmmmmmm");
-    // console.log(JSON.parse(localStorage.getItem('MachineId')));
+    const url = localStorage.getItem('url');
+    console.log("hmmmmmmmmmmm");
+    console.log(url);
+    console.log(token);
    // const url = `${url}/Maintenance/MachineDetailById`;
     try {
       const response = await axios.get(`${url}/Maintenance/MachineDetailById`, {
@@ -362,7 +365,7 @@ const AddSpare = () => {
       color: 'black',
       ':hover': {
         backgroundColor: 'black',
-        color: 'white',
+        color: 'black',
       },
     }),
   };
@@ -381,7 +384,7 @@ const AddSpare = () => {
 
   return (
 
-    <Container style={{ marginTop: "12%", maxWidth: "120%" }} className="fullPage ">
+    <Container style={{ marginTop: "12%",maxWidth:"750px"  }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
         <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
@@ -489,6 +492,7 @@ const AddSpare = () => {
                   <Select
                     isMulti
                     value={MachineNames}
+                    
                     onChange={handleMachineNameChange}
                     placeholder="Select Machine"
                     options={Machine}
