@@ -9,16 +9,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const currentDate = new Date().toDateString();
+// const selectedPurcType = purchaseTypes.find(type => type.value === purcType);
+// console.log('Purchase Type', selectedPurcType);
+
 const purchaseTypes = [
-    { value: 'I/GST-5%', label: 'I/GST-5%' },
+    { value: 'I/GST-05%', label: 'I/GST-05%' },
     { value: 'I/GST-12%', label: 'I/GST-12%' },
     { value: 'I/GST-18%', label: 'I/GST-18%' },
     { value: 'I/GST-28%', label: 'I/GST-28%' },
-    { value: 'L/GST-5%', label: 'L/GST-5%' },
+    { value: 'L/GST-05%', label: 'L/GST-05%' },
     { value: 'L/GST-12%', label: 'L/GST-12%' },
     { value: 'L/GST-18%', label: 'L/GST-18%' },
     { value: 'L/GST-28%', label: 'L/GST-28%' },
 ];
+
 
 const parties = [
     { value: 'party1', label: 'Party 1' },
@@ -61,8 +65,11 @@ const PurchageForm = () => {
     const [matCent, setMatCent] = useState('');
     const [narration, setNarration] = useState('');
     const [showNewPartyModal, setShowNewPartyModal] = useState(false);
-    const [selectedCompany, setSelectedCompany] = useState(null);
+
+    const [totalAmount, setTotalAmount] = useState('');
+
     const navigate = useNavigate();
+
 
 
 
@@ -79,6 +86,10 @@ const PurchageForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        console.log('fsdjifhsdfhsdfhsyuf');
+        console.log(totalAmount);
+
         console.log({
             series,
             vochNo,
@@ -88,6 +99,13 @@ const PurchageForm = () => {
             narration,
             currentDate,
         });
+
+        console.log('Test Value');
+
+        // const selectedPurcType = purchaseTypes.find(type => type.value === purcType);
+        // console.log('Purchase Type', selectedPurcType);
+
+        // console.log(purcType);
 
         if (series && vochNo && purcType && PartyName && matCent && narration && currentDate) {
             const PurchaseData = {
@@ -99,7 +117,6 @@ const PurchageForm = () => {
                 narration,
                 currentDate,
             }
-
             totalPurchage(PurchaseData);
         }
     };
@@ -113,6 +130,7 @@ const PurchageForm = () => {
         setMatCent('');
         setNarration('');
     };
+
 
     useEffect(() => {
         if (showNewPartyModal) {
@@ -261,6 +279,7 @@ const PurchageForm = () => {
                                 <button type="submit" className="btn btn-success">Submit</button>
                                 <button type="button" className="btn btn-danger" onClick={handleBack}>Back</button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -284,7 +303,7 @@ const PurchageForm = () => {
 
             <section className="mt-5">
                 <ItemTable />
-                <Billing />
+                <Billing GSTdata={purcType} totalAmount={totalAmount} />
                 <OptionalField />
             </section>
         </>
