@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Form } from 'react-bootstrap';
 import { IoIosAddCircleOutline } from "react-icons/io";
-import './table.css'; // Import external CSS file
 import ItemMaster from '../Add Item Master/ItemMaster';
+import './table.css';
+import BillForm from '../Billing/Billing';
+
 
 const ItemTable = () => {
     const [items, setItems] = useState([
         { id: 1, item: '', qty: '', unit: '', price: '', amount: 0 }
     ]);
     const [showItemMaster, setShowItemMaster] = useState(false);
+    const [totalAmount, setTotalAmount] = useState(0);
+
+
 
     const handleAddRow = () => {
         const newItem = { id: Date.now(), item: '', qty: '', unit: '', price: '', amount: 0 };
@@ -49,8 +54,19 @@ const ItemTable = () => {
         }
     }, [showItemMaster]);
 
-    // Calculate total amount
-    const totalAmount = items.reduce((total, item) => total + (item.qty * item.price), 0);
+    useEffect(() => {
+        const calculateTotalAmount = () => {
+            const total = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+            setTotalAmount(total);
+        };
+
+        calculateTotalAmount();
+    }, [items]);
+
+    const handleSubmit = () => {
+        console.log("Items:", items);
+        console.log("Total Amount:", totalAmount);
+    };
 
     return (
         <>
@@ -89,7 +105,7 @@ const ItemTable = () => {
                                 </td>
                                 <td>
                                     <Form.Control
-                                        type="text"
+                                        type="number"
                                         name="qty"
                                         value={item.qty}
                                         onChange={e => handleItemChange(e, item.id)}
@@ -107,7 +123,7 @@ const ItemTable = () => {
                                 </td>
                                 <td>
                                     <Form.Control
-                                        type="text"
+                                        type="number"
                                         name="price"
                                         value={item.price}
                                         onChange={e => handleItemChange(e, item.id)}
@@ -137,11 +153,16 @@ const ItemTable = () => {
                 <button className="btn btn-primary" onClick={handleAddRow}>
                     Add Row
                 </button>
+                <button className="btn btn-secondary ml-2" onClick={handleSubmit}>
+                    Submit
+                </button>
+                {/* <BillForm totalAmount={totalAmount} /> */}
             </Container>
 
             {showItemMaster && (
                 <div className="modal fade show" style={{ display: 'block' }}>
                     <ItemMaster />
+
                 </div>
             )}
         </>
