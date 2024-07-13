@@ -6,12 +6,12 @@ import './table.css';
 import BillForm from '../Billing/Billing';
 
 
-const ItemTable = () => {
+const ItemTable = ({ setAmount, totalAmount }) => {
+
     const [items, setItems] = useState([
         { id: 1, item: '', qty: '', unit: '', price: '', amount: 0 }
     ]);
     const [showItemMaster, setShowItemMaster] = useState(false);
-    const [totalAmount, setTotalAmount] = useState(0);
 
 
 
@@ -57,7 +57,8 @@ const ItemTable = () => {
     useEffect(() => {
         const calculateTotalAmount = () => {
             const total = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
-            setTotalAmount(total);
+
+            setAmount(total)
         };
 
         calculateTotalAmount();

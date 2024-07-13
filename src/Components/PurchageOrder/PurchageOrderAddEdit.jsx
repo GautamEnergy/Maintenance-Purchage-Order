@@ -71,7 +71,7 @@ const PurchageForm = () => {
     const navigate = useNavigate();
 
 
-
+    console.log(setTotalAmount)
 
 
     const totalPurchage = async (PurchaseData) => {
@@ -302,7 +302,7 @@ const PurchageForm = () => {
             )}
 
             <section className="mt-5">
-                <ItemTable />
+                <ItemTable setAmount={setTotalAmount} totalAmount={totalAmount} />
                 <Billing GSTdata={purcType} totalAmount={totalAmount} />
                 <OptionalField />
             </section>

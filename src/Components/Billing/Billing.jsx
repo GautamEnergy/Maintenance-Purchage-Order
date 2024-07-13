@@ -29,9 +29,6 @@ const BillForm = ({ GSTdata, totalAmount }) => {
 
 
     useEffect(() => {
-        console.log(totalAmount);
-        console.log('CHECK THE Total Amount:', totalAmount);
-
         const extractInteger = (str) => {
             if (!str) return ''; // Check if str is undefined or null
             const match = str.match(/\d+/);
@@ -91,6 +88,7 @@ const BillForm = ({ GSTdata, totalAmount }) => {
         console.log(amountDiscount);
     };
 
+
     return (
         <Form onSubmit={handleSubmit} className="p-3">
             <Table bordered>
@@ -129,8 +127,8 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                             <td>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter Amount"
-                                    value={amountDiscount}
+                                    placeholder="Total Amount"
+                                    value={amountDiscount ? totalAmount - amountDiscount : ''}
                                     // onChange={(e) => setAmountDiscount(e.target.value)}
                                     readOnly
                                 />
@@ -155,24 +153,27 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageFreight}
-                                    onChange={(e) => setPercentageFreight(e.target.value)}
+                                    onChange={(event) => {
+                                        let value = event.target.value;
+                                        let perValue = (value / 100) * totalAmount
+                                        console.log(perValue)
+                                        setAmountFreight(perValue)
+                                        setPercentageFreight(value)
+                                    }}
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter Amount"
-                                    value={amountFreight}
-                                    onChange={(e) => setAmountFreight(e.target.value)}
+                                    placeholder="Total Amount"
+                                    value={amountFreight ? amountFreight + totalAmount : ''}
+                                    readOnly
                                 />
                             </td>
                         </tr>
                     }
 
-                    {
-                        // (
-                        percentageIGST
-                        // == 'I/GST-05%' || percentageIGST == 'I/GST-12%' || percentageIGST == 'I/GST-18%' || percentageIGST == 'I/GST-28%') 
+                    {percentageIGST
                         &&
                         <tr>
                             <td>3</td>
@@ -191,13 +192,14 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                                     placeholder="Enter %"
                                     value={percentageIGST}
                                     onChange={(e) => setPercentageIGST(e.target.value)}
+                                    readOnly
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
                                     placeholder="Enter Amount"
-                                    value={amountIGST}
+                                    value={Number(amountIGST) + Number(totalAmount)}
                                     onChange={(e) => setAmountIGST(e.target.value)}
                                 />
                             </td>
@@ -205,9 +207,6 @@ const BillForm = ({ GSTdata, totalAmount }) => {
 
                     }
                     {percentageSGST &&
-                        // == 'L/GST-05%' || percentageSGST == 'L/GST-12%' || percentageSGST == 'L/GST-18%' || percentageSGST == 'L/GST-28%'
-
-
                         <tr>
                             <td>4</td>
                             <td>SGST</td>
@@ -225,23 +224,20 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                                     placeholder="Enter %"
                                     value={percentageSGST}
                                     onChange={(e) => setPercentageSGST(e.target.value)}
+                                    readOnly
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
                                     placeholder="Enter Amount"
-                                    value={amountSGST}
+                                    value={Number(amountSGST) + Number(totalAmount)}
                                     onChange={(e) => setAmountSGST(e.target.value)}
                                 />
                             </td>
                         </tr>
                     }
-                    {
-                        // (
-                        percentageCGST
-                        // == 'L/GST-05%' || percentageCGST == 'L/GST-12%' || percentageCGST == 'L/GST-18%' || percentageCGST == 'L/GST-28%') 
-                        &&
+                    {percentageCGST &&
                         <tr>
                             <td>5</td>
                             <td>CGST</td>
@@ -259,13 +255,14 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                                     placeholder="Enter %"
                                     value={percentageCGST}
                                     onChange={(e) => setPercentageCGST(e.target.value)}
+                                    readOnly
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
                                     placeholder="Enter Amount"
-                                    value={amountCGST}
+                                    value={Number(amountCGST) + Number(totalAmount)}
                                     onChange={(e) => setAmountCGST(e.target.value)}
                                 />
                             </td>
