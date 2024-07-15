@@ -189,7 +189,7 @@ const AddSpare = () => {
         console.log(err)
       }
     } else {
-      setError('Please fill in all required fields.');
+     // setError('Please fill in all required fields.');
     }
   };
   const handleFieldChange = (field, value) => {
@@ -596,7 +596,7 @@ const AddSpare = () => {
         </Form>
 
         {/* {error && <p className="error">{error}</p>} */}
-        <ToastContainer position='top-center' />
+        <ToastContainer position='top-center'/>
       </div>
     </Container>
   );

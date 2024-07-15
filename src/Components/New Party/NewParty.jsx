@@ -128,53 +128,67 @@ const NewParty = () => {
         setStatus('');
         setError('');
     };
+    const isEmailValids = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+    
     const validateForm = () => {
         const newErrors = {};
         let isValid = true;
-
+    
+        // Assume these are the state variables
+        const state = { PartyName, MobileNumber, Email, Address, countrtrySelect, PinCode, GSTNumber, PANNumber, State };
+    
         const requiredFields = {
             PartyName: 'Party name is required',
             MobileNumber: 'Mobile number is required',
             Email: 'Email is required',
             Address: 'Address is required',
-            countrtrySelect: 'countrtrySelect is required',
-            ...(countrtrySelect !== 'China' && { PinCode: 'Pin code is required', GSTNumber: 'GST number is required', PANNumber: 'PAN number is required', State: 'State is required' }),
-            ...(countrtrySelect === 'China' && { PinCode: 'Zip code is required' }),
-
+            countrtrySelect: 'Country is required',
+            ...(state.countrtrySelect !== 'China' && {
+                PinCode: 'Pin code is required',
+                GSTNumber: 'GST number is required',
+                PANNumber: 'PAN number is required',
+                State: 'State is required'
+            }),
+            ...(state.countrtrySelect === 'China' && { PinCode: 'Zip code is required' }),
         };
-
+    
         Object.keys(requiredFields).forEach(field => {
-            if (!eval(field) || (field === 'Email' && !isEmailValid)) {
+            if (!state[field] || (field === 'Email' && !isEmailValids(state.Email))) {
                 newErrors[field] = requiredFields[field];
                 isValid = false;
             }
-            if (PinCode.length < 6) { newErrors.PinCode = 'Pin Code is invalid' };
-
         });
-
-
+    
+        if (state.countrtrySelect === 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
+            newErrors.PinCode = 'Zip Code is required';
+            isValid = false;
+        } else if (state.countrtrySelect !== 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
+            newErrors.PinCode = 'Pin Code is invalid';
+            isValid = false;
+        }
+    
         setErrors(newErrors);
         return isValid;
     };
 
-
-
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!isEmailValid) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                Email: 'Email is invalid'
-            }));
-            return;
-        }
+        // if (!isEmailValid) {
+        //     setErrors((prevErrors) => ({
+        //         ...prevErrors,
+        //         Email: 'Email is invalid'
+        //     }));
+        //     return;
+        // }
 
 
 
 
         // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && countrtrySelect && State && CountryCode && PinCode && Status) {
-        else if (validateForm()) {
+       if (validateForm()) {
             const partyData = {
                 PartyName,
                 GSTNumber: countrtrySelect == 'China' ? '' : GSTNumber,
@@ -210,7 +224,7 @@ const NewParty = () => {
         // }
         else {
             console.log('Else')
-            notifyError('Please fill in all required fields.');
+           // notifyError('Please fill in all required fields.');
         }
 
 
