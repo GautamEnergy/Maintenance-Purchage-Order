@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Form, Button, Table } from 'react-bootstrap';
 
 const BillForm = ({ GSTdata, totalAmount }) => {
-
     const [narrationDiscount, setNarrationDiscount] = useState('');
     const [percentageDiscount, setPercentageDiscount] = useState('');
-    const [amountDiscount, setAmountDiscount] = useState('');
+    const [remainingAmountAfterDiscount, setRemainingAmountAfterDiscount] = useState(totalAmount);
+    const [discountAmmount, setDiscountAmmount] = useState(0);
 
     const [narrationFreight, setNarrationFreight] = useState('');
     const [percentageFreight, setPercentageFreight] = useState('');
@@ -23,11 +23,26 @@ const BillForm = ({ GSTdata, totalAmount }) => {
     const [percentageCGST, setPercentageCGST] = useState('');
     const [amountCGST, setAmountCGST] = useState('');
 
+    const [finalAmout, setFinalAmount] = useState('');
+
     const [data, setData] = useState(true);
-    // const [totalAmount, setTotalAmount] = useState('');
+    console.log(discountAmmount)
 
+    useEffect(() => {
+        setPercentageDiscount('')
+        // setRemainingAmountAfterDiscount(totalAmount);
+        // setDiscountAmmount('');
 
+        setAmountFreight('');
 
+        setAmountIGST('');
+
+        setAmountSGST('');
+
+        setAmountCGST('');
+        setFinalAmount('');
+
+    }, [GSTdata])
     useEffect(() => {
         const extractInteger = (str) => {
             if (!str) return ''; // Check if str is undefined or null
@@ -39,34 +54,87 @@ const BillForm = ({ GSTdata, totalAmount }) => {
         const gstPercentage = gstValue / 2;
 
         if (GSTdata && GSTdata.includes('L/GST')) {
-            setPercentageIGST("");
+            setPercentageIGST('');
             setPercentageSGST(gstPercentage);
             setPercentageCGST(gstPercentage);
-            setAmountSGST(((totalAmount * gstPercentage) / 100).toFixed(2));
-            setAmountCGST(((totalAmount * gstPercentage) / 100).toFixed(2));
         } else {
-            setPercentageSGST("");
-            setPercentageCGST("");
+            setPercentageSGST('');
+            setPercentageCGST('');
             setPercentageIGST(gstValue);
-            setAmountIGST(((totalAmount * gstValue) / 100).toFixed(2));
         }
 
         console.log('selected  GST Data:', GSTdata);
         console.log('selected  GST Value:', gstValue);
     }, [GSTdata, totalAmount]);
 
+    useEffect(() => {
+        const calculateFinalAmount = () => {
+
+
+            const final = (Number(totalAmount) + Number(amountFreight) + Number(amountIGST) + Number(amountSGST) + Number(amountCGST)) - Number(remainingAmountAfterDiscount)
+            setFinalAmount(final.toFixed(2));
+
+            // else {
+            //     const final = (Number(discountAmmount) + Number(amountFreight) + Number(amountIGST) + Number(amountSGST) + Number(amountCGST)) - Number(remainingAmountAfterDiscount);
+            //     setFinalAmount(final.toFixed(2));
+            // }
+        };
+
+        calculateFinalAmount();
+    }, [totalAmount, amountFreight, amountIGST, amountSGST, amountCGST, remainingAmountAfterDiscount]);
+    useEffect(() => {
+        console.log(remainingAmountAfterDiscount);
+        const amount = (totalAmount - remainingAmountAfterDiscount);
+        console.log(amount)
+        setDiscountAmmount(amount.toFixed(2));
+
+    }, [remainingAmountAfterDiscount, totalAmount]);
+
+
+    useEffect(() => {
+        const discountAmount = (totalAmount * percentageDiscount) / 100;
+        setRemainingAmountAfterDiscount(discountAmount.toFixed(2));
+    }, [percentageDiscount, totalAmount]);
+
+    useEffect(() => {
+
+        let freightAmount = (Number(discountAmmount ? discountAmmount : totalAmount) / 100) * percentageFreight;
+        console.log('Remaining Amount After Discount:', freightAmount);
+        setAmountFreight(freightAmount.toFixed(2));
+    }, [percentageFreight, remainingAmountAfterDiscount, discountAmmount]);
+
+    useEffect(() => {
+        if (percentageIGST) {
+            const igstAmount = ((Number(discountAmmount ? discountAmmount : totalAmount) * percentageIGST) / 100);
+            setAmountIGST(igstAmount.toFixed(2));
+        }
+    }, [percentageIGST, remainingAmountAfterDiscount, amountFreight, discountAmmount]);
+
+    useEffect(() => {
+        if (percentageSGST) {
+            const sgstAmount = ((Number(discountAmmount ? discountAmmount : totalAmount) * percentageSGST) / 100);
+            setAmountSGST(sgstAmount.toFixed(2));
+        }
+    }, [percentageSGST, remainingAmountAfterDiscount, amountFreight, discountAmmount]);
+
+    useEffect(() => {
+        if (percentageCGST) {
+            const cgstAmount = ((Number(discountAmmount ? discountAmmount : totalAmount) * percentageCGST) / 100);
+            setAmountCGST(cgstAmount.toFixed(2));
+        }
+    }, [percentageCGST, remainingAmountAfterDiscount, amountFreight, discountAmmount]);
+
+
     const handlePercentageChange = (type, value) => {
         if (value === '' || (Number(value) >= 0 && Number(value) <= 100)) {
-            let discount = (totalAmount * Number(value)) / 100;
-            discount = discount.toFixed(2);
             switch (type) {
                 case 'discount':
                     setPercentageDiscount(value);
-                    setAmountDiscount(discount);
                     break;
                 case 'freight':
                     setPercentageFreight(value);
-                    setAmountFreight('');
+                    break;
+                default:
                     break;
             }
         }
@@ -75,19 +143,16 @@ const BillForm = ({ GSTdata, totalAmount }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = {
-            discount: { narration: narrationDiscount, percentage: percentageDiscount, amount: amountDiscount },
+            discount: { narration: narrationDiscount, percentage: percentageDiscount, remainingAmount: remainingAmountAfterDiscount },
             freight: { narration: narrationFreight, percentage: percentageFreight, amount: amountFreight },
             igst: { narration: narrationIGST, percentage: percentageIGST, amount: amountIGST },
             sgst: { narration: narrationSGST, percentage: percentageSGST, amount: amountSGST },
             cgst: { narration: narrationCGST, percentage: percentageCGST, amount: amountCGST },
         };
         console.log(formData);
-
-        console.log(narrationDiscount);
-        console.log(percentageDiscount);
-        console.log(amountDiscount);
+        console.log('Percentage Discount:', percentageDiscount);
+        console.log('Remaining Amount after Discount:', remainingAmountAfterDiscount);
     };
-
 
     return (
         <Form onSubmit={handleSubmit} className="p-3">
@@ -102,8 +167,7 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                     </tr>
                 </thead>
                 <tbody>
-
-                    {data == true &&
+                    {data && (
                         <tr>
                             <td>1</td>
                             <td>Discount</td>
@@ -120,23 +184,25 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageDiscount}
-                                    // onChange={(e) => setPercentageDiscount(e.target.value)}
                                     onChange={(e) => handlePercentageChange('discount', e.target.value)}
                                 />
                             </td>
                             <td>
                                 <Form.Control
-                                    type="text"
-                                    placeholder="Total Amount"
-                                    value={amountDiscount ? totalAmount - amountDiscount : ''}
-                                    // onChange={(e) => setAmountDiscount(e.target.value)}
-                                    readOnly
+                                    type="number"
+                                    placeholder="Discount Amount"
+                                    value={remainingAmountAfterDiscount}
+                                    onChange={(e) => {
+                                        console.log(e.target.value)
+                                        setRemainingAmountAfterDiscount(e.target.value)
+
+                                        setDiscountAmmount(totalAmount - remainingAmountAfterDiscount)
+                                    }}
                                 />
                             </td>
                         </tr>
-                    }
-
-                    {data == true &&
+                    )}
+                    {data && (
                         <tr>
                             <td>2</td>
                             <td>Freight</td>
@@ -153,28 +219,21 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageFreight}
-                                    onChange={(event) => {
-                                        let value = event.target.value;
-                                        let perValue = (value / 100) * totalAmount
-                                        console.log(perValue)
-                                        setAmountFreight(perValue)
-                                        setPercentageFreight(value)
-                                    }}
+                                    onChange={(e) => handlePercentageChange('freight', e.target.value)}
                                 />
                             </td>
                             <td>
                                 <Form.Control
-                                    type="text"
+                                    type="number"
                                     placeholder="Total Amount"
-                                    value={amountFreight ? amountFreight + totalAmount : ''}
-                                    readOnly
+                                    value={amountFreight}
+                                    onChange={(e) => setAmountFreight(e.target.value)}
+
                                 />
                             </td>
                         </tr>
-                    }
-
-                    {percentageIGST
-                        &&
+                    )}
+                    {percentageIGST && (
                         <tr>
                             <td>3</td>
                             <td>IGST</td>
@@ -188,25 +247,23 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                             </td>
                             <td>
                                 <Form.Control
-                                    type="text"
+                                    type="number"
                                     placeholder="Enter %"
                                     value={percentageIGST}
-                                    onChange={(e) => setPercentageIGST(e.target.value)}
                                     readOnly
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter Amount"
-                                    value={Number(amountIGST) + Number(totalAmount)}
-                                    onChange={(e) => setAmountIGST(e.target.value)}
+                                    placeholder="Amount"
+                                    value={amountIGST}
+                                    readOnly
                                 />
                             </td>
                         </tr>
-
-                    }
-                    {percentageSGST &&
+                    )}
+                    {percentageSGST && (
                         <tr>
                             <td>4</td>
                             <td>SGST</td>
@@ -220,24 +277,23 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                             </td>
                             <td>
                                 <Form.Control
-                                    type="text"
+                                    type="number"
                                     placeholder="Enter %"
                                     value={percentageSGST}
-                                    onChange={(e) => setPercentageSGST(e.target.value)}
                                     readOnly
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter Amount"
-                                    value={Number(amountSGST) + Number(totalAmount)}
-                                    onChange={(e) => setAmountSGST(e.target.value)}
+                                    placeholder="Amount"
+                                    value={amountSGST}
+                                    readOnly
                                 />
                             </td>
                         </tr>
-                    }
-                    {percentageCGST &&
+                    )}
+                    {percentageCGST && (
                         <tr>
                             <td>5</td>
                             <td>CGST</td>
@@ -251,29 +307,36 @@ const BillForm = ({ GSTdata, totalAmount }) => {
                             </td>
                             <td>
                                 <Form.Control
-                                    type="text"
+                                    type="number"
                                     placeholder="Enter %"
                                     value={percentageCGST}
-                                    onChange={(e) => setPercentageCGST(e.target.value)}
                                     readOnly
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter Amount"
-                                    value={Number(amountCGST) + Number(totalAmount)}
-                                    onChange={(e) => setAmountCGST(e.target.value)}
+                                    placeholder="Amount"
+                                    value={amountCGST}
+                                    readOnly
                                 />
                             </td>
                         </tr>
-                    }
-
+                    )}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan="3" className="text-right"><strong>Total Amount</strong></td>
+                        <td><strong>{finalAmout}</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </Table>
             <Button type="submit">Submit</Button>
-        </Form >
+        </Form>
     );
 };
 
 export default BillForm;
+
+

@@ -21,7 +21,7 @@ export default function Dashboard() {
             </Row> */}
             <Row>
                 <Col xs={12} md={6} className="mb-4">
-                    <Link to="" className="card-link">
+                    <Link to="/purchage" className="card-link">
                         <Card style={{ height: "110px", backgroundColor: "#D5D0F0" }} className=" card-hover">
                             <Card.Body className="d-flex align-items-center">
                                 <Image src={img2} alt="wheelchair icon" className="mr-4" rounded style={{ width: '10%' }} />

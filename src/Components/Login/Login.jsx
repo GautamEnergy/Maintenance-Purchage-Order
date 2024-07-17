@@ -55,6 +55,8 @@ const Login = () => {
         console.log("Passs");
         console.log(password);
 
+        const url = localStorage.getItem('url');
+
         try {
             const res = await axios.post(`${url}/Employee/Login`, {
                 loginid: email,
