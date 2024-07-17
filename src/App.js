@@ -2,14 +2,16 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppContext } from './ContextAPI';
 import Login from './Components/Login/Login';
-import Navbar from './Components/Navbar/Navbar';
-import PurchageForm from './Components/PurchageOrder/PurchageOrderAddEdit';
-import OptionalField from './Components/OptionalField/OptionalField';
-import NewParty from './Components/New Party/NewParty';
-import Billing from './Components/Billing/Billing';
-import Dashboard from './Pages/Dashboard';
-import AddMachine from './Components/AddMachine/AddMachine';
+import ItemMaster from './Components/Add Item Master/ItemMaster';
 import AddSpare from './Components/AddSpare/AddSpare';
+import AddMachine from './Components/AddMachine/AddMachine';
+import Billing from './Components/Billing/Billing';
+import Navbar from './Components/Navbar/Navbar';
+import NewParty from './Components/New Party/NewParty';
+import OptionalField from './Components/OptionalField/OptionalField';
+import PurchageForm from './Components/PurchageOrder/PurchageOrderAddEdit';
+import ItemTable from './Components/Table/table';
+import Dashboard from './Pages/Dashboard';
 
 const App = () => {
   const { token } = useContext(AppContext);
@@ -37,15 +39,18 @@ const AppWithNavbar = () => (
   <>
     <Navbar />
     <Routes>
+
       <Route path="/nav" element={<Navbar />} />
-      <Route path="/purchage" element={<PurchageForm />} />
-      <Route path="/OptionalField" element={<OptionalField />} />
-      <Route path="/billing" element={<Billing />} />
-      <Route path="/newParty" element={<NewParty />} />
-      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/machine" element={<AddMachine />} />
       <Route path="/spare" element={<AddSpare />} />
-      {/* <Route path="/about" element={<About />} /> */}
+      <Route path="/billing" element={<Billing />} />
+      <Route path="/newParty" element={<NewParty />} />
+      <Route path="/OptionalField" element={<OptionalField />} />
+      <Route path="/purchage" element={<PurchageForm />} />
+      <Route path="/itemTable" element={<ItemTable />} />
+      <Route path="/itemMAster" element={<ItemMaster />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+
     </Routes>
   </>
 );
