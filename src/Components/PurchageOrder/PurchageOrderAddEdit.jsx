@@ -316,6 +316,9 @@ const PurchageForm = () => {
 
     const handleChangePartyName = (e) => {
         setPartyName(e.target.value);
+        if (errors.PartyName) {
+            setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }));
+        }
 
     };
 
@@ -379,10 +382,11 @@ const PurchageForm = () => {
                                     style={{ border: errors.purcType ? '2px solid red' : '2px solid green' }}
                                     id="purcType"
                                     className="form-select"
+                                    placeholder ="Select Purchase Type"
                                     value={purcType}
                                     onChange={handleChangePurcType}
                                 >
-                                    <option value="">Select Purchase Type</option>
+                                    <option value=""disabled>Select Purchase Type</option>
                                     {purchaseTypes.map((option) => (
                                         <option key={option.value} value={option.value}>
                                             {option.label}
@@ -402,7 +406,7 @@ const PurchageForm = () => {
                                     value={PartyName}
                                     onChange={handleChangePartyName}
                                 >
-                                    <option value="">Select Party Name</option>
+                                    <option value=""disabled>Select Party Name</option>
                                     {PartyList.map((party, index) => (
                                         <option key={index} value={party.PartyNameId}>
                                             {party.PartyName}
@@ -420,7 +424,7 @@ const PurchageForm = () => {
                                     value={company}
                                     onChange={handleChangeCompany}
                                 >
-                                    <option value="">Select Company</option>
+                                    <option value="" disabled>Select a Company</option>
                                     {CompanyName.map((option, index) => (
                                         <option key={index} value={option.CompanyName}>
                                             {option.CompanyName}
@@ -471,7 +475,15 @@ const PurchageForm = () => {
                                 placeholder='Enter Payment Term'
                                  value={paymentTerm} 
                                  onChange={(e)=>{
-                                      setPaymentTerm(e.target.value)
+                                    const value = e.target.value
+                                      setPaymentTerm(value)
+                                      if (value.trim() === '') {
+                                        setErrors((prevErrors) => ({ ...prevErrors, paymentTerm: 'Payment term is Required' }))
+                                    }
+                                    else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, paymentTerm: '' }));
+
+                                    }
                                  }}required style={{border:"1px,black,solid"}} />
                                  {errors.paymentTerm && <div className="text-danger">{errors.paymentTerm}</div>}
                             </Form.Group>
@@ -484,7 +496,15 @@ const PurchageForm = () => {
                                 placeholder='Enter Delivery Term'
                                 value={deleveryTerm} 
                                 onChange={(e)=>{
-                                     setDeleveryTerm(e.target.value)
+                                    const value = e.target.value
+                                     setDeleveryTerm(value)
+                                     if (value.trim() === '') {
+                                        setErrors((prevErrors) => ({ ...prevErrors, deleveryTerm: 'Delivery term is Required' }))
+                                    }
+                                    else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, deleveryTerm: '' }));
+
+                                    }
                                 }}
                                 style={{border:"1px,black,solid"}}/>
                                  {errors.deleveryTerm && <div  className="text-danger"> {errors.deleveryTerm}</div>}
@@ -498,7 +518,15 @@ const PurchageForm = () => {
                                  placeholder='Enter Contact Person'
                                  value={contactPer} 
                                  onChange={(e)=>{
-                                      setcontactPer(e.target.value)
+                                    const value = e.target.value
+                                      setcontactPer(value)
+                                      if (value.trim() === '') {
+                                        setErrors((prevErrors) => ({ ...prevErrors, contactPer: 'Cell No is Required' }))
+                                    }
+                                    else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, contactPer: '' }));
+
+                                    }
                                  }} required  style={{border:"1px,black,solid"}}/>
                                  {errors.contactPer && <div className="text-danger">{errors.contactPer}</div>}
                             </Form.Group>
@@ -513,7 +541,15 @@ const PurchageForm = () => {
                                  placeholder='Enter Cell No'
                                  value={cellNo} 
                                  onChange={(e)=>{
-                                      setcellNo(e.target.value)
+                                      const value = e.target.value
+                                      setcellNo(value)
+                                      if (value.trim() === '') {
+                                        setErrors((prevErrors) => ({ ...prevErrors, cellNo: 'Cell No is Required' }))
+                                    }
+                                    else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, cellNo: '' }));
+
+                                    }
                                  }}
                                  required style={{border:"1px,black,solid"}} />
                                    {errors.cellNo && <div className="text-danger">{errors.cellNo}</div>}
@@ -525,9 +561,12 @@ const PurchageForm = () => {
                                 <Form.Control 
                                 type="text"
                                 placeholder='Enter Warranty'
-                                 value={warranty} 
+                                value={warranty} 
                                  onChange={(e)=>{
-                                      setwarranty(e.target.value)
+                                   const value = e.target.value
+                                      setwarranty(value)
+                                      
+                                    
                                  }}  style={{border:"1px,black,solid"}}/>
                             </Form.Group>
                         </Col>

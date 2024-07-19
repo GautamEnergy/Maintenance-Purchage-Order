@@ -108,16 +108,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
         const updatedItems = items.map(item =>
             item.id === id ? { ...item, [name]: value } : item
         );
-        const updatedErrors = { ...errors };
-        if (updatedErrors[id] && updatedErrors[id][name]) {
-            delete updatedErrors[id][name];
-            if (Object.keys(updatedErrors[id]).length === 0) {
-                delete updatedErrors[id];
-            }
-        }
-    
         setItems(updatedItems);
-        setErrors(updatedErrors);
     };
 
     useEffect(() => {
