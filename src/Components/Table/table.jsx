@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Table, Form } from 'react-bootstrap';
 import ItemMaster from '../Add Item Master/ItemMaster';
@@ -7,24 +6,20 @@ import './table.css';
 import { AppContext } from '../../ContextAPI';
 import Select from 'react-select';
 
-const ItemTable = ({ setAmount, totalAmount }) => {
-    const { setToken } = useContext(AppContext);
-    const [showItemMaster, setShowItemMaster] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [modelNoList, setModelNoList] = useState([]);
-    const [SparePartModelNumber, setSparePartModelNumber] = useState('');
-    const [filteredModelNoList, setFilteredModelNoList] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [SparePartName, setSparePartName] = useState('');
-    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '' }]);
 
+const ItemTable = ({setAmount,totalAmount,showItemMaster,
+    modelNoList,
+    setModelNoList,
+    setErrors, items, setItems,errors}) => {
+  
 
-
-    console.log(items)
-    console.log('dddddddd')
     useEffect(() => {
         getSpareModelNo();
     }, []);
+    console.log(errors);
+    console.log("Errors Prop in ItemTable:", errors);
+    
+    
 
     const getSpareModelNo = async () => {
         const token = localStorage.getItem("token");
@@ -55,19 +50,19 @@ const ItemTable = ({ setAmount, totalAmount }) => {
         }
     };
 
-    const handleSearchChange = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        if (query) {
-            setFilteredModelNoList(
-                modelNoList.filter(model =>
-                    model.SparePartModelNumber.toLowerCase().includes(query.toLowerCase())
-                )
-            );
-        } else {
-            setFilteredModelNoList(modelNoList); // Show all if query is empty
-        }
-    };
+    // const handleSearchChange = (e) => {
+    //     const query = e.target.value;
+    //     setSearchQuery(query);
+    //     if (query) {
+    //         setFilteredModelNoList(
+    //             modelNoList.filter(model =>
+    //                 model.SparePartModelNumber.toLowerCase().includes(query.toLowerCase())
+    //             )
+    //         );
+    //     } else {
+    //         setFilteredModelNoList(modelNoList); // Show all if query is empty
+    //     }
+    // };
 
     const handleChangeModelNumber = async (selectedOption, id) => {
         console.log(selectedOption);
@@ -87,11 +82,20 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                 modelNumber: item.id == id ? item.modelNumber = selectedOption.label : item.modelNumber,
                 qty: item.qty,
                 unit: item.unit,
-                price: item.price
+                price: item.price,
+                SparePartId: item.id == id ? item.SparePartId = selectedOption.value:item.SparePartId
             }
         });
-        console.log(item)
-        setItems(item)
+        const updatedErrors = { ...errors };
+    if (updatedErrors[id] && updatedErrors[id].modelNumber) {
+        delete updatedErrors[id].modelNumber;
+        if (Object.keys(updatedErrors[id]).length === 0) {
+            delete updatedErrors[id];
+        }
+    }
+
+    setItems(item);
+    setErrors(updatedErrors);
     };
 
     const handleAddRow = () => {
@@ -104,7 +108,16 @@ const ItemTable = ({ setAmount, totalAmount }) => {
         const updatedItems = items.map(item =>
             item.id === id ? { ...item, [name]: value } : item
         );
+        const updatedErrors = { ...errors };
+        if (updatedErrors[id] && updatedErrors[id][name]) {
+            delete updatedErrors[id][name];
+            if (Object.keys(updatedErrors[id]).length === 0) {
+                delete updatedErrors[id];
+            }
+        }
+    
         setItems(updatedItems);
+        setErrors(updatedErrors);
     };
 
     useEffect(() => {
@@ -116,16 +129,16 @@ const ItemTable = ({ setAmount, totalAmount }) => {
         calculateTotalAmount();
     }, [items, setAmount]);
 
-    const handleSubmit = () => {
-        const itemsWithAmount = items.map(item => ({
-            ...item,
-            amount: item.qty * item.price
-        }));
+    // const handleSubmit = () => {
+    //     const itemsWithAmount = items.map(item => ({
+    //         ...item,
+    //         amount: item.qty * item.price
+    //     }));
 
-        console.log("Items:", itemsWithAmount);
-        console.log("Total Amount:", totalAmount);
-        // You can perform further actions here, like submitting the data to a server
-    };
+    //     console.log("Items:", itemsWithAmount);
+    //     console.log("Total Amount:", totalAmount);
+    //     // You can perform further actions here, like submitting the data to a server
+    // };
 
     const handleDeleteRow = id => {
         const updatedItems = items.filter(item => item.id !== id);
@@ -138,12 +151,12 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                 <Table striped bordered hover className="table">
                     <thead>
                         <tr>
-                            <th>S.No.</th>
-                            <th>Spare Part Model Number</th>
+                            <th>S.No.*</th>
+                            <th>Spare Part Model Number*</th>
                             <th>Spare Part Name</th>
-                            <th>Qty</th>
-                            <th>Unit</th>
-                            <th>Price Rs</th>
+                            <th>Qty*</th>
+                            <th>Unit*</th>
+                            <th>Price Rs*</th>
                             <th>Amount</th>
                             <th>Action</th>
                         </tr>
@@ -158,18 +171,30 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                                         value={(item.SparePartModelNumber)}
                                         onChange={(selectedOption) => handleChangeModelNumber(selectedOption, item.id)}
                                         options={modelNoList.map(model => ({ value: model.SparePartId, label: model.SparePartModelNumber }))}
-
+                                        
                                     />
+                                    {errors?.[item.id]?.modelNumber && (
+                            <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
+                        )}
+                                    
+                                    
+                                   
                                 </td>
                                 <td>
                                     <input
                                         type="text"
-                                        className="form-control input-field"
+                                       // className="form-control input-field"
+                                        className={`form-control input-field ${errors[item.id]?.spareName ? 'is-invalid' : ''}`}
                                         name="spareName"
 
                                         value={item.spareName}
                                         onChange={(e) => handleItemChange(e, item.id)}
+                                        readOnly = "true"
                                     />
+                                      {errors[item.id]?.spareName && (
+                            <div className="invalid-feedback">{errors[item.id].spareName}</div>
+                        )}
+                        
                                 </td>
                                 <td>
                                     <Form.Control
@@ -179,6 +204,9 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
                                     />
+                                     {errors[item.id]?.qty && (
+                            <div className="invalid-feedback">{errors[item.id].qty}</div>
+                        )}
                                 </td>
                                 <td>
                                     <Form.Control
@@ -188,6 +216,9 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
                                     />
+                                     {errors[item.id]?.unit && (
+                            <div className="invalid-feedback">{errors[item.id].unit}</div>
+                        )}
                                 </td>
                                 <td>
                                     <Form.Control
@@ -197,6 +228,9 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
                                     />
+                                    {errors[item.id]?.price && (
+                            <div className="invalid-feedback">{errors[item.id].price}</div>
+                        )}
                                 </td>
                                 <td>{item.qty * item.price}</td>
                                 <td>
@@ -221,9 +255,9 @@ const ItemTable = ({ setAmount, totalAmount }) => {
                 <button className="btn btn-primary" onClick={handleAddRow}>
                     Add Row
                 </button>
-                <button className="btn btn-secondary ml-2" onClick={handleSubmit}>
+                {/* <button className="btn btn-secondary ml-2" onClick={handleSubmit}>
                     Submit
-                </button>
+                </button> */}
             </Container>
 
             {showItemMaster && (

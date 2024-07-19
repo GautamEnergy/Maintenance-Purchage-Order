@@ -1,16 +1,18 @@
-.First-Card {
+/* .First-Card {
     position: relative;
     bottom: 0;
     left: 50%;
     width: 900px;
     padding: 40px;
     transform: translateX(-50%);
-    /* background-image: url(../../../public/Assets/Images/wild.jpg); */
+   
     background: #6a6c6e;
     box-sizing: border-box;
     box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
     border-radius: 10px;
 }
+
+
 
 .First-Card h2 {
     margin: 0 0 30px;
@@ -68,7 +70,7 @@
     letter-spacing: 4px;
 }
 
-/* Mobile devices */
+
 @media (max-width: 480px) {
     .First-Card {
         width: 90%;
@@ -89,7 +91,7 @@
     }
 }
 
-/* Tablet devices */
+
 @media (min-width: 481px) and (max-width: 768px) {
     .First-Card {
         width: 80%;
@@ -110,7 +112,7 @@
     }
 }
 
-/* Laptop devices */
+
 @media (min-width: 769px) and (max-width: 1024px) {
     .First-Card {
         width: 70%;
@@ -151,7 +153,7 @@
 }
 
 
-/* Larger screens (e.g., desktops) */
+
 @media (min-width: 1025px) {
     .First-Card {
         width: 1045px;
@@ -170,4 +172,9 @@
         font-size: 16px;
         padding: 10px 20px;
     }
-}
+} */
+/* .First-Card{
+    background: white;
+    left: 50%;
+    width: 900px;
+   } */
