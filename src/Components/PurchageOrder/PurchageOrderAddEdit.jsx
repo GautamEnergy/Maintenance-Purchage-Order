@@ -351,8 +351,8 @@ const PurchageForm = () => {
     };
 
     return (
-        <Container style={{ marginTop: "12%",  width: "90%" }} className="fullPage ">
-             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', marginBottom: "12%", borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+        <Container style={{ marginTop: "6%", width: "90%" }} className="fullPage py-5">
+             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Image src={img1} alt="" className="text-center" rounded style={{ width: '25%', marginLeft: "36%" }} />
             <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginTop: "12px", marginBottom: '12px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
                     Purchage Order
