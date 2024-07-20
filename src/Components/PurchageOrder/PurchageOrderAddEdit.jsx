@@ -18,6 +18,7 @@ const purchaseTypes = [
     { value: 'L/GST-12%', label: 'L/GST-12%' },
     { value: 'L/GST-18%', label: 'L/GST-18%' },
     { value: 'L/GST-28%', label: 'L/GST-28%' },
+    { value: 'I/GST-item wise', label: 'I/GST-item wise' },
 ];
 
 
@@ -43,17 +44,19 @@ const PurchageForm = () => {
     const [cellNo, setcellNo] = useState("");
     const [warranty, setwarranty] = useState("");
     const [CompanyName, setCompanyName] = useState([]);
-  
+    
     /** 
      * ! Item Table States
+     * 
      */
+    const [GST,SetGST] = useState('');
     const [showItemMaster, setShowItemMaster] = useState(false);
     const [modelNoList, setModelNoList] = useState([]);
     const [SparePartModelNumber, setSparePartModelNumber] = useState('');
     const [filteredModelNoList, setFilteredModelNoList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [SparePartName, setSparePartName] = useState('');
-    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '', SparePartId:'' }]);
+    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '',gst: '', SparePartId:'' }]);
     /**
      * ! Item Table States
      */
@@ -255,33 +258,45 @@ const PurchageForm = () => {
             items,
             totalAmount
         }
-
-        const BilingData = {
-            /**Freight & Discount */
-            narrationDiscount,
-            percentageDiscount,
-            remainingAmountAfterDiscount,
-            narrationFreight, 
-            percentageFreight, 
-            amountFreight,
-            
-            /**IGST */
-            narrationIGST, 
-            percentageIGST, 
-            amountIGST, 
-
-           /**SGST */
-            narrationSGST, 
-            percentageSGST, 
-            amountSGST,
-    
-            /**CGST */
-            narrationCGST, 
-            percentageCGST, 
-            amountCGST, 
-
-            finalAmout
-        }
+         
+        
+        const BilingData = [
+            {
+              "Bill_Sundry":"Discount",
+              "Narration":narrationDiscount,
+              "Percentage":percentageDiscount,
+               "Amount":remainingAmountAfterDiscount,
+               "Total_Amount":finalAmout
+            },
+            {
+                "Bill_Sundry":"Freight",
+                "Narration":narrationFreight,
+                "Percentage":percentageFreight,
+                 "Amount":amountFreight,
+                 "Total_Amount":finalAmout
+              },
+              {
+                "Bill_Sundry":"IGST",
+                "Narration":narrationIGST,
+                "Percentage":percentageIGST,
+                 "Amount":amountIGST,
+                 "Total_Amount":finalAmout
+              },
+              {
+                "Bill_Sundry":"SGST",
+                "Narration":narrationSGST,
+                "Percentage":percentageSGST,
+                 "Amount":amountSGST,
+                 "Total_Amount":finalAmout
+              },
+              {
+                "Bill_Sundry":"CGST",
+                "Narration":narrationCGST,
+                "Percentage":percentageCGST,
+                 "Amount":amountCGST,
+                 "Total_Amount":finalAmout
+              }
+        ]
 
         const reqData = {
             PurchaseData,
@@ -584,7 +599,9 @@ const PurchageForm = () => {
             <section className="mt-5">
                 <ItemTable  setAmount={setTotalAmount} totalAmount={totalAmount} showItemMaster={showItemMaster} 
                 modelNoList={modelNoList} setModelNoList={setModelNoList} setErrors={setErrors} errors={errors.items || {}}
-                items={items} setItems={setItems}/>
+                items={items} setItems={setItems}
+                purchType={purcType}
+                />
                 <Billing formData={formData}/>
                 <Button onClick={handleSubmit} type="submit">Submit</Button>
             </section>

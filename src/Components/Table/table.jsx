@@ -10,6 +10,7 @@ import Select from 'react-select';
 const ItemTable = ({setAmount,totalAmount,showItemMaster,
     modelNoList,
     setModelNoList,
+    purchType,
     setErrors, items, setItems,errors}) => {
   
 
@@ -83,23 +84,18 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                 qty: item.qty,
                 unit: item.unit,
                 price: item.price,
+                gst : item.gst,
                 SparePartId: item.id == id ? item.SparePartId = selectedOption.value:item.SparePartId
             }
         });
-        const updatedErrors = { ...errors };
-    if (updatedErrors[id] && updatedErrors[id].modelNumber) {
-        delete updatedErrors[id].modelNumber;
-        if (Object.keys(updatedErrors[id]).length === 0) {
-            delete updatedErrors[id];
-        }
-    }
+     
 
     setItems(item);
-    setErrors(updatedErrors);
+   
     };
 
     const handleAddRow = () => {
-        const newItem = { id: Date.now(), spareName: '', modelNumber: '', qty: '', unit: '', price: '' };
+        const newItem = { id: Date.now(), spareName: '', modelNumber: '', qty: '', unit: '', price: '',gst:'' };
         setItems([...items, newItem]);
     };
 
@@ -109,27 +105,35 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
             item.id === id ? { ...item, [name]: value } : item
         );
         setItems(updatedItems);
+        
+
+       
+    
     };
 
     useEffect(() => {
         const calculateTotalAmount = () => {
-            const total = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+            console.log(items)
+            console.log('kkkkkkk')
+            let total = 0;
+            let size = items.length
+             for(let i = 0; i<size; i++){
+                if(items[i].gst){
+                    total = total + ((items[i].qty * items[i].price)*(items[i].gst/100))+(items[i].qty * items[i].price)
+                    
+                }else{
+                   
+                   total = total+ items[i].qty* items[i].price
+                }
+             }
+            console.log(total)
             setAmount(total);
         };
 
         calculateTotalAmount();
     }, [items, setAmount]);
 
-    // const handleSubmit = () => {
-    //     const itemsWithAmount = items.map(item => ({
-    //         ...item,
-    //         amount: item.qty * item.price
-    //     }));
-
-    //     console.log("Items:", itemsWithAmount);
-    //     console.log("Total Amount:", totalAmount);
-    //     // You can perform further actions here, like submitting the data to a server
-    // };
+     
 
     const handleDeleteRow = id => {
         const updatedItems = items.filter(item => item.id !== id);
@@ -142,12 +146,14 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                 <Table striped bordered hover className="table">
                     <thead>
                         <tr>
-                            <th>S.No.*</th>
+                            <th>S.No.</th>
                             <th>Spare Part Model Number*</th>
                             <th>Spare Part Name</th>
                             <th>Qty*</th>
                             <th>Unit*</th>
                             <th>Price Rs*</th>
+                            {purchType == 'I/GST-item wise'? <th>GST</th>:<th></th>}
+                           
                             <th>Amount</th>
                             <th>Action</th>
                         </tr>
@@ -223,7 +229,19 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                             <div className="invalid-feedback">{errors[item.id].price}</div>
                         )}
                                 </td>
-                                <td>{item.qty * item.price}</td>
+                                <td>
+                                    {purchType == 'I/GST-item wise'?<Form.Control
+                                        type="number"
+                                        name="gst"
+                                        value={item.gst}
+                                        onChange={(e) => handleItemChange(e, item.id)}
+                                        className="input-field"
+                                    />:''}
+                                    
+                                   
+                       
+                                </td>
+                                <td>{!item.gst?item.qty * item.price:((item.qty * item.price)*(item.gst/100))+(item.qty * item.price)}</td>
                                 <td>
                                     <button
                                         className="btn btn-danger"
@@ -237,7 +255,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="6" className="text-right"><strong>Total Amount</strong></td>
+                            <td colSpan="7" className="text-right"><strong>Total Amount</strong></td>
                             <td><strong>{totalAmount}</strong></td>
                             <td></td>
                         </tr>
