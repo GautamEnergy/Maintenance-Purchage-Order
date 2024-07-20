@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Table, Form } from 'react-bootstrap';
+import { Container, Table, Form, Col } from 'react-bootstrap';
 import ItemMaster from '../Add Item Master/ItemMaster';
 import axios from 'axios';
 import './table.css';
@@ -261,9 +261,11 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                         </tr>
                     </tfoot>
                 </Table>
+                <Col md={12} style={{ display: 'flex', justifyContent: 'right' }}>
                 <button className="btn btn-primary" onClick={handleAddRow}>
                     Add Row
                 </button>
+                </Col>
                 {/* <button className="btn btn-secondary ml-2" onClick={handleSubmit}>
                     Submit
                 </button> */}

@@ -4,8 +4,9 @@ import ItemTable from '../Table/table';
 import OptionalField from '../OptionalField/OptionalField';
 import Billing from '../Billing/Billing';
 import { useNavigate } from 'react-router-dom';
+import img1 from "../../Assets/Images/logogs.png";
 import axios from 'axios';
-import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card, Image } from 'react-bootstrap';
 
 const currentDate = new Date().toDateString();
 
@@ -226,6 +227,10 @@ const PurchageForm = () => {
     
         return Object.keys(newErrors).length === 0;
     };
+
+    const handleCancel = (e) => {
+        navigate('/dashboard');
+    }
     
 
     const handleSubmit = async (e) => {
@@ -346,13 +351,19 @@ const PurchageForm = () => {
     };
 
     return (
+        <Container style={{ marginTop: "12%",  width: "90%" }} className="fullPage ">
+             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', marginBottom: "12%", borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+            <Image src={img1} alt="" className="text-center" rounded style={{ width: '25%', marginLeft: "36%" }} />
+            <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginTop: "12px", marginBottom: '12px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+                    Purchage Order
+                </h2>
         <div className="container mt-5">
 
             <div className="card" style={{borderBottomLeftRadius:'0px',borderBottomRightRadius:'0px',borderBottom:'0px'}}>
                 <div className="card-body">
                     <form >
                         <div className="row g-3 mb-3">
-                            <h4>Purchase Order</h4>
+                            
                             <div className="col-md-4">
                                 <label htmlFor="series" className="form-label">Series*</label>
                                 <input
@@ -603,10 +614,18 @@ const PurchageForm = () => {
                 purchType={purcType}
                 />
                 <Billing formData={formData}/>
-                <Button onClick={handleSubmit} type="submit">Submit</Button>
+               
+                <Row>
+                        <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button type="button" className="register" onClick={handleCancel} style={{ width: '150px', height: '43px', background: '#545454', margin: '10px' }}>Cancel</Button>
+                            <Button type="submit" className="register" onClick={handleSubmit} style={{ width: '150px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
+                        </Col>
+                    </Row>
             </section>
 
         </div>
+        </div>
+        </Container>
     );
 };
 
