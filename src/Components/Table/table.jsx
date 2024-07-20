@@ -91,6 +91,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
      
 
     setItems(item);
+    validateField(id, 'modelNumber', selectedOption.label);
    
     };
 
@@ -105,11 +106,50 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
             item.id === id ? { ...item, [name]: value } : item
         );
         setItems(updatedItems);
+        console.log(name)
+        validateField(items, name, value);
         
 
        
     
     };
+    const validateField = (items, name, value) => {
+        let errors = { ...items.errors };
+    
+        switch (name) {
+          case 'modelNumber':
+          case 'name':
+          case 'unit':
+          case 'gstNumber':
+            if (!value.trim()) {
+              errors[name] = 'This field is required';
+            } else {
+              delete errors[name];
+            }
+            if (name === 'gstNumber' && value.trim()) {
+              const gstPattern = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+              if (!gstPattern.test(value)) {
+                errors[name] = 'Invalid GST Number';
+              } else {
+                delete errors[name];
+              }
+            }
+            break;
+          case 'qty':
+          case 'price':
+            if (!value || isNaN(value) || value <= 0) {
+              errors[name] = 'Must be a positive number';
+            } else {
+              delete errors[name];
+            }
+            break;
+          default:
+            break;
+        }
+    
+        return errors;
+      };
+    
 
     useEffect(() => {
         const calculateTotalAmount = () => {
@@ -180,8 +220,8 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                                 <td>
                                     <input
                                         type="text"
-                                       // className="form-control input-field"
-                                        className={`form-control input-field ${errors[item.id]?.spareName ? 'is-invalid' : ''}`}
+                                        className="form-control input-field"
+                                        
                                         name="spareName"
 
                                         value={item.spareName}

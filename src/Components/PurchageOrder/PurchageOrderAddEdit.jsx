@@ -349,7 +349,6 @@ const PurchageForm = () => {
             setErrors((prevErrors) => ({ ...prevErrors, company: '' }));
         }
     };
-
     return (
         <Container style={{ marginTop: "6%", width: "90%" }} className="fullPage py-5">
              <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
