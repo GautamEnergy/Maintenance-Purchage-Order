@@ -43,7 +43,7 @@ export default function Dashboard() {
 
                 <Col xs={12} md={4} className="mb-4">
                     <Link to="/polist" className="card-link">
-                        <Card className="h-100 card-hover text-black" style={{ backgroundColor: "rgb(181 181 181)" }}>
+                        <Card className="h-100 card-hover text-black" style={{backgroundColor: "#D5D0F0" }}>
                             <Card.Body className="d-flex align-items-center">
                                 <Image src={img3} alt="caregiver icon" className="mr-4" rounded style={{ width: '10%' }} />
                                 <Card.Text style={{ paddingLeft: "15px", fontSize: "20px", fontWeight: "bold" }} className="no-underline">PO List</Card.Text>

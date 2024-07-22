@@ -139,7 +139,8 @@ const PurchageForm = () => {
         fetchVoucherNumber();
 
     }, []);
-    const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
+    const notifySuccess = (msg) => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
+    const notifySuccess1 = (msg) => toast.success(msg, { autoClose: 3000 })
     const fetchVoucherNumber = async () => {
         try {
             const token = localStorage.getItem("token"); // If you need to pass a token
@@ -265,7 +266,7 @@ const PurchageForm = () => {
     };
 
     const handleCancel = (e) => {
-        navigate('/dashboard');
+        navigate('/polist');
     }
     
 
@@ -369,10 +370,10 @@ const PurchageForm = () => {
 
             if (response.status === 200) {
                 console.log('Form submitted successfully:', response.data);
-                notifySuccess();
+                notifySuccess1('Order Placed Succesfully!🎉');
                 setTimeout(() => {
-                    navigate('/dashboard');
-                  }, 1000);
+                    navigate('/polist');
+                  }, 2000);
             } else {
                 console.error('Unexpected response:', response);
                 setErrors(prevErrors => ({ ...prevErrors, form: 'Failed to submit form. Unexpected response from server.' }));
@@ -707,6 +708,7 @@ const PurchageForm = () => {
 
         </div>
         </div>
+        <ToastContainer  position='top-center'/>
         </Container>
     );
 };
