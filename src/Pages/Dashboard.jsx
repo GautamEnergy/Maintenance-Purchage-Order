@@ -20,7 +20,7 @@ export default function Dashboard() {
                 <h1 className="text-center">What type of engagement do you anticipate with Value Care?</h1>
             </Row> */}
             <Row>
-                <Col xs={12} md={6} className="mb-4">
+                <Col xs={12} md={4} className="mb-4">
                     <Link to="/purchage" className="card-link">
                         <Card style={{ height: "110px", backgroundColor: "#D5D0F0" }} className=" card-hover">
                             <Card.Body className="d-flex align-items-center">
@@ -30,7 +30,7 @@ export default function Dashboard() {
                         </Card>
                     </Link>
                 </Col>
-                <Col xs={12} md={6} className="mb-4">
+                <Col xs={12} md={4} className="mb-4">
                     <Link to="/spare" className="card-link">
                         <Card className="h-100 card-hover text-black" style={{ backgroundColor: "rgb(181 181 181)" }}>
                             <Card.Body className="d-flex align-items-center">
@@ -40,6 +40,19 @@ export default function Dashboard() {
                         </Card>
                     </Link>
                 </Col>
+
+                <Col xs={12} md={4} className="mb-4">
+                    <Link to="/polist" className="card-link">
+                        <Card className="h-100 card-hover text-black" style={{ backgroundColor: "rgb(181 181 181)" }}>
+                            <Card.Body className="d-flex align-items-center">
+                                <Image src={img3} alt="caregiver icon" className="mr-4" rounded style={{ width: '10%' }} />
+                                <Card.Text style={{ paddingLeft: "15px", fontSize: "20px", fontWeight: "bold" }} className="no-underline">PO List</Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Link>
+                </Col>
+
+
                 <Col xs={12} md={6} className="mb-4">
                     <Link to="/machine" className="card-link">
                         <Card style={{ height: "110px", backgroundColor: "rgb(181 181 181)" }} className=" card-hover" >
