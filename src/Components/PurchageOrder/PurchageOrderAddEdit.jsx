@@ -5,6 +5,7 @@ import OptionalField from '../OptionalField/OptionalField';
 import Billing from '../Billing/Billing';
 import { useNavigate } from 'react-router-dom';
 import img1 from "../../Assets/Images/logogs.png";
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Card, Image } from 'react-bootstrap';
 
@@ -28,9 +29,11 @@ const purchaseTypes = [
 const PurchageForm = () => {
     const [series, setSeries] = useState('GST-2024-2025');
     const [vochNo, setVochNo] = useState('GST-2024-2025');
+    const [selectedPartyCountry, setSelectedPartyCountry] = useState("");
     const [purcType, setPurcType] = useState('');
     const [PartyName, setPartyName] = useState('');
     const [company, setMatCompany] = useState('');
+    const [companyId, setCompanyId] = useState("");
     const [narration, setNarration] = useState('');
     const [totalAmount, setTotalAmount] = useState('');
     const [Party, setParty] = useState('');
@@ -57,7 +60,7 @@ const PurchageForm = () => {
     const [filteredModelNoList, setFilteredModelNoList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [SparePartName, setSparePartName] = useState('');
-    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '',gst: '', SparePartId:'' }]);
+    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '',gst: '', SparePartId:'',amount:'' }]);
     /**
      * ! Item Table States
      */
@@ -112,6 +115,7 @@ const PurchageForm = () => {
         data 
       }
 
+
     /**
      *  ? States of Biling Component
      */
@@ -129,11 +133,32 @@ const PurchageForm = () => {
             setToken(token);
         }
         // console.log('URL CHECK');
-        console.log(url);
+        console.log(personID);
         getPartyListData();
         getCompanyName();
+        fetchVoucherNumber();
 
     }, []);
+    const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
+    const fetchVoucherNumber = async () => {
+        try {
+            const token = localStorage.getItem("token"); // If you need to pass a token
+            const response = await axios.get('http://srv515471.hstgr.cloud:8080/Maintenance/GetVoucherNumber', {
+                headers: {
+                    'Authorization': `Bearer ${token}` // If you need to pass a token
+                }
+            });
+            const voucherNumber = response.data.VoucherNumber;
+            const formattedVoucherNumber = voucherNumber < 10 ? `0${voucherNumber}` : voucherNumber;
+            setVochNo(prevVochNo => {
+                // If the previous value already contains a voucher number, remove it before appending the new one
+                const baseVochNo = 'GST-24-25';
+                return `${baseVochNo}-${formattedVoucherNumber}`;
+            });
+        } catch (error) {
+            console.error('Error fetching voucher number:', error);
+        }
+    };
 
     const getPartyListData = async () => {
         const token = localStorage.getItem("token");
@@ -198,10 +223,17 @@ const PurchageForm = () => {
 
     const validateForm = () => {
         const newErrors = {};
+        if (!companyId) {
+            newErrors.company = 'Company is required';
+        }
         if (!series) newErrors.series = 'Series is required.';
-        if (!purcType) newErrors.purcType = 'Purchase Type is required.';
+        if (selectedPartyCountry === "India" && !purcType) {
+        newErrors.purcType = 'Purchase Type is required.';
+        }
+
+       // if (!purcType) newErrors.purcType = 'Purchase Type is required.';
         if (!PartyName) newErrors.PartyName = 'Party Name is required.';
-        if (!company) newErrors.company = 'Company is required.';
+        //if (!company) newErrors.company = 'Company is required.';
         if (!paymentTerm) newErrors.paymentTerm = 'Payment Term  is required.';
         if (!deleveryTerm) newErrors.deleveryTerm = 'Delivery Term  is required.';
         if (!contactPer) newErrors.contactPer = 'Contact Person  is required.';
@@ -213,6 +245,9 @@ const PurchageForm = () => {
             if (!item.qty) itemError.qty = 'Quantity is required';
             if (!item.unit) itemError.unit = 'Unit is required';
             if (!item.price) itemError.price = 'Price is required';
+            if (purcType === "I/GST-item wise" && !item.gst) {
+                itemError.gst = 'GST is required';
+            }
     
             if (Object.keys(itemError).length > 0) {
                 acc[item.id] = itemError;
@@ -243,19 +278,24 @@ const PurchageForm = () => {
     
 
     const handleSubmit = async (e) => {
+        const personID = localStorage.getItem("CurrentUser");
+        console.log("lalalallalallala");
         
         e.preventDefault();
         console.log(e)
         if (!validateForm()) {
+            console.log("lalalallalallalam");
             return;
         }
+        console.log("lalalallalallalan");
 
         const PurchaseData = {
+            currentUser: personID,
             series,
             vochNo,
             purcType,
             PartyName,
-            company,
+            company:companyId,
             narration,
             currentDate,
         };
@@ -319,7 +359,30 @@ const PurchageForm = () => {
             optionalData
         }
         console.log(reqData)
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                'http://srv515471.hstgr.cloud:8080/Maintenance/AddPurchaseOrder',
+                reqData,
+                { headers: { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${token}` } }
+            );
+
+            if (response.status === 200) {
+                console.log('Form submitted successfully:', response.data);
+                notifySuccess();
+                setTimeout(() => {
+                    navigate('/dashboard');
+                  }, 1000);
+            } else {
+                console.error('Unexpected response:', response);
+                setErrors(prevErrors => ({ ...prevErrors, form: 'Failed to submit form. Unexpected response from server.' }));
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error.message);
+            setErrors(prevErrors => ({ ...prevErrors, form: 'Failed to submit form. Please check the server configuration.' }));
+        }
     };
+
  
     const clearForm = () => {
         setSeries('');
@@ -344,7 +407,15 @@ const PurchageForm = () => {
     };
 
     const handleChangePartyName = (e) => {
-        setPartyName(e.target.value);
+        const selectedPartyId = e.target.value;
+        setPartyName(selectedPartyId);
+
+        const selectedParty = PartyList.find(party => party.PartyNameId === selectedPartyId);
+        if (selectedParty) {
+            setSelectedPartyCountry(selectedParty.Country);
+        } else {
+            setSelectedPartyCountry("");
+        }
         if (errors.PartyName) {
             setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }));
         }
@@ -352,8 +423,7 @@ const PurchageForm = () => {
     };
 
     const handleChangeCompany = (e) => {
-        console.log(e.target.value)
-        setMatCompany(e.target.value);
+        setCompanyId(e.target.value);
         if (errors.company) {
             setErrors((prevErrors) => ({ ...prevErrors, company: '' }));
         }
@@ -408,28 +478,10 @@ const PurchageForm = () => {
                                 />
                             </div>
                         </div>
+                        
 
                         <div className="row g-3 mb-3">
-                            <div className="col-md-4">
-                                <label htmlFor="purcType" className="form-label">Purchase Type*</label>
-                                <select
-                                    style={{ border: errors.purcType ? '2px solid red' : '2px solid green' }}
-                                    id="purcType"
-                                    className="form-select"
-                                    placeholder ="Select Purchase Type"
-                                    value={purcType}
-                                    onChange={handleChangePurcType}
-                                >
-                                    <option value=""disabled>Select Purchase Type</option>
-                                    {purchaseTypes.map((option) => (
-                                        <option key={option.value} value={option.value}>
-                                            {option.label}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.purcType && <div className="text-danger">{errors.purcType}</div>}
-                            </div>
-                            <div className="col-md-4">
+                        <div className="col-md-4">
                                 <label htmlFor="PartyName" className="form-label">Party Name*</label>
 
 
@@ -449,18 +501,40 @@ const PurchageForm = () => {
                                 </select>
                                 {errors.PartyName && <div className="text-danger">{errors.PartyName}</div>}
                             </div>
+                            {selectedPartyCountry === "India"?<div className="col-md-4">
+                                <label htmlFor="purcType" className="form-label">Purchase Type*</label>
+                                <select
+                                    style={{ border: errors.purcType ? '2px solid red' : '2px solid green' }}
+                                    id="purcType"
+                                    className="form-select"
+                                    placeholder ="Select Purchase Type"
+                                    value={purcType}
+                                    onChange={handleChangePurcType}
+                                    disabled={selectedPartyCountry !== "India"}
+                                >
+                                    <option value=""disabled>Select Purchase Type</option>
+                                    {purchaseTypes.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.purcType && <div className="text-danger">{errors.purcType}</div>}
+                            </div>:""}
+                            
+                          
                             <div className="col-md-4">
                                 <label htmlFor="company" className="form-label">Company Name*</label>
                                 <select
                                     style={{ border: errors.company ? '2px solid red' : '2px solid green' }}
                                     id="company"
                                     className="form-select"
-                                    value={company}
+                                    value={companyId}
                                     onChange={handleChangeCompany}
                                 >
                                     <option value="" disabled>Select a Company</option>
                                     {CompanyName.map((option, index) => (
-                                        <option key={index} value={option.CompanyName}>
+                                        <option key={index} value={option.CompanyID}>
                                             {option.CompanyName}
                                         </option>
                                     ))}

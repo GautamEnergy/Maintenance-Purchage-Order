@@ -168,6 +168,11 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                    total = total+ items[i].qty* items[i].price
                 }
              }
+
+             items.forEach((item)=>{
+                item.amount = item.qty && item.price?item.gst?((item.qty * item.price)*(item.gst/100))+(item.qty * item.price):
+                item.qty*item.price:'';
+             });
             console.log(total)
             setAmount(total);
         };
@@ -280,6 +285,9 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
                                     />:''}
+                                      {errors[item.id]?.gst && (
+                            <div className="invalid-feedback">{errors[item.id].gst}</div>
+                        )}
                                     
                                    
                        
