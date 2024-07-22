@@ -15,6 +15,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
   
 
     useEffect(() => {
+       
         getSpareModelNo();
     }, []);
     console.log(errors);
@@ -66,6 +67,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
     // };
 
     const handleChangeModelNumber = async (selectedOption, id) => {
+     
         console.log(selectedOption);
         const updatedItems = items.map(item =>
             item.id === id ? { ...item, modelNumber: selectedOption.value || '' } : item
@@ -179,6 +181,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
         const updatedItems = items.filter(item => item.id !== id);
         setItems(updatedItems);
     };
+
 
     return (
         <>
