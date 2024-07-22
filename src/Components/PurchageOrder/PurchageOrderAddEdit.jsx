@@ -233,6 +233,18 @@ const PurchageForm = () => {
     }
     
 
+    
+    useEffect((e) => {
+        console.log("Mango",items?.[0]?.modelNumber);
+    
+            if(items?.[0]?.modelNumber){
+                validateForm();  
+            }
+        
+
+    }, [items]);
+    
+
     const handleSubmit = async (e) => {
         
         e.preventDefault();
