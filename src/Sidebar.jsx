@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useContext } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
+import { AppContext } from './ContextAPI'
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -27,6 +28,7 @@ import logo from "./Assets/Images/logo1.png";
 import "./Components/Table/table.css";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import { Image } from 'react-bootstrap';
 
 const drawerWidth = 240;
 
@@ -97,6 +99,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function Sidebar() {
   const theme = useTheme();
+  const { setToken } = useContext(AppContext)
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [profileImg, setProfileImg] = useState('');
@@ -115,8 +118,10 @@ export default function Sidebar() {
     if (Name) {
       setName(Name);
     }
+    console.log(profileImgUrl);
 
   }, []);
+  console.log(profileImg)
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -134,10 +139,15 @@ export default function Sidebar() {
     localStorage.removeItem("profilePic");
     localStorage.removeItem("Name");
     localStorage.removeItem('Token');
+    console.log("hahhahahah")
     navigate("/");
+    window.location.reload();
+
   };
 
   return (
+  <>
+   
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -163,7 +173,7 @@ export default function Sidebar() {
                 placement="bottom"
                 overlay={<Tooltip id="profile-tooltip">Hi, {name}</Tooltip>}
               >
-                <img
+                <Image
                   src={profileImg}
                   alt="profile"
                   style={{
@@ -180,7 +190,7 @@ export default function Sidebar() {
               </OverlayTrigger>
               {showCard && (
                 <div className="card" style={{ position: 'absolute', backgroundColor: '#E4E5E3', top: '50px', right: '10px', width: '150px', padding: '10px', borderRadius: '10px' }}>
-                  <img
+                  <Image
                     src={profileImg}
                     alt="profile"
                     style={{
@@ -263,5 +273,6 @@ export default function Sidebar() {
        
       </Drawer>
     </Box>
+  </>
   );
 }

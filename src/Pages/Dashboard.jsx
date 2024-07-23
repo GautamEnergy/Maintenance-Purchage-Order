@@ -12,7 +12,7 @@ import img3 from "../Assets/Images/engineering.png"
 
 export default function Dashboard() {
     return (
-        <Container className="py-4" style={{ background: "white", borderRadius: '1rem', marginTop: "85px" }}>
+        <Container className="py-4" style={{ background: "white", borderRadius: '1rem',width:"75%", marginTop: "85px" }}>
             <Row className="justify-content-center mb-5">
                 <Image src={image1} alt="Value Care Logo" style={{ width: '20%', height: '80%', marginTop: "5px", marginBottom: "-30px" }} />
             </Row>
@@ -42,7 +42,7 @@ export default function Dashboard() {
                 </Col>
 
                 <Col xs={12} md={4} className="mb-4">
-                    <Link to="polist" className="card-link">
+                    <Link to="/polist" className="card-link">
                         <Card className="h-100 card-hover text-black" style={{backgroundColor: "#D5D0F0" }}>
                             <Card.Body className="d-flex align-items-center">
                                 <Image src={img3} alt="caregiver icon" className="mr-4" rounded style={{ width: '10%' }} />
