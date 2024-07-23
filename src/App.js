@@ -13,6 +13,7 @@ import PurchageForm from './Components/PurchageOrder/PurchageOrderAddEdit';
 import ItemTable from './Components/Table/table';
 import Dashboard from './Pages/Dashboard';
 import PurchaseOrderList from './Components/PurchageOrder/PurchaseOrderList';
+import Sidebar from './Sidebar';
 
 const App = () => {
   const { token } = useContext(AppContext);
@@ -30,7 +31,7 @@ const App = () => {
 const TempDash = () => {
   return (
     <>
-      <Navbar />
+      <Sidebar />
       <Dashboard />
     </>
   );
@@ -38,10 +39,12 @@ const TempDash = () => {
 
 const AppWithNavbar = () => (
   <>
-    <Navbar />
+    <Sidebar />
     <Routes>
 
-      <Route path="/nav" element={<Navbar />} />
+      {/* <Route path="/nav" element={<Navbar />} /> */}
+      <Route path="/nav" element={<Sidebar />} />
+      
       <Route path="/machine" element={<AddMachine />} />
       <Route path="/spare" element={<AddSpare />} />
       <Route path="/billing" element={<Billing />} />
