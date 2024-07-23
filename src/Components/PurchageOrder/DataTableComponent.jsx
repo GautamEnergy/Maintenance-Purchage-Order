@@ -8,6 +8,7 @@ import axios from 'axios';
 import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
+import * as XLSX from 'xlsx';
 
 const DataTableComponent = () => {
     const [data, setData] = useState([]);
@@ -41,9 +42,10 @@ const DataTableComponent = () => {
 
     const renderHeader = () => {
         return (
-            <div className="table-header" style={{display:"flex"}}>
-                
-              <div>
+          <div className="container">
+      <div className="row align-items-center">
+        <div className="col-md-9">
+        <div>
               <span className="p-input-icon-left">
                 <i className="pi pi-search  " style={{marginLeft:'170px'}}/>
                 
@@ -52,14 +54,25 @@ const DataTableComponent = () => {
                     
                 </span>
               </div>
-              <div style={{marginLeft:"700px"}}>
-              <Link to="/purchage">
-          <Image src={img1} alt="" rounded style={{ width: '90%' }} />
-        </Link>
-              </div>
-            </div>
+        </div>
+        <div className="col-md-1 ml-auto mt-5 mt-md-0 d-flex justify-content-end">
+          <Link to="/purchage">
+            <Image src={img1} alt="" rounded style={{ width: '75%' }} />
+          </Link>
+        </div>
+        <div className="col-md-2 ml-auto mt-5 mt-md-0 d-flex justify-content-end">
+                    <Button label="Export" icon="pi pi-file-excel" className="p-button-success" onClick={exportExcel} />
+                </div>
+      </div>
+    </div>
         );
     }
+    const exportExcel = () => {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase Orders");
+      XLSX.writeFile(workbook, "PurchaseOrders.xlsx");
+  };
 
     const header = renderHeader();
 
