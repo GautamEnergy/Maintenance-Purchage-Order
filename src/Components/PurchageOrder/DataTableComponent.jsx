@@ -45,7 +45,7 @@ const DataTableComponent = () => {
           <div className="container">
       <div className="row align-items-center">
         <div className="col-md-9">
-        <div>
+        <div >
               <span className="p-input-icon-left">
                 <i className="pi pi-search  " style={{marginLeft:'170px'}}/>
                 
