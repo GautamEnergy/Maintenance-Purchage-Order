@@ -160,7 +160,9 @@ export default function Sidebar() {
             >
               <MenuIcon />
             </IconButton>
-            <img src={logo} alt="Mini variant drawer" style={{ width: '15%', height: 'auto', background: "transparent" }} />
+           <Link to="/dashboard">
+           <img src={logo} alt="Mini variant drawer" style={{ width: '20%', height: 'auto', background: "transparent" }} />
+           </Link>
             <Box sx={{ flexGrow: 1 }} />
             <div className="d-flex align-items-center">
               {profileImg && (
