@@ -14,6 +14,7 @@ import ItemTable from './Components/Table/table';
 import Dashboard from './Pages/Dashboard';
 import PurchaseOrderList from './Components/PurchageOrder/PurchaseOrderList';
 import Sidebar from './Sidebar';
+import AvailableStock from './Components/PurchageOrder/AvailableStock';
 
 const App = () => {
   const { token } = useContext(AppContext);
@@ -55,6 +56,7 @@ const AppWithNavbar = () => (
       <Route path="/itemMAster" element={<ItemMaster />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/polist" element={<PurchaseOrderList />} />
+      <Route path="/availablestocklist" element={<AvailableStock />} />
 
     </Routes>
   </>

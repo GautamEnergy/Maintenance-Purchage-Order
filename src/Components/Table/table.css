@@ -45,3 +45,12 @@
 .css-1191obr-MuiPaper-root-MuiAppBar-root{
     background-color: #a20000 !important;
 }
+/* .card{
+    height: 500px!important;
+} */
+canvas{
+    height: 350px !important;
+}
+canvas:hover{
+    cursor: pointer !important;
+}
