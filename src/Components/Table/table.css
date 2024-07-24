@@ -54,3 +54,31 @@ canvas{
 canvas:hover{
     cursor: pointer !important;
 }
+/* DataTableComponent.css */
+
+.plus img {
+    width: 100%; /* Ensure full width within its container */
+    max-width: 50px; /* Set a reasonable max width */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  @media (max-width: 768px) {
+    .plus img {
+      max-width: 50px; /* Reduce size on smaller screens */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .plus img {
+    max-width: 50px; /* Further reduce size on extra small screens */
+    }
+  }
+  .export-button {
+    margin-left: 1px; /* Add some margin to the left to avoid overlap */
+    white-space: nowrap; /* Ensure the text doesn't wrap */
+  }
+  @media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1250px;
+    }
+}

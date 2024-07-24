@@ -9,6 +9,7 @@ import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
+import "../Table/table.css"
 
 const DataTableComponent = () => {
     const [data, setData] = useState([]);
@@ -43,28 +44,23 @@ const DataTableComponent = () => {
     const renderHeader = () => {
         return (
           <div className="container">
-      <div className="row align-items-center">
-        <div className="col-md-9">
-        <div >
-              <span className="p-input-icon-left">
-                <i className="pi pi-search  " style={{marginLeft:'170px'}}/>
-                
-                    <InputText style={{border:"1px solid black"}}  type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search...."  />
-                    
-                    
-                </span>
+          <div className="row align-items-center">
+              <div className="col-md-7">
+                  <div>
+                      <span className="p-input-icon-left">
+                          <i className="pi pi-search" style={{marginLeft:'170px'}}/>
+                          <InputText style={{border:"1px solid black"}} type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search...." />
+                      </span>
+                  </div>
               </div>
-        </div>
-        <div className="col-md-1 ml-auto mt-5 mt-md-0 d-flex justify-content-end">
-          <Link to="/purchage">
-            <Image src={img1} alt="" rounded style={{ width: '75%' }} />
-          </Link>
-        </div>
-        <div className="col-md-2 ml-auto mt-5 mt-md-0 d-flex justify-content-end">
-                    <Button label="Export" icon="pi pi-file-excel" className="p-button-success" onClick={exportExcel} />
-                </div>
+              <div className="col-md-5 d-flex justify-content-end align-items-center">
+                  <Link to="/purchage" className="plus mr-1">
+                      <Image src={img1} alt="plus" rounded />
+                  </Link>
+                  <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
+              </div>
+          </div>
       </div>
-    </div>
         );
     }
     const exportExcel = () => {

@@ -33,6 +33,7 @@ const AddSpare = () => {
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
+  const [Code, setCode] = useState("");
 
   // console.log(token);
   useEffect(() => {
@@ -150,6 +151,7 @@ const AddSpare = () => {
         MachineName: MachineNames.map((el) => { return el.value }),
         CycleTime,
         NumberOfPcs: PCS,
+        HSNCode: Code,
         Equivalent: EquivalentSparePartValues,
         SparePartModelNo,
         Status,
@@ -179,7 +181,7 @@ const AddSpare = () => {
         if (pdfInputRef.current) {
           pdfInputRef.current.value = '';
         }
-        console.log('immage')
+        console.log(SpareData)
         notifySuccess();
         setTimeout(() => {
           navigate('/dashboard');
@@ -559,6 +561,24 @@ const AddSpare = () => {
             </Row>
 
             <Row>
+            <Col className='py-2' md={4}>
+                <Form.Group controlId="Code">
+                  <Form.Label style={{ fontWeight: "bold" }}>HSN/SAC Code</Form.Label>
+                  <Form.Control
+                    type="Text"
+                    name="Pieces"
+                    value={Code}
+                    onChange={(e) => {setCode(e.target.value)
+                      handleFieldChange('Code', e.target.value);
+                    }}
+                    placeholder="Enter HSN/SAC Code"
+                    //   required
+                    style={inputStyle}
+                  />
+                  
+
+                </Form.Group>
+              </Col>
               <Col className='py-2' md={4}>
                 <Form.Group controlId="Image">
                   <Form.Label style={{ fontWeight: "bold" }}>Image</Form.Label>

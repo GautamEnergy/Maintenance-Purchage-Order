@@ -11,7 +11,7 @@ import img2 from "../../Assets/Images/back.png"
 import { Link } from 'react-router-dom';
 import StockChart from './StockChart';
 
-function PurchaseOrderList() {
+const PurchaseOrderList= () => {
    
    
     return (

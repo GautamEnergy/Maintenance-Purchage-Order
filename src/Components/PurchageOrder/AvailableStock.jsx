@@ -11,14 +11,14 @@ import img2 from "../../Assets/Images/back.png"
 import { Link } from 'react-router-dom';
 import StockChart from './StockChart';
 
-function AvailableStock() {
+const AvailableStock= () => {
    
    
     return (
         <Container style={{ marginTop: "12%", width: "100%" }} className="fullPage py-5">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Link to="/dashboard">
-          <Image src={img2} alt="" rounded style={{ width: '3%' }} />
+          
         </Link>
                 
                 <Image src={img1} alt="" className="text-center" rounded style={{ width: '25%', marginLeft: "35%" }} />

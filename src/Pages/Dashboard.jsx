@@ -13,7 +13,7 @@ import AvailableStock from '../Components/PurchageOrder/AvailableStock';
 import PurchaseOrderList from '../Components/PurchageOrder/PurchaseOrderList';
 import "../Components/Table/table.css"
 
-export default function Dashboard() {
+ const Dashboard= () => {
     return (
         <>
         <div className="container" style={{display:"flex"}}>
@@ -94,4 +94,5 @@ export default function Dashboard() {
         // </Container>
     );
 }
+export default Dashboard
 
