@@ -14,32 +14,32 @@ import PurchaseOrderList from '../Components/PurchageOrder/PurchaseOrderList';
 import "../Components/Table/table.css"
 import StockLess from '../Components/PurchageOrder/StockLess';
 
- const Dashboard= () => {
+const Dashboard = () => {
     return (
         <>
-        <div className="container" style={{display:"flex"}}>
-        <div style={{width:"50%"}}>
-        {/* <PurchaseOrderList /> */}
-        <StockLess />
-     
-        </div>
-        <div style={{width:"50%"}}>
-        <AvailableStock />        
-        </div>
-        </div>
+            <div className="container py-1" style={{ display: "flex" }}>
+                <div style={{ width: "50%" }}>
+                    {/* <PurchaseOrderList /> */}
+                    <StockLess />
 
-        <div className="container" style={{display:"flex"}}>
-        <div style={{width:"100%", marginTop:'-210px'}}>
-        <PurchaseOrderList />
-     
-     
-        </div>
-      
-        </div>
-        
-        
+                </div>
+                <div style={{ width: "50%" }}>
+                    <AvailableStock />
+                </div>
+            </div>
+
+            <div className="container" style={{ display: "flex" }}>
+                <div style={{ width: "100%", marginTop: '-210px' }}>
+                    <PurchaseOrderList />
+
+
+                </div>
+
+            </div>
+
+
         </>
-      
+
     );
 }
 export default Dashboard
