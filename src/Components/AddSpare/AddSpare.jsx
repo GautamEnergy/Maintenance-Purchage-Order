@@ -169,23 +169,28 @@ const AddSpare = () => {
 
         if ((files && files.length > 0) || (pdf && pdf.size > 0)) {
           let upload = await uploadPDF(formData);
+        }else{
+          notifySuccess();
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 1000);
         }
         console.log("spare response")
 
-        setFiles([]);
-        setPdf(undefined);
+        // setFiles([]);
+        // setPdf(undefined);
 
-        if (imageInputRef.current) {
-          imageInputRef.current.value = '';
-        }
-        if (pdfInputRef.current) {
-          pdfInputRef.current.value = '';
-        }
-        console.log(SpareData)
-        notifySuccess();
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1000);
+        // if (imageInputRef.current) {
+        //   imageInputRef.current.value = '';
+        // }
+        // if (pdfInputRef.current) {
+        //   pdfInputRef.current.value = '';
+        // }
+        // console.log(SpareData)
+        // notifySuccess();
+        // setTimeout(() => {
+        //   navigate('/dashboard');
+        // }, 1000);
       } catch (err) {
 
         console.log(err)
@@ -295,7 +300,10 @@ const AddSpare = () => {
         setIsLoading(false);
         console.log(response.data)
         console.log('image respnse')
-        // navigate('/dashboard');
+        notifySuccess();
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 1000);
         return response.data;
       } else {
         setIsLoading(false);

@@ -50,9 +50,13 @@
 } */
 canvas{
     height: 350px !important;
+   
 }
 canvas:hover{
     cursor: pointer !important;
+}
+.card1 canvas{
+    margin-left: 80px;
 }
 /* DataTableComponent.css */
 

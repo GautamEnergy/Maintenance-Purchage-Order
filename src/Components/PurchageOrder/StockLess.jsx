@@ -11,6 +11,7 @@ import img2 from "../../Assets/Images/back.png"
 import { Link } from 'react-router-dom';
 import StockChart from './StockChart';
 import StockPiChart from './StockPiChart';
+import "../Table/table.css"
 
 const StockLess= () => {
    
@@ -27,7 +28,7 @@ const StockLess= () => {
                     Stock Needed
                 </h2>
                 <div className="App" >
-                    <div className="card" style={{width:"100%"}}>
+                    <div className="card1" style={{width:"100%"}}>
                         <StockPiChart />
                     </div>
                     
