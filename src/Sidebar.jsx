@@ -32,6 +32,7 @@ import "./Components/Table/table.css";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { Image } from 'react-bootstrap';
+import GeneratePdf from './Components/PDF/GeneratePdf';
 
 const drawerWidth = 240;
 
@@ -257,6 +258,7 @@ export default function Sidebar() {
               { text: 'Add Spare', path: '/spare', icon: <AddSpareIcon /> },
               { text: 'Add Party', path: '/newParty', icon: <AddPartyIcon /> },
               { text: 'Add Machine', path: '/machine', icon: <AddMachineIcon /> },
+              { text: 'Generate PDF', path: '/generatepdf', icon: <AddMachineIcon /> },
             ].map(({ text, path, icon }, index) => (
               <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                 <ListItemButton

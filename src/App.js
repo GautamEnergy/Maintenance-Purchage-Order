@@ -15,6 +15,7 @@ import Dashboard from './Pages/Dashboard';
 import PurchaseOrderList from './Components/PurchageOrder/PurchaseOrderList';
 import Sidebar from './Sidebar';
 import AvailableStock from './Components/PurchageOrder/AvailableStock';
+import GeneratePdf from './Components/PDF/GeneratePdf';
 
 const App = () => {
   const { token } = useContext(AppContext);
@@ -45,7 +46,7 @@ const AppWithNavbar = () => (
 
       {/* <Route path="/nav" element={<Navbar />} /> */}
       <Route path="/nav" element={<Sidebar />} />
-      
+      <Route path="/generatepdf" element={<GeneratePdf />} />
       <Route path="/machine" element={<AddMachine />} />
       <Route path="/spare" element={<AddSpare />} />
       <Route path="/billing" element={<Billing />} />

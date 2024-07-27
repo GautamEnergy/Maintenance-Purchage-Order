@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import img1 from "../../Assets/Images/LOGO.png";
 import { AppContext } from '../../ContextAPI';
+import Loader from '../Loader/Loader';
 
 const AddMachine = () => {
     const { token, setToken } = useContext(AppContext);
@@ -18,6 +19,7 @@ const AddMachine = () => {
     const navigate = useNavigate();
     const [fieldErrors, setFieldErrors] = useState({});
     const [url, setUrl] = useState("");
+    const [loading, setLoading] = useState();
 
 
     useEffect(() => {
@@ -41,7 +43,9 @@ const AddMachine = () => {
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
     const addNewMachine = async (machineData) => {
+        
         try {
+            setLoading(true);
             const res = await fetch(`${url}/Maintenance/AddMachine`, {
                 method: 'POST',
                 headers: {
@@ -51,6 +55,11 @@ const AddMachine = () => {
             });
             let response = await res.json();
             if (res.ok) {
+                setTimeout(() => {
+                    setLoading(false);
+                    navigate('/dashboard');
+                }, 1000);
+               
 
                 setMachineName('');
                 setMachineModelNo('');
@@ -59,15 +68,15 @@ const AddMachine = () => {
                 setPersonID('');
                 setError('');
                 notifySuccess();
-                setTimeout(() => {
-                    navigate('/dashboard');
-                }, 1000);
+              
             } else {
                 if (res.status == 409) {
+                    setLoading(false);
                     response.msg == 'Duplicate Machine Name' ? notifyError('This machine name is already exists') :
                         notifyError('This machine model number is already exists');
 
                 } else {
+                    setLoading(false);
                     notifyError('Something Went Wrong');
                 }
             }
@@ -152,13 +161,18 @@ const AddMachine = () => {
 
 
     return (
-        <Container style={{ marginTop: "12%", width: "90%" }} className="fullPage ">
-            <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+        <Container style={{ marginTop: "12%", width: "90%" }} className="fullPage">
+        <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', position: 'relative' }}>
+            {loading && (
+                <div className="loader-overlay">
+                    <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
+                </div>
+            )}
+            <div className={`form-content ${loading ? 'blurred' : ''}`}>
                 <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
                 <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
                     Add New Machine
                 </h2>
-
                 <Form onSubmit={handleSubmit}>
                     <Row className="subCard1">
                         <Col md={4} className="py-2 form-group">
@@ -168,16 +182,14 @@ const AddMachine = () => {
                                 className="input-text"
                                 name="MachineName"
                                 value={machineName}
-                                onChange={(e) =>{ setMachineName(e.target.value)
+                                onChange={(e) => {
+                                    setMachineName(e.target.value);
                                     handleFieldChange('machineName', e.target.value);
                                 }}
-
                                 placeholder="Enter Machine Name"
                                 style={!fieldErrors.machineName ? inputStyle : inputStyles}
-                               // required
                             />
-                             {fieldErrors.machineName && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineName}</div>}
-
+                            {fieldErrors.machineName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.machineName}</div>}
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
@@ -187,14 +199,14 @@ const AddMachine = () => {
                                 className="input-text"
                                 name="MachineModelNo"
                                 value={machineModelNo}
-                                onChange={(e) => {setMachineModelNo(e.target.value)
-                                     handleFieldChange('machineModelNo', e.target.value);
+                                onChange={(e) => {
+                                    setMachineModelNo(e.target.value);
+                                    handleFieldChange('machineModelNo', e.target.value);
                                 }}
                                 placeholder="Enter Machine Model Number"
                                 style={!fieldErrors.machineModelNo ? inputStyle : inputStyles}
-                               // required
                             />
-                             {fieldErrors.machineModelNo && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineModelNo}</div>}
+                            {fieldErrors.machineModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.machineModelNo}</div>}
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
@@ -210,9 +222,8 @@ const AddMachine = () => {
                                 }}
                                 placeholder="Enter Machine Serial Number"
                                 style={!fieldErrors.machineNo ? inputStyle : inputStyles}
-                               // required
                             />
-                             {fieldErrors.machineNo && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineNo}</div>}
+                            {fieldErrors.machineNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.machineNo}</div>}
                         </Col>
 
                         <Col md={4} className="py-2 form-group">
@@ -222,14 +233,14 @@ const AddMachine = () => {
                                 className="input-text"
                                 name="MachineBrandName"
                                 value={machineBrandName}
-                                onChange={(e) => {setMachineBrandName(e.target.value)
+                                onChange={(e) => {
+                                    setMachineBrandName(e.target.value);
                                     handleFieldChange('machineBrandName', e.target.value);
                                 }}
                                 placeholder="Enter Machine Brand Name"
-                                style={!fieldErrors.machineBrandName ?inputStyle : inputStyles}
-                               // required
+                                style={!fieldErrors.machineBrandName ? inputStyle : inputStyles}
                             />
-                             {fieldErrors.machineBrandName && <div style={{fontSize:"13px"}} className="text-danger">{fieldErrors.machineBrandName}</div>}
+                            {fieldErrors.machineBrandName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.machineBrandName}</div>}
                         </Col>
                     </Row>
                     <Row>
@@ -240,9 +251,28 @@ const AddMachine = () => {
                     </Row>
                 </Form>
             </div>
-
             <ToastContainer position="top-center" autoClose={2000} />
-        </Container>
+        </div>
+
+        <style jsx>{`
+            .loader-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.7);
+                z-index: 999;
+            }
+            .blurred {
+                filter: blur(5px);
+                pointer-events: none;
+            }
+        `}</style>
+    </Container>
     );
 };
 

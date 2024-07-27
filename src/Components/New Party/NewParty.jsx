@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import img1 from "../../Assets/Images/LOGO.png";
 import { AppContext } from '../../ContextAPI';
+import Loader from '../Loader/Loader';
 
 const NewParty = () => {
     const { token, setToken } = useContext(AppContext);
@@ -29,6 +30,7 @@ const NewParty = () => {
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState();
 
 
     useEffect(() => {
@@ -86,6 +88,7 @@ const NewParty = () => {
 
     const addNewParty = async (partyData) => {
         try {
+            setLoading(true);
             console.log(url)
             const response = await fetch(`${url}/Maintenance/AddParty`, {
                 method: 'POST',
@@ -99,16 +102,20 @@ const NewParty = () => {
                 notifyError(error.message || 'This party already exists.');
             } else if (response.ok) {
                 console.log(response.data);
+                
                 notifySuccess();
                 clearForm();
                 setTimeout(() => {
+                    setLoading(false);
                     navigate('/dashboard');
                 }, 1000);
             } else {
+                setLoading(false);
                 const errorData = await response.json();
                 notifyError(errorData.message || 'Failed to add new party');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Fetch error:', error);
             notifyError('Failed to add new party: ' + error.message);
         }
@@ -332,6 +339,12 @@ const NewParty = () => {
 
         <Container style={{ marginTop: "12%" }} className="fullPage ">
             <div className="form-detail" style={{ backgroundColor: '#f8f8ff', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+            {loading && (
+                <div className="loader-overlay">
+                    <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
+                </div>
+            )}
+            <div className={`form-content ${loading ? 'blurred' : ''}`}>
                 <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
                 <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
                     Add New Party
@@ -651,10 +664,27 @@ const NewParty = () => {
                     </Row>
                 </Form>
             </div>
-
+            </div>
 
             <ToastContainer position='top-center' />
-
+            <style jsx>{`
+            .loader-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.7);
+                z-index: 999;
+            }
+            .blurred {
+                filter: blur(5px);
+                pointer-events: none;
+            }
+        `}</style>
         </Container>
     );
 };

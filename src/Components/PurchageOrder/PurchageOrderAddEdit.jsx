@@ -8,6 +8,7 @@ import img1 from "../../Assets/Images/logogs.png";
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Card, Image } from 'react-bootstrap';
+import Loader from '../Loader/Loader';
 
 const currentDate = new Date().toDateString();
 
@@ -48,6 +49,7 @@ const PurchageForm = () => {
     const [cellNo, setcellNo] = useState("");
     const [warranty, setwarranty] = useState("");
     const [CompanyName, setCompanyName] = useState([]);
+    const [loading, setLoading] = useState();
     
     /** 
      * ! Item Table States
@@ -359,6 +361,7 @@ const PurchageForm = () => {
             tableData,
             optionalData
         }
+        setLoading(true);
         console.log(reqData)
         try {
             const token = localStorage.getItem("token");
@@ -372,13 +375,16 @@ const PurchageForm = () => {
                 console.log('Form submitted successfully:', response.data);
                 notifySuccess1('Order Placed Succesfully!🎉');
                 setTimeout(() => {
+                    setLoading(false);
                     navigate('/polist');
-                  }, 2000);
+                  }, 1000);
             } else {
+                setLoading(false);
                 console.error('Unexpected response:', response);
                 setErrors(prevErrors => ({ ...prevErrors, form: 'Failed to submit form. Unexpected response from server.' }));
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error submitting form:', error.message);
             setErrors(prevErrors => ({ ...prevErrors, form: 'Failed to submit form. Please check the server configuration.' }));
         }
@@ -432,6 +438,12 @@ const PurchageForm = () => {
     return (
         <Container style={{ marginTop: "6%", width: "75%" }} className="fullPage py-5">
              <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+             {loading && (
+                <div className="loader-overlay">
+                    <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
+                </div>
+            )}
+            <div className={`form-content ${loading ? 'blurred' : ''}`}>
             <Image src={img1} alt="" className="text-center" rounded style={{ width: '25%', marginLeft: "36%" }} />
             <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginTop: "12px", marginBottom: '12px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
                     Purchase Order
@@ -487,7 +499,7 @@ const PurchageForm = () => {
 
 
                                 <select
-                                    style={{ border: errors.partyName ? '2px solid red' : '2px solid green' }}
+                                    style={{ border: errors.PartyNameId ? '2px solid red' : '2px solid green' }}
                                     id="partyName"
                                     className="form-select"
                                     value={PartyName}
@@ -593,7 +605,7 @@ const PurchageForm = () => {
                                         setErrors((prevErrors) => ({ ...prevErrors, paymentTerm: '' }));
 
                                     }
-                                 }}required style={{border:"1px,black,solid"}} />
+                                 }}required    style={{ border: errors.paymentTerm ? '2px solid red' : '2px solid black' }} />
                                  {errors.paymentTerm && <div className="text-danger">{errors.paymentTerm}</div>}
                             </Form.Group>
                         </Col>
@@ -615,7 +627,7 @@ const PurchageForm = () => {
 
                                     }
                                 }}
-                                style={{border:"1px,black,solid"}}/>
+                                style={{ border: errors.deleveryTerm ? '2px solid red' : '2px solid black' }}/>
                                  {errors.deleveryTerm && <div  className="text-danger"> {errors.deleveryTerm}</div>}
                             </Form.Group>
                         </Col>
@@ -636,7 +648,7 @@ const PurchageForm = () => {
                                         setErrors((prevErrors) => ({ ...prevErrors, contactPer: '' }));
 
                                     }
-                                 }} required  style={{border:"1px,black,solid"}}/>
+                                 }} required     style={{ border: errors.contactPer ? '2px solid red' : '2px solid black' }}/>
                                  {errors.contactPer && <div className="text-danger">{errors.contactPer}</div>}
                             </Form.Group>
                         </Col>
@@ -660,7 +672,7 @@ const PurchageForm = () => {
 
                                     }
                                  }}
-                                 required style={{border:"1px,black,solid"}} />
+                                 required    style={{ border: errors.cellNo ? '2px solid red' : '2px solid black' }} />
                                    {errors.cellNo && <div className="text-danger">{errors.cellNo}</div>}
                             </Form.Group>
                         </Col>
@@ -708,7 +720,26 @@ const PurchageForm = () => {
 
         </div>
         </div>
+        </div>
         <ToastContainer  position='top-center'/>
+        <style jsx>{`
+            .loader-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.7);
+                z-index: 999;
+            }
+            .blurred {
+                filter: blur(5px);
+                pointer-events: none;
+            }
+        `}</style>
         </Container>
     );
 };

@@ -8,7 +8,7 @@ export const AppProvider = ({ children }) => {
 
 
     useEffect(() => {
-        localStorage.setItem("url", "http://srv515471.hstgr.cloud:9090");
+        localStorage.setItem("url", "http://srv515471.hstgr.cloud:8080");
 
     }, [])
 

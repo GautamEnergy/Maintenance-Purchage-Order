@@ -6,7 +6,7 @@ const StockChart = () => {
   const data = [
     { StockName: "Stringer", AvailableStock: 3000 },
     { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 900 },
+    { StockName: "Stringer2", AvailableStock: 2000 },
     { StockName: "Stringer3", AvailableStock: 700 },
     { StockName: "Stringer4", AvailableStock: 310 },
     { StockName: "Stringer5", AvailableStock: 205 },
@@ -21,25 +21,7 @@ const StockChart = () => {
     { StockName: "Stringer2", AvailableStock: 900 },
     { StockName: "Stringer3", AvailableStock: 700 },
     { StockName: "Stringer4", AvailableStock: 310 },
-    { StockName: "Stringer5", AvailableStock: 205 },
-    { StockName: "Stringer", AvailableStock: 2000 },
-    { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 900 },
-    { StockName: "Stringer3", AvailableStock: 700 },
-    { StockName: "Stringer4", AvailableStock: 310 },
-    { StockName: "Stringer5", AvailableStock: 205 },
-    { StockName: "Stringer", AvailableStock: 2000 },
-    { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 900 },
-    { StockName: "Stringer3", AvailableStock: 700 },
-    { StockName: "Stringer4", AvailableStock: 310 },
-    { StockName: "Stringer5", AvailableStock: 205 },
-    { StockName: "Stringer", AvailableStock: 2000 },
-    { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 900 },
-    { StockName: "Stringer3", AvailableStock: 700 },
-    { StockName: "Stringer4", AvailableStock: 310 },
-    { StockName: "Stringer5", AvailableStock: 205 },
+ 
   ];
 
   const chartData = {

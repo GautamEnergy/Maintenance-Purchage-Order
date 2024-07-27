@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import img1 from "../../Assets/Images/LOGO.png"
 import { AppContext } from '../../ContextAPI';
+import Loader from '../Loader/Loader';
 
 const AddSpare = () => {
   const { token, setToken } = useContext(AppContext)
@@ -34,6 +35,7 @@ const AddSpare = () => {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
   const [Code, setCode] = useState("");
+  const [loading, setLoading] = useState();
 
   // console.log(token);
   useEffect(() => {
@@ -81,6 +83,7 @@ const AddSpare = () => {
 
   const addNewSpare = async (SpareData) => {
     try {
+      setLoading(true);
       const response = await fetch(`${url}/Maintenance/AddSparePart`, {
         method: 'POST',
         headers: {
@@ -107,6 +110,7 @@ const AddSpare = () => {
         return responseData;
 
       } else {
+        setLoading(false);
         const errorData = await response.json();
         console.log(errorData)
         if (errorData.msg = 'Duplicate Spare Model Number') {
@@ -116,6 +120,7 @@ const AddSpare = () => {
         }
       }
     } catch (error) {
+      setLoading(false);
       return error
     }
   };
@@ -172,6 +177,7 @@ const AddSpare = () => {
         }else{
           notifySuccess();
           setTimeout(() => {
+            setLoading(false);
             navigate('/dashboard');
           }, 1000);
         }
@@ -302,6 +308,7 @@ const AddSpare = () => {
         console.log('image respnse')
         notifySuccess();
           setTimeout(() => {
+            setLoading(false);
             navigate('/dashboard');
           }, 1000);
         return response.data;
@@ -396,6 +403,12 @@ const AddSpare = () => {
 
     <Container style={{ marginTop: "12%",maxWidth:"750px"  }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+      {loading && (
+                <div className="loader-overlay">
+                    <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
+                </div>
+            )}
+             <div className={`form-content ${loading ? 'blurred' : ''}`}>
         <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
         <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
           Add New Spare Part
@@ -622,10 +635,29 @@ const AddSpare = () => {
             </Col>
           </Row>
         </Form>
-
+        </div>
         {/* {error && <p className="error">{error}</p>} */}
         <ToastContainer position='top-center'/>
       </div>
+    
+      <style jsx>{`
+            .loader-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.7);
+                z-index: 999;
+            }
+            .blurred {
+                filter: blur(5px);
+                pointer-events: none;
+            }
+        `}</style>
     </Container>
   );
 };
