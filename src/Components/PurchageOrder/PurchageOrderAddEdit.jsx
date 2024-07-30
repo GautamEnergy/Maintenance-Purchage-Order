@@ -57,6 +57,7 @@ const PurchageForm = () => {
 
     const [FormData, setFormData] = useState([]);
     
+    
     /** 
      * ! Item Table States
      * 
@@ -68,7 +69,7 @@ const PurchageForm = () => {
     const [filteredModelNoList, setFilteredModelNoList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [SparePartName, setSparePartName] = useState('');
-    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '',gst: '', SparePartId:'',amount:'' }]);
+    const [items, setItems] = useState([{ id: 1, modelNumber: '', spareName: '', qty: '', unit: '', price: '',gst: '', SparePartId:'',amount:'',Purchase_Order_Item_Id: ''  }]);
     /**
      * ! Item Table States
      */
@@ -142,7 +143,7 @@ const PurchageForm = () => {
             setToken(token);
         }
         // console.log('URL CHECK');
-        console.log(Purchase_Order_Id);
+        console.log("baaaaba",Purchase_Order_Id);
         getPartyListData();
         getCompanyName();
         if(Purchase_Order_Id === ""||Purchase_Order_Id === undefined || Purchase_Order_Id === null){
@@ -152,11 +153,29 @@ const PurchageForm = () => {
         
 
     }, []);
+    setTimeout(() => {
+        console.log("moooooo",data.Purchase_Type);
+        console.log("partylist",PartyList);
+        console.log("partyname",PartyName);
+          
+             const selectedParty = PartyList.find(party => party.PartyNameId === PartyName);
+             console.log("parrtydetail",selectedParty);
+             if (selectedParty) {
+                 
+                 setSelectedPartyCountry(selectedParty.Country);
+             } else {
+                 setSelectedPartyCountry("");
+             }
+    }, 100);
     useEffect(() => {
         console.log("hahahhahahmmmm")
       
         console.log(Purchase_Order_Id)
+ 
         if (Purchase_Order_Id) {
+           
+    
+          
             const fetchData = async () => {
                 try {
                     const response = await axios.post(
@@ -165,7 +184,7 @@ const PurchageForm = () => {
                     );
                     const purchaseData = response.data[0];
                     setFormData(purchaseData);
-                    bindData(purchaseData)
+                   // bindData(purchaseData)
                     console.log(response)
                     console.log(FormData)
                 } catch (error) {
@@ -175,9 +194,20 @@ const PurchageForm = () => {
             fetchData();
         }
     }, [Purchase_Order_Id]);
-    const bindData = (data) => {
-        console.log(data.Purchase_Type);
+    useEffect(() => {
+        if (modelNoList.length > 0 && FormData) {
+            bindData(FormData);
+        }
+    }, [modelNoList, FormData]);
     
+    const bindData = (data) => {
+        if (!data || !Array.isArray(data.Items)) {
+            console.error('Invalid data structure or data.Items is not an array:', data);
+            return;
+        }
+        console.log('modelNoList:', modelNoList);
+        console.log('Fetched data Items:', data.Items);
+     
         // Set top-level fields
         setSeries(series);
         setVochNo(data.Voucher_Number);
@@ -193,18 +223,22 @@ const PurchageForm = () => {
     
         // Set items with correct mapping
         const updatedItems = data.Items.map((item, index) => {
-            const matchedItem = modelNoList.find(model => model.Spare_Part_Id === item.Spare_Part_Id);
-            console.log("fafaffaf",item.Spare_Part_Id)
+            console.log('Item from fetched data:', item);
+            const matchedItem = modelNoList.find(model => model.SparePartId === item.Spare_Part_Id);
+            console.log('Matched Item:', matchedItem);
+        
+            console.log("fafaffaf",item)
             return {
                 id: index + 1,
-            modelNumber: matchedItem ? matchedItem.modelNumber : '',
-            spareName: matchedItem ? matchedItem.spareName : '',
+            modelNumber: matchedItem.SparePartModelNumber || '',
+            spareName: matchedItem.SparePartName || item.SparePartName || '',
             qty: item.Quantity,
             unit: item.Unit,
             price: item.Price_Rs,
             gst: item.GST,
             amount: item.Item_Amount,
-            SparePartId: item.Spare_Part_Id
+            SparePartId: item.Spare_Part_Id,
+            Purchase_Order_Item_Id : item.Purchase_Order_Item_Id
             };
         });
         setItems(updatedItems);
@@ -315,8 +349,11 @@ const PurchageForm = () => {
 
             if (response.status === 200 && Array.isArray(response.data)) {
                 const partyNames = response.data;
+                console.log("hoohhoh",Purchase_Order_Id);
 
                 setPartyList(partyNames);
+           
+              
             } else {
                 console.error('Unexpected response:', response);
                 setErrors('Failed to fetch party list. Unexpected response from server.');
@@ -430,6 +467,7 @@ const PurchageForm = () => {
 
         const PurchaseData = {
             currentUser: personID,
+            Purchase_Order_Id: Purchase_Order_Id?Purchase_Order_Id:"",
             series,
             vochNo,
             purcType,
@@ -448,6 +486,7 @@ const PurchageForm = () => {
         }
 
         const tableData = {
+            
             items,
             totalAmount
         }
@@ -498,7 +537,7 @@ const PurchageForm = () => {
             optionalData
         }
         setLoading(true);
-        console.log(reqData)
+        console.log("all data " ,reqData)
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
@@ -539,7 +578,9 @@ const PurchageForm = () => {
 
     const handleBack = () => {
         navigate('/dashboard');
+
     };
+    console.log("chaaggftt",purcType);
 
     const handleChangePurcType = (e) => {
         setPurcType(e.target.value);
@@ -650,7 +691,7 @@ const PurchageForm = () => {
                                 </select>
                                 {errors.PartyName && <div className="text-danger">{errors.PartyName}</div>}
                             </div>
-                            {selectedPartyCountry === "India"?<div className="col-md-4">
+                            {(selectedPartyCountry === "India")?<div className="col-md-4">
                                 <label htmlFor="purcType" className="form-label">Purchase Type*</label>
                                 <select
                                     style={{ border: errors.purcType ? '2px solid red' : '2px solid green' }}

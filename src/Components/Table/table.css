@@ -21,7 +21,7 @@
     width: 100%;
     padding: 7px;
     box-sizing: border-box;
-    border: 1px solid #ced4da;
+    border: 1px solid black !important;
     border-radius: 4px;
     font-size: 14px;
     line-height: 1.5;
@@ -32,12 +32,12 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 .is-invalid {
-    border-color: #dc3545;
+    border-color: #dc3545 !important;
 }
 
 .invalid-feedback {
-    color: #dc3545;
-    display: block;
+    color: #dc3545 !important;
+    display: block !important;
 }
 .css-19z1ozs-MuiPaper-root-MuiAppBar-root{
     background-color: #a20000!important;
@@ -131,5 +131,8 @@ canvas:hover{
       transform: scale(1.0);
       -webkit-transform: scale(1.0);
     }
+  }
+  .css-13cymwt-control{
+    border-color: black !important;
   }
   

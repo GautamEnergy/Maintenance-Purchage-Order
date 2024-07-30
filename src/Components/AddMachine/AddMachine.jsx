@@ -197,7 +197,7 @@ const AddMachine = () => {
                             <Form.Control
                                 type="text"
                                 className="input-text"
-                                name="MachineModelNo"
+                                // name="MachineModelNo"
                                 value={machineModelNo}
                                 onChange={(e) => {
                                     setMachineModelNo(e.target.value);

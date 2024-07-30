@@ -15,6 +15,7 @@ import "../Components/Table/table.css"
 import StockLess from '../Components/PurchageOrder/StockLess';
 
 const Dashboard = () => {
+    
     return (
         <>
             <div className="container py-1" style={{ display: "flex" }}>

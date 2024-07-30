@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {  useEffect  } from 'react';
 import { Container, Table, Form, Col } from 'react-bootstrap';
 import ItemMaster from '../Add Item Master/ItemMaster';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
   
 
     useEffect(() => {
+        console.log("hiiiiiii",items)
        
         getSpareModelNo();
     }, []);
@@ -65,38 +66,73 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
     //         setFilteredModelNoList(modelNoList); // Show all if query is empty
     //     }
     // };
-
-    const handleChangeModelNumber = async (selectedOption, id) => {
-     
-        console.log(selectedOption);
-        const updatedItems = items.map(item =>
-            item.id === id ? { ...item, modelNumber: selectedOption.value || '' } : item
-        );
-
-        let { data } = await axios.post(`http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData`, {
-            "required": "Spare Part Name",
-            "SparePartId": selectedOption.value
-        })
-
-        let item = items.map((item) => {
-            return {
-                id: item.id,
-                spareName: item.id == id ? item.spareName = data.data[0]['SparePartName'] : item.spareName,
-                modelNumber: item.id == id ? item.modelNumber = selectedOption.label : item.modelNumber,
-                qty: item.qty,
-                unit: item.unit,
-                price: item.price,
-                gst : item.gst,
-                SparePartId: item.id == id ? item.SparePartId = selectedOption.value:item.SparePartId
-            }
-        });
-     
-
-    setItems(item);
-    validateField(id, 'modelNumber', selectedOption.label);
    
-    };
+    console.log("namamamm",items);
+    const getPartyName = async(selectedOption, id)=>{
+        try {
+            const { data } = await axios.post(`http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData`, {
+                required: "Spare Part Name",
+                SparePartId: selectedOption.value
+            });
+    
+            const updatedItems = items.map(item => 
+                item.id === id
+                    ? {
+                        ...item,
+                        modelNumber: selectedOption.label,
+                        spareName: data.data[0].SparePartName,
+                        SparePartId: selectedOption.value
+                      }
+                    : item
+            );
+    
+            setItems(updatedItems);
+            validateField(id, 'modelNumber', selectedOption.label);
+    
+            // Debugging: Log the updated state
+            console.log('Updated Items:', updatedItems);
+        } catch (error) {
+            console.error('Error fetching auto data:', error);
+        }
 
+    }
+    // const handleChangeModelNumber = async (selectedOption, id) => {
+       
+     
+        
+    //     const updatedItems = items.map(item =>
+    //         item.id === id ? { ...item, modelNumber: selectedOption.value || '1ce4daeb-d1df-4697-afb9-9be10bfce763' } : item
+    //     );
+
+    //     let { data } = await axios.post(`http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData`, {
+    //         "required": "Spare Part Name",
+    //         "SparePartId": selectedOption.value
+    //     })
+
+    //     let item = items.map((item) => {
+    //         return {
+    //             id: item.id,
+    //             spareName: item.id == id ? item.spareName = data.data[0]['SparePartName'] : item.spareName,
+    //             modelNumber: item.id == id ? item.modelNumber = selectedOption.label : item.modelNumber,
+    //             qty: item.qty,
+    //             unit: item.unit,
+    //             price: item.price,
+    //             gst : item.gst,
+    //             SparePartId: item.id == id ? item.SparePartId = selectedOption.value:item.SparePartId
+    //         }
+    //     });
+     
+
+    // setItems(item);
+    // validateField(id, 'modelNumber', selectedOption.label);
+   
+    // };
+    const handleChangeModelNumber = async (selectedOption, id) => {
+        getPartyName(selectedOption, id);
+        
+    };
+    
+      
     const handleAddRow = () => {
         const newItem = { id: Date.now(), spareName: '', modelNumber: '', qty: '', unit: '', price: '',gst:'' };
         setItems([...items, newItem]);
@@ -210,7 +246,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                         {items.map((item, index) => (
                             <tr key={item.id}>
                                 <td>{index + 1}</td>
-                                <td>
+                                {/* <td>
                                     <Select
                                         className="form"
                                         value={(item.SparePartModelNumber)}
@@ -224,7 +260,18 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                                     
                                     
                                    
-                                </td>
+                                </td> */}
+                                <td>
+            <Select
+                className="form"
+                value={modelNoList.find(model => model.SparePartId === item.SparePartId) ? { value: item.SparePartId, label: item.modelNumber } : ''}
+                onChange={(selectedOption) => handleChangeModelNumber(selectedOption, item.id)}
+                options={modelNoList.map(model => ({ value: model.SparePartId, label: model.SparePartModelNumber }))}
+            />
+            {errors?.[item.id]?.modelNumber && (
+                <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
+            )}
+        </td>
                                 <td>
                                     <input
                                         type="text"

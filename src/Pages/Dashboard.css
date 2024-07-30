@@ -18,3 +18,12 @@
 .no-underline {
     text-decoration: none!important;
 }
+/* Dashboard.css */
+.main-content {
+    transition: margin-left 0.3s;
+}
+
+.main-content.sidebar-open {
+    margin-left: 240px; /* Adjust this value based on your drawer width */
+}
+
