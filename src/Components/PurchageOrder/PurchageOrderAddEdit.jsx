@@ -175,44 +175,36 @@ const PurchageForm = () => {
             fetchData();
         }
     }, [Purchase_Order_Id]);
-    const bindData = (data, modelNoList) => {
-        console.log(data[0].Purchase_Type);
-        
-        const purchaseData = data[0];
+    const bindData = (data) => {
+        console.log(data.Purchase_Type);
     
         // Set top-level fields
         setSeries(series);
-        setVochNo(purchaseData.Voucher_Number);
-        setPurcType(purchaseData.Purchase_Type);
-        setPartyName(purchaseData.Party_Name);
-        setCompanyId(purchaseData.Company_Name);
-        setNarration(purchaseData.Narration);
-        setPaymentTerm(purchaseData.Payment_Terms);
-        setDeleveryTerm(purchaseData.Delivery_Terms);
-        setcontactPer(purchaseData.Contact_Person);
-        setcellNo(purchaseData.Cell_Number);
-        setwarranty(purchaseData.Warranty);
-    
-        // Determine purchase type based on party name country (example logic)
-        if (purchaseData.Party_Country === 'Country_A') {
-            setPurcType('Type_A');
-        } else if (purchaseData.Party_Country === 'Country_B') {
-            setPurcType('Type_B');
-        }
+        setVochNo(data.Voucher_Number);
+        setPurcType(data.Purchase_Type);
+        setPartyName(data.Party_Name);
+        setCompanyId(data.Company_Name);
+        setNarration(data.Narration);
+        setPaymentTerm(data.Payment_Terms);
+        setDeleveryTerm(data.Delivery_Terms);
+        setcontactPer(data.Contact_Person);
+        setcellNo(data.Cell_Number);
+        setwarranty(data.Warranty);
     
         // Set items with correct mapping
-        const updatedItems = purchaseData.Items.map((item, index) => {
+        const updatedItems = data.Items.map((item, index) => {
             const matchedItem = modelNoList.find(model => model.Spare_Part_Id === item.Spare_Part_Id);
+            console.log("fafaffaf",item.Spare_Part_Id)
             return {
                 id: index + 1,
-                modelNumber: matchedItem ? matchedItem.modelNumber : '',
-                spareName: matchedItem ? matchedItem.spareName : '',
-                qty: item.Quantity,
-                unit: item.Unit,
-                price: item.Price_Rs,
-                gst: item.GST,
-                amount: item.Item_Amount,
-                SparePartId: item.Spare_Part_Id
+            modelNumber: matchedItem ? matchedItem.modelNumber : '',
+            spareName: matchedItem ? matchedItem.spareName : '',
+            qty: item.Quantity,
+            unit: item.Unit,
+            price: item.Price_Rs,
+            gst: item.GST,
+            amount: item.Item_Amount,
+            SparePartId: item.Spare_Part_Id
             };
         });
         setItems(updatedItems);
@@ -236,7 +228,7 @@ const PurchageForm = () => {
             amountCGST: ''
         };
     
-        purchaseData.Billing.forEach(item => {
+        data.Billing.forEach(item => {
             switch (item.Bill_Sundry) {
                 case "Freight":
                     billingData.narrationFreight = item.Narration;
@@ -285,7 +277,6 @@ const PurchageForm = () => {
         setPercentageCGST(billingData.percentageCGST);
         setAmountCGST(billingData.amountCGST);
     };
-    
      //notifySuccess = (msg) => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
     const notifySuccess1 = (msg) => toast.success(msg, { autoClose: 3000 })
     const fetchVoucherNumber = async () => {
