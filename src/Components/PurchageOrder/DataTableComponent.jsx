@@ -13,6 +13,8 @@ import { Image } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import "../Table/table.css";
 
+import { saveAs } from 'file-saver';
+
 const DataTableComponent = () => {
     const [data, setData] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -22,12 +24,11 @@ const DataTableComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await axios.get('http://srv515471.hstgr.cloud:8080/Maintenance/GetPurchaseOrderList');
-                setData(data.data);
-                 setTimeout(() => {
-                    setLoading(false);
-                 }, 1000);
+                const { data } = await axios.get('http://localhost:8080/Maintenance/GetPurchaseOrderList');
+                setData(data.data);                
+                    setLoading(false);                
             } catch (error) {
+                setLoading(false); 
                 console.error("Error fetching data: ", error);
             }
         };
@@ -42,13 +43,25 @@ const DataTableComponent = () => {
         navigate("/purchage", { state:{Purchase_Order_Id,Type:""}});
     };
 
+    const handlePdfClick = async (PdfURL) => {
+        try {
+          const response = await axios.get(PdfURL, {
+            responseType: 'blob',
+          });
+    
+          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+          saveAs(pdfBlob, PdfURL);
+        } catch (error) {
+          console.error('Error downloading the PDF', error);
+        }
+};
     const actionBodyTemplate = (rowData) => {
         console.log(rowData)
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id)} />
-                    <Button icon="pi pi-download" className="p-button-rounded" style={{ marginRight: '5px' }} />
+                    <Button icon="pi pi-download" className="p-button-rounded" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL)} />
                     <Button icon="pi pi-envelope" className="p-button-rounded" onClick={handleClick} />
                 </div>
             </React.Fragment>
