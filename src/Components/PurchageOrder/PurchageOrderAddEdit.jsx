@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ItemTable from '../Table/table';
-import OptionalField from '../OptionalField/OptionalField';
+// import OptionalField from '../OptionalField/OptionalField';
 import Billing from '../Billing/Billing';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,useParams,useLocation} from 'react-router-dom';
 import img1 from "../../Assets/Images/logogs.png";
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Card, Image } from 'react-bootstrap';
+import "../../Components/Table/table.css"
 import Loader from '../Loader/Loader';
 
 const currentDate = new Date().toDateString();
@@ -50,6 +51,11 @@ const PurchageForm = () => {
     const [warranty, setwarranty] = useState("");
     const [CompanyName, setCompanyName] = useState([]);
     const [loading, setLoading] = useState();
+    // const { Purchase_Order_Id,Type } = useParams();
+    const location = useLocation();
+    const { Purchase_Order_Id, Type } = location.state || {};
+
+    const [FormData, setFormData] = useState([]);
     
     /** 
      * ! Item Table States
@@ -91,6 +97,7 @@ const PurchageForm = () => {
     const [data, setData] = useState(true);
     const [transportAmmount, settransportAmmount] = useState('')
     console.log(transportAmmount)
+    console.log(FormData);
 
     const formData = {
         GSTdata:purcType, totalAmount, narrationDiscount, setNarrationDiscount,
@@ -135,13 +142,151 @@ const PurchageForm = () => {
             setToken(token);
         }
         // console.log('URL CHECK');
-        console.log(personID);
+        console.log(Purchase_Order_Id);
         getPartyListData();
         getCompanyName();
-        fetchVoucherNumber();
+        if(Purchase_Order_Id === ""||Purchase_Order_Id === undefined || Purchase_Order_Id === null){
+            fetchVoucherNumber();
+
+        }
+        
 
     }, []);
-    const notifySuccess = (msg) => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
+    useEffect(() => {
+        console.log("hahahhahahmmmm")
+      
+        console.log(Purchase_Order_Id)
+        if (Purchase_Order_Id) {
+            const fetchData = async () => {
+                try {
+                    const response = await axios.post(
+                        'http://srv515471.hstgr.cloud:8080/Maintenance/getPurchaseOrderById',
+                        { PurchaseOrderID: Purchase_Order_Id }
+                    );
+                    const purchaseData = response.data[0];
+                    setFormData(purchaseData);
+                    bindData(purchaseData)
+                    console.log(response)
+                    console.log(FormData)
+                } catch (error) {
+                    console.error('Error fetching purchase order data:', error);
+                }
+            };
+            fetchData();
+        }
+    }, [Purchase_Order_Id]);
+    const bindData = (data, modelNoList) => {
+        console.log(data[0].Purchase_Type);
+        
+        const purchaseData = data[0];
+    
+        // Set top-level fields
+        setSeries(series);
+        setVochNo(purchaseData.Voucher_Number);
+        setPurcType(purchaseData.Purchase_Type);
+        setPartyName(purchaseData.Party_Name);
+        setCompanyId(purchaseData.Company_Name);
+        setNarration(purchaseData.Narration);
+        setPaymentTerm(purchaseData.Payment_Terms);
+        setDeleveryTerm(purchaseData.Delivery_Terms);
+        setcontactPer(purchaseData.Contact_Person);
+        setcellNo(purchaseData.Cell_Number);
+        setwarranty(purchaseData.Warranty);
+    
+        // Determine purchase type based on party name country (example logic)
+        if (purchaseData.Party_Country === 'Country_A') {
+            setPurcType('Type_A');
+        } else if (purchaseData.Party_Country === 'Country_B') {
+            setPurcType('Type_B');
+        }
+    
+        // Set items with correct mapping
+        const updatedItems = purchaseData.Items.map((item, index) => {
+            const matchedItem = modelNoList.find(model => model.Spare_Part_Id === item.Spare_Part_Id);
+            return {
+                id: index + 1,
+                modelNumber: matchedItem ? matchedItem.modelNumber : '',
+                spareName: matchedItem ? matchedItem.spareName : '',
+                qty: item.Quantity,
+                unit: item.Unit,
+                price: item.Price_Rs,
+                gst: item.GST,
+                amount: item.Item_Amount,
+                SparePartId: item.Spare_Part_Id
+            };
+        });
+        setItems(updatedItems);
+    
+        // Handle billing data
+        const billingData = {
+            narrationFreight: '',
+            percentageFreight: '',
+            amountFreight: '',
+            narrationDiscount: '',
+            percentageDiscount: '',
+            remainingAmountAfterDiscount: '',
+            narrationIGST: '',
+            percentageIGST: '',
+            amountIGST: '',
+            narrationSGST: '',
+            percentageSGST: '',
+            amountSGST: '',
+            narrationCGST: '',
+            percentageCGST: '',
+            amountCGST: ''
+        };
+    
+        purchaseData.Billing.forEach(item => {
+            switch (item.Bill_Sundry) {
+                case "Freight":
+                    billingData.narrationFreight = item.Narration;
+                    billingData.percentageFreight = item.Percentage;
+                    billingData.amountFreight = item.Amount;
+                    break;
+                case "Discount":
+                    billingData.narrationDiscount = item.Narration;
+                    billingData.percentageDiscount = item.Percentage;
+                    billingData.remainingAmountAfterDiscount = item.Amount;
+                    break;
+                case "IGST":
+                    billingData.narrationIGST = item.Narration;
+                    billingData.percentageIGST = item.Percentage;
+                    billingData.amountIGST = item.Amount;
+                    break;
+                case "SGST":
+                    billingData.narrationSGST = item.Narration;
+                    billingData.percentageSGST = item.Percentage;
+                    billingData.amountSGST = item.Amount;
+                    break;
+                case "CGST":
+                    billingData.narrationCGST = item.Narration;
+                    billingData.percentageCGST = item.Percentage;
+                    billingData.amountCGST = item.Amount;
+                    break;
+                default:
+                    break;
+            }
+        });
+    
+        // Set billing fields
+        setNarrationFreight(billingData.narrationFreight);
+        setPercentageFreight(billingData.percentageFreight);
+        setAmountFreight(billingData.amountFreight);
+        setNarrationDiscount(billingData.narrationDiscount);
+        setPercentageDiscount(billingData.percentageDiscount);
+        setRemainingAmountAfterDiscount(billingData.remainingAmountAfterDiscount);
+        setNarrationIGST(billingData.narrationIGST);
+        setPercentageIGST(billingData.percentageIGST);
+        setAmountIGST(billingData.amountIGST);
+        setNarrationSGST(billingData.narrationSGST);
+        setPercentageSGST(billingData.percentageSGST);
+        setAmountSGST(billingData.amountSGST);
+        setNarrationCGST(billingData.narrationCGST);
+        setPercentageCGST(billingData.percentageCGST);
+        setAmountCGST(billingData.amountCGST);
+    };
+    
+     //notifySuccess = (msg) => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
     const notifySuccess1 = (msg) => toast.success(msg, { autoClose: 3000 })
     const fetchVoucherNumber = async () => {
         try {
@@ -499,7 +644,7 @@ const PurchageForm = () => {
 
 
                                 <select
-                                    style={{ border: errors.PartyNameId ? '2px solid red' : '2px solid green' }}
+                                    style={{ border: errors.PartyName ? '2px solid red' : '2px solid green' }}
                                     id="partyName"
                                     className="form-select"
                                     value={PartyName}
