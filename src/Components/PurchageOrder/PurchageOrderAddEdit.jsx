@@ -56,6 +56,7 @@ const PurchageForm = () => {
     const { Purchase_Order_Id, Type } = location.state || {};
 
     const [FormData, setFormData] = useState([]);
+    console.log("meType",Type);
     
     
     /** 
@@ -80,11 +81,11 @@ const PurchageForm = () => {
     
     const [narrationDiscount, setNarrationDiscount] = useState('');
     const [percentageDiscount, setPercentageDiscount] = useState('');
-    const [remainingAmountAfterDiscount, setRemainingAmountAfterDiscount] = useState();
-    const [discountAmmount, setDiscountAmmount] = useState(0);
+    const [remainingAmountAfterDiscount, setRemainingAmountAfterDiscount] = useState('');
+    const [discountAmmount, setDiscountAmmount] = useState('');
     const [narrationFreight, setNarrationFreight] = useState('');
     const [percentageFreight, setPercentageFreight] = useState('');
-    const [amountFreight, setAmountFreight] = useState(0);
+    const [amountFreight, setAmountFreight] = useState('');
     const [narrationIGST, setNarrationIGST] = useState('');
     const [percentageIGST, setPercentageIGST] = useState('');
     const [amountIGST, setAmountIGST] = useState('');
@@ -98,7 +99,7 @@ const PurchageForm = () => {
     const [data, setData] = useState(true);
     const [transportAmmount, settransportAmmount] = useState('')
     console.log(transportAmmount)
-    console.log(FormData);
+    console.log("Fright",amountFreight);
 
     const formData = {
         GSTdata:purcType, totalAmount, narrationDiscount, setNarrationDiscount,
@@ -134,8 +135,8 @@ const PurchageForm = () => {
     useEffect(() => {
         const personID = localStorage.getItem("CurrentUser");
         const token = localStorage.getItem("token");
-        // const url = localStorage.getItem('url');
-        // setUrl(url);
+         const url = localStorage.getItem('url');
+         setUrl(url);
 
 
 
@@ -146,7 +147,8 @@ const PurchageForm = () => {
         console.log("baaaaba",Purchase_Order_Id);
         getPartyListData();
         getCompanyName();
-        if(Purchase_Order_Id === ""||Purchase_Order_Id === undefined || Purchase_Order_Id === null){
+        if((Purchase_Order_Id === ""||Purchase_Order_Id === undefined || Purchase_Order_Id === null) || (Type === 'Resend')){
+           console.log("naveeeeen");
             fetchVoucherNumber();
 
         }
@@ -177,9 +179,10 @@ const PurchageForm = () => {
     
           
             const fetchData = async () => {
+                const url = localStorage.getItem('url');
                 try {
                     const response = await axios.post(
-                        'http://srv515471.hstgr.cloud:8080/Maintenance/getPurchaseOrderById',
+                        `${url}/Maintenance/getPurchaseOrderById`,
                         { PurchaseOrderID: Purchase_Order_Id }
                     );
                     const purchaseData = response.data[0];
@@ -210,7 +213,9 @@ const PurchageForm = () => {
      
         // Set top-level fields
         setSeries(series);
+       if(Type!= "Resend"){
         setVochNo(data.Voucher_Number);
+       } 
         setPurcType(data.Purchase_Type);
         setPartyName(data.Party_Name);
         setCompanyId(data.Company_Name);
@@ -238,7 +243,7 @@ const PurchageForm = () => {
             gst: item.GST,
             amount: item.Item_Amount,
             SparePartId: item.Spare_Part_Id,
-            Purchase_Order_Item_Id : item.Purchase_Order_Item_Id
+            Purchase_Order_Item_Id : Purchase_Order_Id && (Type != 'Resend') ? item.Purchase_Order_Item_Id : "",
             };
         });
         setItems(updatedItems);
@@ -293,6 +298,7 @@ const PurchageForm = () => {
                     break;
             }
         });
+        console.log("Binding data:", billingData);
     
         // Set billing fields
         setNarrationFreight(billingData.narrationFreight);
@@ -315,10 +321,11 @@ const PurchageForm = () => {
     const notifySuccess1 = (msg) => toast.success(msg, { autoClose: 3000 })
     const fetchVoucherNumber = async () => {
         try {
-            const token = localStorage.getItem("token"); // If you need to pass a token
-            const response = await axios.get('http://srv515471.hstgr.cloud:8080/Maintenance/GetVoucherNumber', {
+            const token = localStorage.getItem("token"); 
+            const url = localStorage.getItem('url'); 
+            const response = await axios.get(`${url}/Maintenance/GetVoucherNumber`, {
                 headers: {
-                    'Authorization': `Bearer ${token}` // If you need to pass a token
+                    'Authorization': `Bearer ${token}` 
                 }
             });
             const voucherNumber = response.data.VoucherNumber;
@@ -341,7 +348,7 @@ const PurchageForm = () => {
         console.log(token);
 
         try {
-            const response = await axios.get('http://srv515471.hstgr.cloud:8080/Maintenance/GetParty', {
+            const response = await axios.get(`${url}/Maintenance/GetParty`, {
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
                 },
@@ -368,12 +375,13 @@ const PurchageForm = () => {
 
     const getCompanyName = async () => {
         const token = localStorage.getItem("token");
+        const url = localStorage.getItem('url');
         console.log("Fetching modelNo list...");
         console.log(token);
 
         try {
             const response = await axios.post(
-                'http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData',
+                `${url}/Maintenance/GetAutoData`,
                 { required: "Company Name" },
                 { headers: { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${token}` } }
             );
@@ -467,7 +475,7 @@ const PurchageForm = () => {
 
         const PurchaseData = {
             currentUser: personID,
-            Purchase_Order_Id: Purchase_Order_Id?Purchase_Order_Id:"",
+            Purchase_Order_Id: Purchase_Order_Id && (Type != 'Resend') ?Purchase_Order_Id:"",
             series,
             vochNo,
             purcType,
@@ -540,8 +548,9 @@ const PurchageForm = () => {
         console.log("all data " ,reqData)
         try {
             const token = localStorage.getItem("token");
+            const url = localStorage.getItem('url');
             const response = await axios.post(
-                'http://srv515471.hstgr.cloud:8080/Maintenance/AddPurchaseOrder',
+                `${url}/Maintenance/AddPurchaseOrder`,
                 reqData,
                 { headers: { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${token}` } }
             );
@@ -600,6 +609,7 @@ const PurchageForm = () => {
         } else {
             setSelectedPartyCountry("");
         }
+        setPurcType("");
         if (errors.PartyName) {
             setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }));
         }
@@ -835,7 +845,7 @@ const PurchageForm = () => {
                             <Form.Group controlId="formCellNo">
                                 <Form.Label>Cell No.*</Form.Label>
                                 <Form.Control
-                                 type="text"
+                                 type="number"
                                  placeholder='Enter Cell No'
                                  value={cellNo} 
                                  onChange={(e)=>{
@@ -883,7 +893,7 @@ const PurchageForm = () => {
                 <ItemTable  setAmount={setTotalAmount} totalAmount={totalAmount} showItemMaster={showItemMaster} 
                 modelNoList={modelNoList} setModelNoList={setModelNoList} setErrors={setErrors} errors={errors.items || {}}
                 items={items} setItems={setItems}
-                purchType={purcType}
+                purchType={purcType} url ={url}
                 />
                 <Billing formData={formData}/>
                

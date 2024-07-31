@@ -5,10 +5,10 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('Token') || '');
-
+    
 
     useEffect(() => {
-        localStorage.setItem("url", "http://localhost:8080");
+        localStorage.setItem("url", "http://srv515471.hstgr.cloud:9090");
 
     }, [])
 

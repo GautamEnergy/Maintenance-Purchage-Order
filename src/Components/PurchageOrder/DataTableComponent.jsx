@@ -20,11 +20,14 @@ const DataTableComponent = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [url, setUrl] = useState("");
 
     useEffect(() => {
+        const url = localStorage.getItem('url');
+        setUrl(url)
         const fetchData = async () => {
             try {
-                const { data } = await axios.get('http://localhost:8080/Maintenance/GetPurchaseOrderList');
+                const { data } = await axios.get(`${url}/Maintenance/GetPurchaseOrderList`);
                 setData(data.data);                
                     setLoading(false);                
             } catch (error) {
@@ -39,8 +42,8 @@ const DataTableComponent = () => {
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
-    const handleEditClick = (Purchase_Order_Id) => {
-        navigate("/purchage", { state:{Purchase_Order_Id,Type:""}});
+    const handleEditClick = (Purchase_Order_Id,Type) => {
+        navigate("/purchage", { state:{Purchase_Order_Id,Type:Type}});
     };
 
     const handlePdfClick = async (PdfURL) => {
@@ -60,7 +63,8 @@ const DataTableComponent = () => {
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id,"")} />
+                <Button icon="pi pi-plus" className="p-button-rounded p-button-success" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id,"Resend")} />
                     <Button icon="pi pi-download" className="p-button-rounded" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL)} />
                     <Button icon="pi pi-envelope" className="p-button-rounded" onClick={handleClick} />
                 </div>

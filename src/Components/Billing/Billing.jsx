@@ -27,6 +27,7 @@ const BillForm = ({ formData }) => {
         transportAmmount , settransportAmmount,
         data 
       } = formData;
+      console.log("Amount Frieght",amountFreight)
     // const [narrationDiscount, setNarrationDiscount] = useState('');
     // const [percentageDiscount, setPercentageDiscount] = useState('');
     // const [remainingAmountAfterDiscount, setRemainingAmountAfterDiscount] = useState(totalAmount);
@@ -54,11 +55,11 @@ const BillForm = ({ formData }) => {
     console.log(discountAmmount)
 
     useEffect(() => {
-        setPercentageDiscount('')
+        // setPercentageDiscount('')
         // setRemainingAmountAfterDiscount(totalAmount);
         // setDiscountAmmount('');
 
-        setAmountFreight('');
+        // setAmountFreight('');
 
         setAmountIGST('');
 
@@ -126,17 +127,24 @@ const BillForm = ({ formData }) => {
 
 
     useEffect(() => {
+        if(percentageDiscount){
         const discountAmount = (totalAmount * percentageDiscount) / 100;
         setRemainingAmountAfterDiscount(discountAmount.toFixed(2));
+        }else{
+            setRemainingAmountAfterDiscount(remainingAmountAfterDiscount);
+        }
     }, [percentageDiscount, totalAmount]);
 
     useEffect(() => {
-
+   if(percentageFreight){
         let freightAmount = (Number(discountAmmount ? discountAmmount : totalAmount) / 100) * percentageFreight;
         console.log('Remaining Amount After Discount:', freightAmount);
-        setAmountFreight(freightAmount.toFixed(2)); /** */
+        setAmountFreight(freightAmount.toFixed(2))/** */
+        }else{
+            setAmountFreight(amountFreight)/** */
+        }
         console.log("hheheheh");
-        console.log(freightAmount);
+    
     }, [percentageFreight, discountAmmount]);
 
     useEffect(() => {
@@ -167,9 +175,9 @@ const BillForm = ({ formData }) => {
                 case 'discount':
                     setPercentageDiscount(value);
                     break;
-                case 'freight':
-                    setPercentageFreight(value);
-                    break;
+                    case 'freight':
+                        setPercentageFreight(value);
+                        break;
                 default:
                     break;
             }
@@ -221,17 +229,24 @@ const BillForm = ({ formData }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageDiscount}
-                                    onChange={(e) => handlePercentageChange('discount', e.target.value)}
+                                    onChange={(e) => {handlePercentageChange('discount', e.target.value)
+                                        setRemainingAmountAfterDiscount("")
+                                    }}
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="number"
                                     placeholder="Discount Amount"
-                                    onFocus={(e) => e.target.value = ""}
+                                    onFocus={(e) => {e.target.value = ""
+                                        setRemainingAmountAfterDiscount("");
+                                        setPercentageDiscount("")
+                                    }}
                                     value={remainingAmountAfterDiscount}
                                     onChange={(e) => {
                                         console.log(e.target.value)
+                                        
+                                       // setPercentageDiscount('');
                                         setRemainingAmountAfterDiscount(e.target.value)
 
                                         setDiscountAmmount(totalAmount - remainingAmountAfterDiscount)
@@ -257,16 +272,25 @@ const BillForm = ({ formData }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageFreight}
-                                    onChange={(e) => handlePercentageChange('freight', e.target.value)}
+                                    onChange={(e) =>{ handlePercentageChange('freight', e.target.value)
+                                        setAmountFreight("")
+                                    }
+                                
+                                }
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="number"
                                     placeholder="Frieght Ammount"
-                                    onFocus={(e) => e.target.value = ""}
+                                    onFocus={(e) =>{ e.target.value = ""
+                                        setAmountFreight("")
+                                        setPercentageFreight("")
+                                    }}
                                     value={amountFreight}
-                                    onChange={(e) => setAmountFreight(e.target.value)}
+                                    onChange={(e) =>{ setAmountFreight(e.target.value)
+                                        //setPercentageFreight("")
+                                    }}
 
                                 />
                             </td>

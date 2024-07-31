@@ -1,4 +1,4 @@
-import React, {  useEffect  } from 'react';
+import React, {  useEffect ,useState } from 'react';
 import { Container, Table, Form, Col } from 'react-bootstrap';
 import ItemMaster from '../Add Item Master/ItemMaster';
 import axios from 'axios';
@@ -7,31 +7,50 @@ import { AppContext } from '../../ContextAPI';
 import Select from 'react-select';
 
 
+
 const ItemTable = ({setAmount,totalAmount,showItemMaster,
     modelNoList,
     setModelNoList,
     purchType,
     setErrors, items, setItems,errors}) => {
+        const [url, setUrl] = useState("");
   
 
     useEffect(() => {
+        const url = localStorage.getItem('url');
+        setUrl(url)
         console.log("hiiiiiii",items)
+        console.log("namamamm",url);
        
         getSpareModelNo();
     }, []);
     console.log(errors);
     console.log("Errors Prop in ItemTable:", errors);
+    useEffect(() => {
+        const resetGstValues = () => {
+            const updatedItems = items.map(item => ({
+                ...item,
+                gst: ''
+            }));
+            setItems(updatedItems);
+        };
+
+        resetGstValues();
+    }, [purchType]);
     
     
 
     const getSpareModelNo = async () => {
+       
         const token = localStorage.getItem("token");
+        const url = localStorage.getItem('url');
+       
         console.log("Fetching modelNo list...");
         console.log(token);
 
         try {
             const response = await axios.post(
-                'http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData',
+                `${url}/Maintenance/GetAutoData`,
                 { required: "Spare Part Model No" },
                 { headers: { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${token}` } }
             );
@@ -66,11 +85,13 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
     //         setFilteredModelNoList(modelNoList); // Show all if query is empty
     //     }
     // };
+    
    
-    console.log("namamamm",items);
+    
     const getPartyName = async(selectedOption, id)=>{
+        const url = localStorage.getItem('url');
         try {
-            const { data } = await axios.post(`http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData`, {
+            const { data } = await axios.post(`${url}/Maintenance/GetAutoData`, {
                 required: "Spare Part Name",
                 SparePartId: selectedOption.value
             });
@@ -219,7 +240,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
      
 
     const handleDeleteRow = id => {
-        const updatedItems = items.filter(item => item.id !== id);
+        const updatedItems = items.filter((item, index) => index === 0 || item.id !== id);
         setItems(updatedItems);
     };
 
