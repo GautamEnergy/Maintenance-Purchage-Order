@@ -1,27 +1,27 @@
-import React, {  useEffect ,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Table, Form, Col } from 'react-bootstrap';
 import ItemMaster from '../Add Item Master/ItemMaster';
 import axios from 'axios';
 import './table.css';
-import { AppContext } from '../../ContextAPI';
+
 import Select from 'react-select';
 
 
 
-const ItemTable = ({setAmount,totalAmount,showItemMaster,
+const ItemTable = ({ setAmount, totalAmount, showItemMaster,
     modelNoList,
     setModelNoList,
     purchType,
-    setErrors, items, setItems,errors}) => {
-        const [url, setUrl] = useState("");
-  
+    setErrors, items, setItems, errors }) => {
+    const [url, setUrl] = useState("");
+
 
     useEffect(() => {
         const url = localStorage.getItem('url');
         setUrl(url)
-        console.log("hiiiiiii",items)
-        console.log("namamamm",url);
-       
+        console.log("hiiiiiii", items)
+        console.log("namamamm", url);
+
         getSpareModelNo();
     }, []);
     console.log(errors);
@@ -37,14 +37,14 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
 
         resetGstValues();
     }, [purchType]);
-    
-    
+
+
 
     const getSpareModelNo = async () => {
-       
+
         const token = localStorage.getItem("token");
         const url = localStorage.getItem('url');
-       
+
         console.log("Fetching modelNo list...");
         console.log(token);
 
@@ -72,44 +72,31 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
         }
     };
 
-    // const handleSearchChange = (e) => {
-    //     const query = e.target.value;
-    //     setSearchQuery(query);
-    //     if (query) {
-    //         setFilteredModelNoList(
-    //             modelNoList.filter(model =>
-    //                 model.SparePartModelNumber.toLowerCase().includes(query.toLowerCase())
-    //             )
-    //         );
-    //     } else {
-    //         setFilteredModelNoList(modelNoList); // Show all if query is empty
-    //     }
-    // };
-    
-   
-    
-    const getPartyName = async(selectedOption, id)=>{
+
+
+
+    const getPartyName = async (selectedOption, id) => {
         const url = localStorage.getItem('url');
         try {
             const { data } = await axios.post(`${url}/Maintenance/GetAutoData`, {
                 required: "Spare Part Name",
                 SparePartId: selectedOption.value
             });
-    
-            const updatedItems = items.map(item => 
+
+            const updatedItems = items.map(item =>
                 item.id === id
                     ? {
                         ...item,
                         modelNumber: selectedOption.label,
                         spareName: data.data[0].SparePartName,
                         SparePartId: selectedOption.value
-                      }
+                    }
                     : item
             );
-    
+
             setItems(updatedItems);
             validateField(id, 'modelNumber', selectedOption.label);
-    
+
             // Debugging: Log the updated state
             console.log('Updated Items:', updatedItems);
         } catch (error) {
@@ -117,45 +104,15 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
         }
 
     }
-    // const handleChangeModelNumber = async (selectedOption, id) => {
-       
-     
-        
-    //     const updatedItems = items.map(item =>
-    //         item.id === id ? { ...item, modelNumber: selectedOption.value || '1ce4daeb-d1df-4697-afb9-9be10bfce763' } : item
-    //     );
-
-    //     let { data } = await axios.post(`http://srv515471.hstgr.cloud:8080/Maintenance/GetAutoData`, {
-    //         "required": "Spare Part Name",
-    //         "SparePartId": selectedOption.value
-    //     })
-
-    //     let item = items.map((item) => {
-    //         return {
-    //             id: item.id,
-    //             spareName: item.id == id ? item.spareName = data.data[0]['SparePartName'] : item.spareName,
-    //             modelNumber: item.id == id ? item.modelNumber = selectedOption.label : item.modelNumber,
-    //             qty: item.qty,
-    //             unit: item.unit,
-    //             price: item.price,
-    //             gst : item.gst,
-    //             SparePartId: item.id == id ? item.SparePartId = selectedOption.value:item.SparePartId
-    //         }
-    //     });
-     
-
-    // setItems(item);
-    // validateField(id, 'modelNumber', selectedOption.label);
-   
-    // };
+    
     const handleChangeModelNumber = async (selectedOption, id) => {
         getPartyName(selectedOption, id);
-        
+
     };
-    
-      
+
+
     const handleAddRow = () => {
-        const newItem = { id: Date.now(), spareName: '', modelNumber: '', qty: '', unit: '', price: '',gst:'' };
+        const newItem = { id: Date.now(), spareName: '', modelNumber: '', qty: '', unit: '', price: '', gst: '' };
         setItems([...items, newItem]);
     };
 
@@ -167,48 +124,48 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
         setItems(updatedItems);
         console.log(name)
         validateField(items, name, value);
-        
 
-       
-    
+
+
+
     };
     const validateField = (items, name, value) => {
         let errors = { ...items.errors };
-    
+
         switch (name) {
-          case 'modelNumber':
-          case 'name':
-          case 'unit':
-          case 'gstNumber':
-            if (!value.trim()) {
-              errors[name] = 'This field is required';
-            } else {
-              delete errors[name];
-            }
-            if (name === 'gstNumber' && value.trim()) {
-              const gstPattern = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-              if (!gstPattern.test(value)) {
-                errors[name] = 'Invalid GST Number';
-              } else {
-                delete errors[name];
-              }
-            }
-            break;
-          case 'qty':
-          case 'price':
-            if (!value || isNaN(value) || value <= 0) {
-              errors[name] = 'Must be a positive number';
-            } else {
-              delete errors[name];
-            }
-            break;
-          default:
-            break;
+            case 'modelNumber':
+            case 'name':
+            case 'unit':
+            case 'gstNumber':
+                if (!value.trim()) {
+                    errors[name] = 'This field is required';
+                } else {
+                    delete errors[name];
+                }
+                if (name === 'gstNumber' && value.trim()) {
+                    const gstPattern = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+                    if (!gstPattern.test(value)) {
+                        errors[name] = 'Invalid GST Number';
+                    } else {
+                        delete errors[name];
+                    }
+                }
+                break;
+            case 'qty':
+            case 'price':
+                if (!value || isNaN(value) || value <= 0) {
+                    errors[name] = 'Must be a positive number';
+                } else {
+                    delete errors[name];
+                }
+                break;
+            default:
+                break;
         }
-    
+
         return errors;
-      };
-    
+    };
+
 
     useEffect(() => {
         const calculateTotalAmount = () => {
@@ -216,20 +173,20 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
             console.log('kkkkkkk')
             let total = 0;
             let size = items.length
-             for(let i = 0; i<size; i++){
-                if(items[i].gst){
-                    total = total + ((items[i].qty * items[i].price)*(items[i].gst/100))+(items[i].qty * items[i].price)
-                    
-                }else{
-                   
-                   total = total+ items[i].qty* items[i].price
-                }
-             }
+            for (let i = 0; i < size; i++) {
+                if (items[i].gst) {
+                    total = total + ((items[i].qty * items[i].price) * (items[i].gst / 100)) + (items[i].qty * items[i].price)
 
-             items.forEach((item)=>{
-                item.amount = item.qty && item.price?item.gst?((item.qty * item.price)*(item.gst/100))+(item.qty * item.price):
-                item.qty*item.price:'';
-             });
+                } else {
+
+                    total = total + items[i].qty * items[i].price
+                }
+            }
+
+            items.forEach((item) => {
+                item.amount = item.qty && item.price ? item.gst ? ((item.qty * item.price) * (item.gst / 100)) + (item.qty * item.price) :
+                    item.qty * item.price : '';
+            });
             console.log(total)
             setAmount(total);
         };
@@ -237,7 +194,7 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
         calculateTotalAmount();
     }, [items, setAmount]);
 
-     
+
 
     const handleDeleteRow = id => {
         const updatedItems = items.filter((item, index) => index === 0 || item.id !== id);
@@ -257,8 +214,8 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                             <th>Qty*</th>
                             <th>Unit*</th>
                             <th>Price Rs*</th>
-                            {purchType == 'I/GST-item wise'? <th>GST</th>:<th></th>}
-                           
+                            {purchType == 'I/GST-item wise' ? <th>GST</th> : <th></th>}
+
                             <th>Amount</th>
                             <th>Action</th>
                         </tr>
@@ -267,47 +224,33 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                         {items.map((item, index) => (
                             <tr key={item.id}>
                                 <td>{index + 1}</td>
-                                {/* <td>
+                              
+                                <td>
                                     <Select
                                         className="form"
-                                        value={(item.SparePartModelNumber)}
+                                        value={modelNoList.find(model => model.SparePartId === item.SparePartId) ? { value: item.SparePartId, label: item.modelNumber } : ''}
                                         onChange={(selectedOption) => handleChangeModelNumber(selectedOption, item.id)}
                                         options={modelNoList.map(model => ({ value: model.SparePartId, label: model.SparePartModelNumber }))}
-                                        
                                     />
                                     {errors?.[item.id]?.modelNumber && (
-                            <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
-                        )}
-                                    
-                                    
-                                   
-                                </td> */}
-                                <td>
-            <Select
-                className="form"
-                value={modelNoList.find(model => model.SparePartId === item.SparePartId) ? { value: item.SparePartId, label: item.modelNumber } : ''}
-                onChange={(selectedOption) => handleChangeModelNumber(selectedOption, item.id)}
-                options={modelNoList.map(model => ({ value: model.SparePartId, label: model.SparePartModelNumber }))}
-            />
-            {errors?.[item.id]?.modelNumber && (
-                <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
-            )}
-        </td>
+                                        <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
+                                    )}
+                                </td>
                                 <td>
                                     <input
                                         type="text"
                                         className="form-control input-field"
-                                        
+
                                         name="spareName"
 
                                         value={item.spareName}
                                         onChange={(e) => handleItemChange(e, item.id)}
-                                        readOnly = "true"
+                                        readOnly="true"
                                     />
-                                      {errors[item.id]?.spareName && (
-                            <div className="invalid-feedback">{errors[item.id].spareName}</div>
-                        )}
-                        
+                                    {errors[item.id]?.spareName && (
+                                        <div className="invalid-feedback">{errors[item.id].spareName}</div>
+                                    )}
+
                                 </td>
                                 <td>
                                     <Form.Control
@@ -317,9 +260,9 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
                                     />
-                                     {errors[item.id]?.qty && (
-                            <div className="invalid-feedback">{errors[item.id].qty}</div>
-                        )}
+                                    {errors[item.id]?.qty && (
+                                        <div className="invalid-feedback">{errors[item.id].qty}</div>
+                                    )}
                                 </td>
                                 <td>
                                     <Form.Control
@@ -329,9 +272,9 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
                                     />
-                                     {errors[item.id]?.unit && (
-                            <div className="invalid-feedback">{errors[item.id].unit}</div>
-                        )}
+                                    {errors[item.id]?.unit && (
+                                        <div className="invalid-feedback">{errors[item.id].unit}</div>
+                                    )}
                                 </td>
                                 <td>
                                     <Form.Control
@@ -342,25 +285,25 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                                         className="input-field"
                                     />
                                     {errors[item.id]?.price && (
-                            <div className="invalid-feedback">{errors[item.id].price}</div>
-                        )}
+                                        <div className="invalid-feedback">{errors[item.id].price}</div>
+                                    )}
                                 </td>
                                 <td>
-                                    {purchType == 'I/GST-item wise'?<Form.Control
+                                    {purchType == 'I/GST-item wise' ? <Form.Control
                                         type="number"
                                         name="gst"
                                         value={item.gst}
                                         onChange={(e) => handleItemChange(e, item.id)}
                                         className="input-field"
-                                    />:''}
-                                      {errors[item.id]?.gst && (
-                            <div className="invalid-feedback">{errors[item.id].gst}</div>
-                        )}
-                                    
-                                   
-                       
+                                    /> : ''}
+                                    {errors[item.id]?.gst && (
+                                        <div className="invalid-feedback">{errors[item.id].gst}</div>
+                                    )}
+
+
+
                                 </td>
-                                <td>{!item.gst?item.qty * item.price:((item.qty * item.price)*(item.gst/100))+(item.qty * item.price)}</td>
+                                <td>{!item.gst ? item.qty * item.price : ((item.qty * item.price) * (item.gst / 100)) + (item.qty * item.price)}</td>
                                 <td>
                                     <button
                                         className="btn btn-danger"
@@ -381,9 +324,9 @@ const ItemTable = ({setAmount,totalAmount,showItemMaster,
                     </tfoot>
                 </Table>
                 <Col md={12} style={{ display: 'flex', justifyContent: 'right' }}>
-                <button className="btn btn-primary" onClick={handleAddRow}>
-                    Add Row
-                </button>
+                    <button className="btn btn-primary" onClick={handleAddRow}>
+                        Add Row
+                    </button>
                 </Col>
                 {/* <button className="btn btn-secondary ml-2" onClick={handleSubmit}>
                     Submit
