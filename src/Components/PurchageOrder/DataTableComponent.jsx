@@ -14,7 +14,7 @@ import * as XLSX from 'xlsx';
 import "../Table/table.css";
 
 import { saveAs } from 'file-saver';
-
+import { Tooltip } from 'primereact/tooltip';
 const DataTableComponent = () => {
     const [data, setData] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -28,47 +28,49 @@ const DataTableComponent = () => {
         const fetchData = async () => {
             try {
                 const { data } = await axios.get(`${url}/Maintenance/GetPurchaseOrderList`);
-                setData(data.data);                
-                    setLoading(false);                
+                setData(data.data);
+                setLoading(false);
             } catch (error) {
-                setLoading(false); 
+                setLoading(false);
                 console.error("Error fetching data: ", error);
             }
         };
-        
+
         fetchData();
     }, []);
 
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
-    const handleEditClick = (Purchase_Order_Id,Type) => {
-        navigate("/purchage", { state:{Purchase_Order_Id,Type:Type}});
+    const handleEditClick = (Purchase_Order_Id, Type) => {
+        navigate("/purchage", { state: { Purchase_Order_Id, Type: Type } });
     };
 
     const handlePdfClick = async (PdfURL) => {
         try {
-          const response = await axios.get(PdfURL, {
-            responseType: 'blob',
-          });
-    
-          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-          saveAs(pdfBlob, PdfURL);
+            const response = await axios.get(PdfURL, {
+                responseType: 'blob',
+            });
+
+            const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+            saveAs(pdfBlob, PdfURL);
         } catch (error) {
-          console.error('Error downloading the PDF', error);
+            console.error('Error downloading the PDF', error);
         }
-};
+    };
     const actionBodyTemplate = (rowData) => {
         console.log(rowData)
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id,"")} />
-                <Button icon="pi pi-plus" className="p-button-rounded p-button-success" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id,"Resend")} />
-                    <Button icon="pi pi-download" className="p-button-rounded" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL)} />
-                    <Button icon="pi pi-envelope" className="p-button-rounded" onClick={handleClick} />
+                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Purchase Order" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "")} />
+                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO with same data" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "Resend")} />
+                    <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download PO" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL)} />
+                    <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" onClick={handleClick} />
                 </div>
+                <Tooltip target=".p-button-rounded" position="top" />
             </React.Fragment>
+
         );
     };
 
@@ -85,9 +87,10 @@ const DataTableComponent = () => {
                         </div>
                     </div>
                     <div className="col-md-5 d-flex justify-content-end align-items-center">
-                        <Link to="/purchage" className="plus mr-1">
+                        <Link to="/purchage" className="plus mr-1" data-pr-tooltip="Add Purchase Order">
                             <Image src={img1} alt="plus" rounded />
                         </Link>
+                        <Tooltip target=".plus" content="Purchase Order" position="top" />
                         <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
                     </div>
                 </div>
@@ -107,19 +110,19 @@ const DataTableComponent = () => {
     const renderSkeletonRows = () => {
         return Array.from({ length: 5 }).map((_, i) => (
             <tr key={i}>
-            <td><Skeleton width="100%" height="4em" /></td>
-            <td><Skeleton width="100%" height="4em" /></td>
-            <td><Skeleton width="100%" height="4em" /></td>
-            <td><Skeleton width="100%" height="4em" /></td>
-            <td><Skeleton width="100%" height="4em" /></td>
-            <td>
-                <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                    <Skeleton width="30%" height="4em" />
-                    <Skeleton width="30%" height="4em" />
-                    <Skeleton width="30%" height="4em" />
-                </div>
-            </td>
-        </tr>
+                <td><Skeleton width="100%" height="4em" /></td>
+                <td><Skeleton width="100%" height="4em" /></td>
+                <td><Skeleton width="100%" height="4em" /></td>
+                <td><Skeleton width="100%" height="4em" /></td>
+                <td><Skeleton width="100%" height="4em" /></td>
+                <td>
+                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <Skeleton width="30%" height="4em" />
+                        <Skeleton width="30%" height="4em" />
+                        <Skeleton width="30%" height="4em" />
+                    </div>
+                </td>
+            </tr>
         ));
     };
 
