@@ -135,4 +135,14 @@ canvas:hover{
   .css-13cymwt-control{
     border-color: black !important;
   }
-  
+
+
+
+  /* Tooltip css */
+
+  .custom-tooltip .p-tooltip-text {
+    background: #a20000 !important;
+    color: 2px Solid #fff !important; 
+    border-radius: 4px;
+    padding: 5px; 
+}

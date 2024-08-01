@@ -68,7 +68,7 @@ const DataTableComponent = () => {
                     <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download PO" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL)} />
                     <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" onClick={handleClick} />
                 </div>
-                <Tooltip target=".p-button-rounded" position="top" />
+                <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip"  />
             </React.Fragment>
 
         );
@@ -90,7 +90,7 @@ const DataTableComponent = () => {
                         <Link to="/purchage" className="plus mr-1" data-pr-tooltip="Add Purchase Order">
                             <Image src={img1} alt="plus" rounded />
                         </Link>
-                        <Tooltip target=".plus" content="Purchase Order" position="top" />
+                        <Tooltip target=".plus" content="Purchase Order" position="top"  />
                         <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
                     </div>
                 </div>
