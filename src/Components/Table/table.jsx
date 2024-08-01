@@ -38,7 +38,7 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
         resetGstValues();
     }, [purchType]);
 
-
+    const colSpanValue = purchType === 'I/GST-item wise' ? 7 : 6;
 
     const getSpareModelNo = async () => {
 
@@ -104,7 +104,7 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
         }
 
     }
-    
+
     const handleChangeModelNumber = async (selectedOption, id) => {
         getPartyName(selectedOption, id);
 
@@ -204,8 +204,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
 
     return (
         <>
-            <Container className="my-4">
-                <Table striped bordered hover className="table">
+            <Container className="my-9">
+                <Table striped bordered hover className="table ">
                     <thead>
                         <tr>
                             <th>S.No.</th>
@@ -214,18 +214,18 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                             <th>Qty*</th>
                             <th>Unit*</th>
                             <th>Price Rs*</th>
-                            {purchType == 'I/GST-item wise' ? <th>GST</th> : <th></th>}
-
+                            {purchType == 'I/GST-item wise' ? <th>GST</th> : ""}
                             <th>Amount</th>
                             <th>Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {items.map((item, index) => (
                             <tr key={item.id}>
                                 <td>{index + 1}</td>
-                              
-                                <td>
+
+                                <td style={{ width: '222px' }} >
                                     <Select
                                         className="form"
                                         value={modelNoList.find(model => model.SparePartId === item.SparePartId) ? { value: item.SparePartId, label: item.modelNumber } : ''}
@@ -236,7 +236,7 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                         <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
                                     )}
                                 </td>
-                                <td>
+                                <td style={{ width: '150px' }}>
                                     <input
                                         type="text"
                                         className="form-control input-field"
@@ -252,7 +252,7 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                     )}
 
                                 </td>
-                                <td>
+                                <td style={{ width: '100px' }}>
                                     <Form.Control
                                         type="number"
                                         name="qty"
@@ -264,7 +264,7 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                         <div className="invalid-feedback">{errors[item.id].qty}</div>
                                     )}
                                 </td>
-                                <td>
+                                <td style={{ width: '80px' }}>
                                     <Form.Control
                                         type="text"
                                         name="unit"
@@ -276,19 +276,25 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                         <div className="invalid-feedback">{errors[item.id].unit}</div>
                                     )}
                                 </td>
-                                <td>
+                                <td style={{ width: '150px' }}>
                                     <Form.Control
                                         type="number"
                                         name="price"
                                         value={item.price}
+                                        maxLength="8"
                                         onChange={(e) => handleItemChange(e, item.id)}
+                                        onInput={(e) => {
+                                            if (e.target.value.length > 8) {
+                                                e.target.value = e.target.value.slice(0, 8);
+                                            }
+                                        }}
                                         className="input-field"
                                     />
                                     {errors[item.id]?.price && (
                                         <div className="invalid-feedback">{errors[item.id].price}</div>
                                     )}
                                 </td>
-                                <td>
+                                {/* <td style={{ width: '80px' }}>
                                     {purchType == 'I/GST-item wise' ? <Form.Control
                                         type="number"
                                         name="gst"
@@ -299,10 +305,30 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                     {errors[item.id]?.gst && (
                                         <div className="invalid-feedback">{errors[item.id].gst}</div>
                                     )}
+                                </td> */}
+                                {purchType == 'I/GST-item wise' ? (
+                                    <td style={{ width: '80px' }}>
+                                        <Form.Control
+                                            type="number"
+                                            name="gst"
+                                            value={item.gst}
+                                            onChange={(e) => handleItemChange(e, item.id)}
+                                            className="input-field"
+                                            maxLength="2"
+                                            onInput={(e) => {
+                                                if (e.target.value.length > 2) {
+                                                    e.target.value = e.target.value.slice(0, 2);
+                                                }
+                                            }}
+                                        />
+
+                                        {errors[item.id]?.gst && (
+                                            <div className="invalid-feedback">{errors[item.id].gst}</div>
+                                        )}
+                                    </td>) : null}
 
 
 
-                                </td>
                                 <td>{!item.gst ? item.qty * item.price : ((item.qty * item.price) * (item.gst / 100)) + (item.qty * item.price)}</td>
                                 <td>
                                     <button
@@ -315,22 +341,27 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                             </tr>
                         ))}
                     </tbody>
+
                     <tfoot>
                         <tr>
-                            <td colSpan="7" className="text-right"><strong>Total Amount</strong></td>
+                            {/* <td colSpan="6" className="text-right"><strong>Total Amount</strong></td>
+                            <td><strong>{totalAmount}</strong></td> */}
+                            <td colSpan={colSpanValue} className="text-right">
+                                <strong>Total Amount</strong>
+                            </td>
                             <td><strong>{totalAmount}</strong></td>
                             <td></td>
                         </tr>
                     </tfoot>
+
                 </Table>
+
                 <Col md={12} style={{ display: 'flex', justifyContent: 'right' }}>
                     <button className="btn btn-primary" onClick={handleAddRow}>
                         Add Row
                     </button>
                 </Col>
-                {/* <button className="btn btn-secondary ml-2" onClick={handleSubmit}>
-                    Submit
-                </button> */}
+
             </Container>
 
             {showItemMaster && (
@@ -338,6 +369,7 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                     <ItemMaster />
                 </div>
             )}
+
         </>
     );
 };
