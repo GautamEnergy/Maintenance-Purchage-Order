@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { useNavigate } from 'react-router-dom';
@@ -64,11 +63,11 @@ const DataTableComponent = () => {
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
                     <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Purchase Order" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "")} />
-                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO with same data" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "Resend")} />
+                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "Resend")} />
                     <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download PO" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL)} />
-                    <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" onClick={handleClick} />
+                    <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" style={{ backgroundColor: '#f27661' }} onClick={handleClick} />
                 </div>
-                <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip"  />
+                <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>
 
         );
@@ -90,7 +89,7 @@ const DataTableComponent = () => {
                         <Link to="/purchage" className="plus mr-1" data-pr-tooltip="Add Purchase Order">
                             <Image src={img1} alt="plus" rounded />
                         </Link>
-                        <Tooltip target=".plus" content="Purchase Order" position="top"  />
+                        <Tooltip target=".plus " content="Purchase Order" position="top" className="custom-tooltip" />
                         <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
                     </div>
                 </div>

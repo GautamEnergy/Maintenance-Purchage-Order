@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {  toast,ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -102,7 +102,7 @@ const NewParty = () => {
                 notifyError(error.message || 'This party already exists.');
             } else if (response.ok) {
                 console.log(response.data);
-                
+
                 notifySuccess();
                 clearForm();
                 setTimeout(() => {
@@ -139,14 +139,14 @@ const NewParty = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
-    
+
     const validateForm = () => {
         const newErrors = {};
         let isValid = true;
-    
+
         // Assume these are the state variables
         const state = { PartyName, MobileNumber, Email, Address, countrtrySelect, PinCode, GSTNumber, PANNumber, State };
-    
+
         const requiredFields = {
             PartyName: 'Party name is required',
             MobileNumber: 'Mobile number is required',
@@ -161,14 +161,14 @@ const NewParty = () => {
             }),
             ...(state.countrtrySelect === 'China' && { PinCode: 'Zip code is required' }),
         };
-    
+
         Object.keys(requiredFields).forEach(field => {
             if (!state[field] || (field === 'Email' && !isEmailValids(state.Email))) {
                 newErrors[field] = requiredFields[field];
                 isValid = false;
             }
         });
-    
+
         if (state.countrtrySelect === 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
             newErrors.PinCode = 'Zip Code is required';
             isValid = false;
@@ -176,7 +176,7 @@ const NewParty = () => {
             newErrors.PinCode = 'Pin Code is invalid';
             isValid = false;
         }
-    
+
         setErrors(newErrors);
         return isValid;
     };
@@ -195,7 +195,7 @@ const NewParty = () => {
 
 
         // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && countrtrySelect && State && CountryCode && PinCode && Status) {
-       if (validateForm()) {
+        if (validateForm()) {
             const partyData = {
                 PartyName,
                 GSTNumber: countrtrySelect == 'China' ? '' : GSTNumber,
@@ -203,7 +203,7 @@ const NewParty = () => {
                 MobileNumber,
                 Email,
                 Address,
-                Country: countrtrySelect ,
+                Country: countrtrySelect,
                 State: countrtrySelect == 'China' ? '' : State,
                 CountryCode,
                 PinCode,
@@ -231,7 +231,7 @@ const NewParty = () => {
         // }
         else {
             console.log('Else')
-           // notifyError('Please fill in all required fields.');
+            // notifyError('Please fill in all required fields.');
         }
 
 
@@ -339,331 +339,331 @@ const NewParty = () => {
 
         <Container style={{ marginTop: "12%" }} className="fullPage ">
             <div className="form-detail" style={{ backgroundColor: '#f8f8ff', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-            {loading && (
-                <div className="loader-overlay">
-                    <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
-                </div>
-            )}
-            <div className={`form-content ${loading ? 'blurred' : ''}`}>
-                <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
-                <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-                    Add New Party
-                </h2>
-                <Form noValidate onSubmit={handleSubmit}>
-                    <Row className="subCard1">
-                        <Col md={4} className="form-group">
-                            <Form.Label>Party Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                className="input-text"
-                                name="partyName"
-                                value={PartyName}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setPartyName(value);
-                                    if (value.trim() === '') {
-                                        setErrors((prevErrors) => ({ ...prevErrors, PartyName: 'Party name is required' }));
-                                    } else {
-                                        setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }));
-                                    }
-                                }}
-                                placeholder='Enter the New Party'
-
-                                // required
-                                isInvalid={!!errors.PartyName}
-                                style={!errors.PartyName ? inputStyle : inputStyles}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.PartyName}
-                            </Form.Control.Feedback>
-                        </Col>
-                        <Col md={4} className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <Form.Control
-                                    as="select"
-                                    id="countryCode"
-                                    className="input-text"
-                                    style={{ width: '45px', height: '38px', padding: '10px', fontSize: '14px', marginTop: '25px', background: 'White', border: "1px black solid", boxShadow: "none" }}
-                                    value={CountryCode}
-                                    onChange={handleCountryCodeChange}
-                                >
-                                    {countryCodes.map((country) => (
-                                        <option key={country.code} value={country.code}>
-                                            {country.code}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                <Form.Label htmlFor="mobileNo">Mobile No.</Form.Label>
+                {loading && (
+                    <div className="loader-overlay">
+                        <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
+                    </div>
+                )}
+                <div className={`form-content ${loading ? 'blurred' : ''}`}>
+                    <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
+                    <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+                        Add New Party
+                    </h2>
+                    <Form noValidate onSubmit={handleSubmit}>
+                        <Row className="subCard1">
+                            <Col md={4} className="form-group">
+                                <Form.Label>Party Name</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    id="mobileNo"
                                     className="input-text"
-                                    // style={{ padding: '8px', fontSize: '14px' }}
-                                    name="mobileNo"
-                                    value={MobileNumber}
-                                    placeholder="Enter the Mobile Number"
-                                    onChange={handleMobileNumberChange}
-                                    maxLength={CountryCode == '+91' ? 10 : 11}
-
+                                    name="partyName"
+                                    value={PartyName}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setPartyName(value);
+                                        if (value.trim() === '') {
+                                            setErrors((prevErrors) => ({ ...prevErrors, PartyName: 'Party name is required' }));
+                                        } else {
+                                            setErrors((prevErrors) => ({ ...prevErrors, PartyName: '' }));
+                                        }
+                                    }}
+                                    placeholder='Enter the New Party'
 
                                     // required
-
-                                    isInvalid={!!errors.MobileNumber}
-                                    style={!errors.MobileNumber ? inputStyle : inputStyles}
-
+                                    isInvalid={!!errors.PartyName}
+                                    style={!errors.PartyName ? inputStyle : inputStyles}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.MobileNumber}
-                                </Form.Control.Feedback>
-                            </div>
-                        </Col>
-                        <Col md={4} className="form-group">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control
-                                type="email"
-                                className="input-text"
-                                name="email"
-                                placeholder='Enter the Email'
-                                value={Email}
-                                onChange={handleEmailChange}
-
-                                isInvalid={!!errors.Email}
-                                style={!errors.Email ? inputStyle : inputStyles}
-                            // required
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.Email}
-                            </Form.Control.Feedback>
-                        </Col>
-
-
-
-
-
-                    </Row>
-                    <Row>
-                        <Col md={4} className="py-2 form-group">
-                            <Form.Label>Country</Form.Label>
-                            <Select
-                                onChange={handleCountry}
-                               // value={countrtrySelect}
-                                defaultValue={Country}
-                                options={countryOptions}
-                                placeholder="Select country"
-                                styles={{
-                                    control: (base, state) => ({
-                                        ...base,
-                                        height: 40,
-                                        minHeight: 23,
-                                        // borderRadius: 33,
-                                        backgroundColor: '#white',
-                                        borderColor: '#black',
-                                        borderWidth: '1px',
-                                        boxShadow: 'none',
-                                        '&:hover': {
-                                            borderColor: '#6a6c6e',
-                                        },
-                                    }),
-                                    menu: (base) => ({
-                                        ...base,
-                                        backgroundColor: '#f0f0f0',
-                                        color: 'black',
-                                    }),
-                                    menuList: (base) => ({
-                                        ...base,
-                                        backgroundColor: '#f0f0f0',
-                                    }),
-                                }}
-                                //  required
-                                isInvalid={!!errors.countrtrySelect}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.countrtrySelect}
-                            </Form.Control.Feedback>
-                        </Col>
-
-
-                        <Col md={4} className="py-2 form-group">
-                            <Form.Label>Address</Form.Label>
-                            <Form.Control
-                                type="text"
-                                className="input-text"
-                                name="address"
-                                value={Address}
-                                placeholder='Enter the Address'
-                                onChange={(e) => {
-                                    const value = e.target.value
-                                    setAddress(value);
-                                    if (value.trim() === '') {
-                                        setErrors((prevErrors) => ({ ...prevErrors, Address: 'Address is requird' }))
-                                    }
-                                    else {
-                                        setErrors((prevErrors) => ({ ...prevErrors, Address: '' }));
-
-                                    }
-
-                                }}
-
-
-                                isInvalid={!!errors.Address}
-                                style={!errors.Address ? inputStyle : inputStyles}
-                            //  required
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.Address}
-                            </Form.Control.Feedback>
-                        </Col>
-                        <Col md={4} className="py-2 form-group">
-                            <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                className="input-text"
-                                name={!hideFields ? "state" : 'Zip Code'}
-                                placeholder={!hideFields ? 'Enter State' : 'Enter Zip Code'}
-                                value={!hideFields ? State : PinCode}
-                                maxLength={6}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (!hideFields) {
-                                        setState(value);
-                                        setErrors((prevErrors) => ({
-                                            ...prevErrors,
-                                            State: value ? '' : 'State is required',
-                                        }));
-                                    } else {
-                                        if (/^\d*$/.test(value)) {
-                                            setPinCode(value);
-                                            setErrors((prevErrors) => ({
-                                                ...prevErrors,
-                                                PinCode: value ? '' : 'Zip Code is required',
-                                                InvalidZip: value.length === 6 || value.length === 0 ? '' : 'Zip Code is invalid',
-                                            }));
-                                        } else {
-                                            setErrors((prevErrors) => ({
-                                                ...prevErrors,
-                                                InvalidZip: 'Zip Code is invalid',
-                                            }));
-                                        }
-                                    }
-                                }}
-                                isInvalid={!hideFields ? !!errors.State : !!errors.PinCode || !!errors.InvalidZip}
-                                style={!hideFields ? (!errors.State ? inputStyle : inputStyles) : (!errors.PinCode && !errors.InvalidZip ? inputStyle : inputStyles)}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {!hideFields ? errors.State : errors.PinCode || errors.InvalidZip}
-                            </Form.Control.Feedback>
-                        </Col>
-
-
-                    </Row>
-                    <Row>
-                        {countrtrySelect !== "China" && (
-                           <Col md={4} className="py-2 form-group">
-                           <Form.Label>Pin Code</Form.Label>
-                           <Form.Control
-                               type="text"
-                               className="input-text"
-                               name="PinCode"
-                               placeholder="Enter the Pin Code"
-                               value={PinCode}
-                               maxLength={6}
-                               onChange={(e) => {
-                                   const value = e.target.value;
-                                   if (/^\d{0,6}$/.test(value)) {
-                                       setPinCode(value);
-                       
-                                       if (value.trim() === '') {
-                                           setErrors((prevErrors) => ({
-                                               ...prevErrors,
-                                               PinCode: 'Pin code is required',
-                                           }));
-                                       } else if (value.length !== 6) {
-                                           setErrors((prevErrors) => ({
-                                               ...prevErrors,
-                                               PinCode: 'Pin code is invalid',
-                                           }));
-                                       } else {
-                                           setErrors((prevErrors) => ({
-                                               ...prevErrors,
-                                               PinCode: '',
-                                           }));
-                                       }
-                                   }
-                               }}
-                               isInvalid={!!errors.PinCode}
-                               style={!errors.PinCode ? inputStyle : inputStyles}
-                           />
-                           <Form.Control.Feedback type="invalid">
-                               {errors.PinCode}
-                           </Form.Control.Feedback>
-                       </Col>
-                        )}
-
-
-                        {!hideFields && (
-                            <Col md={4} className="py-2 form-group">
-                                <Form.Label>GST No.</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    className="input-text"
-                                    name="gstNo"
-                                    value={GSTNumber}
-                                    onChange={handleGSTChange}
-                                    placeholder='Enter the GST Number'
-
-                                    //  required
-                                    isInvalid={!!errors.GSTNumber}
-                                    style={!errors.GSTNumber ? inputStyle : inputStyles}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.GSTNumber}
+                                    {errors.PartyName}
                                 </Form.Control.Feedback>
                             </Col>
-                        )}
+                            <Col md={4} className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <Form.Control
+                                        as="select"
+                                        id="countryCode"
+                                        className="input-text"
+                                        style={{ width: '45px', height: '38px', padding: '10px', fontSize: '14px', marginTop: '25px', background: 'White', border: "1px black solid", boxShadow: "none" }}
+                                        value={CountryCode}
+                                        onChange={handleCountryCodeChange}
+                                    >
+                                        {countryCodes.map((country) => (
+                                            <option key={country.code} value={country.code}>
+                                                {country.code}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                    <Form.Label htmlFor="mobileNo">Mobile No.</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        id="mobileNo"
+                                        className="input-text"
+                                        // style={{ padding: '8px', fontSize: '14px' }}
+                                        name="mobileNo"
+                                        value={MobileNumber}
+                                        placeholder="Enter the Mobile Number"
+                                        onChange={handleMobileNumberChange}
+                                        maxLength={CountryCode == '+91' ? 10 : 11}
 
-                        {!hideFields && (
+
+                                        // required
+
+                                        isInvalid={!!errors.MobileNumber}
+                                        style={!errors.MobileNumber ? inputStyle : inputStyles}
+
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.MobileNumber}
+                                    </Form.Control.Feedback>
+                                </div>
+                            </Col>
+                            <Col md={4} className="form-group">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    className="input-text"
+                                    name="email"
+                                    placeholder='Enter the Email'
+                                    value={Email}
+                                    onChange={handleEmailChange}
+
+                                    isInvalid={!!errors.Email}
+                                    style={!errors.Email ? inputStyle : inputStyles}
+                                // required
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.Email}
+                                </Form.Control.Feedback>
+                            </Col>
+
+
+
+
+
+                        </Row>
+                        <Row>
                             <Col md={4} className="py-2 form-group">
-                                <Form.Label>PAN No.</Form.Label>
+                                <Form.Label>Country</Form.Label>
+                                <Select
+                                    onChange={handleCountry}
+                                    // value={countrtrySelect}
+                                    defaultValue={Country}
+                                    options={countryOptions}
+                                    placeholder="Select country"
+                                    styles={{
+                                        control: (base, state) => ({
+                                            ...base,
+                                            height: 40,
+                                            minHeight: 23,
+                                            // borderRadius: 33,
+                                            backgroundColor: '#white',
+                                            borderColor: '#black',
+                                            borderWidth: '1px',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                borderColor: '#6a6c6e',
+                                            },
+                                        }),
+                                        menu: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#f0f0f0',
+                                            color: 'black',
+                                        }),
+                                        menuList: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#f0f0f0',
+                                        }),
+                                    }}
+                                    //  required
+                                    isInvalid={!!errors.countrtrySelect}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.countrtrySelect}
+                                </Form.Control.Feedback>
+                            </Col>
+
+
+                            <Col md={4} className="py-2 form-group">
+                                <Form.Label>Address</Form.Label>
                                 <Form.Control
                                     type="text"
                                     className="input-text"
-                                    name="panNo"
-                                    value={PANNumber}
+                                    name="address"
+                                    value={Address}
+                                    placeholder='Enter the Address'
                                     onChange={(e) => {
                                         const value = e.target.value
-                                        setPANNumber(value)
-                                        if (PANNumber.trim() === '') {
-                                            setErrors((prevErrors) => ({ ...prevErrors, PANNumber: 'PAN number is required' }));
-
+                                        setAddress(value);
+                                        if (value.trim() === '') {
+                                            setErrors((prevErrors) => ({ ...prevErrors, Address: 'Address is requird' }))
                                         }
                                         else {
-                                            setErrors((prevErrors) => ({ ...prevErrors, PANNumber: '' }));
+                                            setErrors((prevErrors) => ({ ...prevErrors, Address: '' }));
 
                                         }
 
-
                                     }}
-                                    placeholder='Enter the PAN Number'
-                                    isInvalid={!!errors.PANNumber}
 
-                                    style={!errors.PANNumber ? inputStyle : inputStyles}
+
+                                    isInvalid={!!errors.Address}
+                                    style={!errors.Address ? inputStyle : inputStyles}
+                                //  required
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.PANNumber}
+                                    {errors.Address}
                                 </Form.Control.Feedback>
                             </Col>
-                        )}
-                    </Row>
-                    <Row>
-                        <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '10px' }}>Back</Button>
-                            <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </div>
+                            <Col md={4} className="py-2 form-group">
+                                <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    className="input-text"
+                                    name={!hideFields ? "state" : 'Zip Code'}
+                                    placeholder={!hideFields ? 'Enter State' : 'Enter Zip Code'}
+                                    value={!hideFields ? State : PinCode}
+                                    maxLength={hideFields ? 6 : ""}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (!hideFields) {
+                                            setState(value);
+                                            setErrors((prevErrors) => ({
+                                                ...prevErrors,
+                                                State: value ? '' : 'State is required',
+                                            }));
+                                        } else {
+                                            if (/^\d*$/.test(value)) {
+                                                setPinCode(value);
+                                                setErrors((prevErrors) => ({
+                                                    ...prevErrors,
+                                                    PinCode: value ? '' : 'Zip Code is required',
+                                                    InvalidZip: value.length === 6 || value.length === 0 ? '' : 'Zip Code is invalid',
+                                                }));
+                                            } else {
+                                                setErrors((prevErrors) => ({
+                                                    ...prevErrors,
+                                                    InvalidZip: 'Zip Code is invalid',
+                                                }));
+                                            }
+                                        }
+                                    }}
+                                    isInvalid={!hideFields ? !!errors.State : !!errors.PinCode || !!errors.InvalidZip}
+                                    style={!hideFields ? (!errors.State ? inputStyle : inputStyles) : (!errors.PinCode && !errors.InvalidZip ? inputStyle : inputStyles)}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {!hideFields ? errors.State : errors.PinCode || errors.InvalidZip}
+                                </Form.Control.Feedback>
+                            </Col>
+
+
+                        </Row>
+                        <Row>
+                            {countrtrySelect !== "China" && (
+                                <Col md={4} className="py-2 form-group">
+                                    <Form.Label>Pin Code</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        className="input-text"
+                                        name="PinCode"
+                                        placeholder="Enter the Pin Code"
+                                        value={PinCode}
+                                        maxLength={6}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d{0,6}$/.test(value)) {
+                                                setPinCode(value);
+
+                                                if (value.trim() === '') {
+                                                    setErrors((prevErrors) => ({
+                                                        ...prevErrors,
+                                                        PinCode: 'Pin code is required',
+                                                    }));
+                                                } else if (value.length !== 6) {
+                                                    setErrors((prevErrors) => ({
+                                                        ...prevErrors,
+                                                        PinCode: 'Pin code is invalid',
+                                                    }));
+                                                } else {
+                                                    setErrors((prevErrors) => ({
+                                                        ...prevErrors,
+                                                        PinCode: '',
+                                                    }));
+                                                }
+                                            }
+                                        }}
+                                        isInvalid={!!errors.PinCode}
+                                        style={!errors.PinCode ? inputStyle : inputStyles}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.PinCode}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            )}
+
+
+                            {!hideFields && (
+                                <Col md={4} className="py-2 form-group">
+                                    <Form.Label>GST No.</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        className="input-text"
+                                        name="gstNo"
+                                        value={GSTNumber}
+                                        onChange={handleGSTChange}
+                                        placeholder='Enter the GST Number'
+
+                                        //  required
+                                        isInvalid={!!errors.GSTNumber}
+                                        style={!errors.GSTNumber ? inputStyle : inputStyles}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.GSTNumber}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            )}
+
+                            {!hideFields && (
+                                <Col md={4} className="py-2 form-group">
+                                    <Form.Label>PAN No.</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        className="input-text"
+                                        name="panNo"
+                                        value={PANNumber}
+                                        onChange={(e) => {
+                                            const value = e.target.value
+                                            setPANNumber(value)
+                                            if (PANNumber.trim() === '') {
+                                                setErrors((prevErrors) => ({ ...prevErrors, PANNumber: 'PAN number is required' }));
+
+                                            }
+                                            else {
+                                                setErrors((prevErrors) => ({ ...prevErrors, PANNumber: '' }));
+
+                                            }
+
+
+                                        }}
+                                        placeholder='Enter the PAN Number'
+                                        isInvalid={!!errors.PANNumber}
+
+                                        style={!errors.PANNumber ? inputStyle : inputStyles}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.PANNumber}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            )}
+                        </Row>
+                        <Row>
+                            <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                                <Button type="button" className="register" onClick={handleback} style={{ width: '83px', height: '43px', background: '#545454', margin: '10px' }}>Back</Button>
+                                <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </div>
             </div>
 
             <ToastContainer position='top-center' />
