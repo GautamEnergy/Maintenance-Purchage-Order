@@ -64,15 +64,15 @@ const NewParty = () => {
         if (gstValue.trim() === '') {
             setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: 'GST number is required' }));
             setPANNumber('');
-            setError(''); // Optional: If you want to clear any other error message
+            setError('');
         } else if (!validateGST(gstValue)) {
             setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: 'GST number is invalid' }));
             setPANNumber('');
-            setError('Invalid GST number format'); // Optional: If you want to show this error message elsewhere
+            setError('Invalid GST number format');
         } else {
             setErrors((prevErrors) => ({ ...prevErrors, GSTNumber: '' }));
             extractPANFromGST(gstValue);
-            setError(''); // Optional: Clear any other error message
+            setError('');
         }
     };
 
@@ -144,7 +144,6 @@ const NewParty = () => {
         const newErrors = {};
         let isValid = true;
 
-        // Assume these are the state variables
         const state = { PartyName, MobileNumber, Email, Address, countrtrySelect, PinCode, GSTNumber, PANNumber, State };
 
         const requiredFields = {

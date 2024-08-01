@@ -89,7 +89,7 @@ const DataTableComponent = () => {
                         <Link to="/purchage" className="plus mr-1" data-pr-tooltip="Add Purchase Order">
                             <Image src={img1} alt="plus" rounded />
                         </Link>
-                        <Tooltip target=".plus " content="Purchase Order" position="top" className="custom-tooltip" />
+                        <Tooltip target=".plus" content="Purchase Order" position="top" className="custom-tooltip" />
                         <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
                     </div>
                 </div>
