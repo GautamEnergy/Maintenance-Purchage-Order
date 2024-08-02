@@ -10,9 +10,10 @@ import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
-import "../Table/table.css";
+import "../Table/table.css"
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
+
 
 const PartyListTable = () => {
     const [data, setData] = useState([]);
@@ -80,7 +81,7 @@ const PartyListTable = () => {
                     <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Party" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.PartyNameId)} />
                    
                 </div>
-                <Tooltip target=".p-button-rounded" position="top" />
+                <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>
         );
     };
@@ -98,10 +99,10 @@ const PartyListTable = () => {
                         </div>
                     </div>
                     <div className="col-md-5 d-flex justify-content-end align-items-center">
-                        <Link to="/purchage" className="plus mr-1" data-pr-tooltip="Add Purchase Order">
+                        <Link to="/newParty" className="plus mr-1" data-pr-tooltip="Add New Party">
                             <Image src={img1} alt="plus" rounded />
                         </Link>
-                        <Tooltip target=".plus" content="Purchase Order" position="top" />
+                        <Tooltip target=".plus" content="Purchase Order" position="top" className="custom-tooltip" />
                         <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
                     </div>
                 </div>

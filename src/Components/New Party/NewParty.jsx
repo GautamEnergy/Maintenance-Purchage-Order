@@ -2,11 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Select from 'react-select';
 import img1 from "../../Assets/Images/LOGO.png";
 import { AppContext } from '../../ContextAPI';
 import Loader from '../Loader/Loader';
+import axios from 'axios';
+
 
 const NewParty = () => {
     const { token, setToken } = useContext(AppContext);
@@ -32,7 +34,9 @@ const NewParty = () => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState();
     const location = useLocation();
-    const {PartyNameId } = location.state || {};
+    const { PartyNameId } = location.state || {};
+    const [FormData, setFormData] = useState([]);
+    console.log("Country",Country)
 
 
     useEffect(() => {
@@ -55,6 +59,53 @@ const NewParty = () => {
         { value: 'India', label: 'India' },
         { value: 'China', label: 'China' },
     ];
+    // get Party List by id
+    useEffect(() => {
+        console.log("hahahhahahmmmm")
+
+        console.log(PartyNameId)
+
+        if (PartyNameId) {
+
+
+
+            const fetchData = async () => {
+                const url = localStorage.getItem('url');
+                try {
+                    const response = await axios.post(
+                        `${url}/Maintenance/getPartyListById`,
+                        { PartyNameId: PartyNameId }
+                    );
+                    const partyData = response.data.data[0];
+                    setFormData(partyData);
+                    console.log("partyData", partyData)
+                    // bindData(purchaseData)
+                    console.log("Response", response)
+                    setPartyName(partyData.PartyName || '');
+                    setGSTNumber(partyData.GSTNumber || '');
+                    setPANNumber(partyData.PANNumber || '');
+                    setAddress(partyData.Address || '');
+                    const country = partyData.Country || 'India';
+                    setCountry({ value: country, label: country });
+                    console.log("Setting Country to:", { value: partyData.Country || 'India', label: partyData.Country || 'India' });
+
+                    setState(partyData.State || '');
+                    setEmail(partyData.Email || '');
+                    setMobileNumber(partyData.MobileNumber.slice(4) || '');
+                    const CountryCode = partyData.MobileNumber.slice(0,3);
+                    console.log("CountryCode",CountryCode);
+                    setCountryCode(CountryCode);
+                    setStatus(partyData.Status || 'Active');
+                    setPinCode(partyData.PinCode || '');
+                    setLoading(false);
+                    console.log(FormData)
+                } catch (error) {
+                    console.error('Error fetching purchase order data:', error);
+                }
+            };
+            fetchData();
+        }
+    }, [PartyNameId]);
 
     const notifySuccess = () => toast.success("New Party Added Successfully!", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
@@ -102,6 +153,7 @@ const NewParty = () => {
 
             if (response.status === 409) {
                 notifyError(error.message || 'This party already exists.');
+                setLoading(false);
             } else if (response.ok) {
                 console.log(response.data);
 
@@ -109,7 +161,7 @@ const NewParty = () => {
                 clearForm();
                 setTimeout(() => {
                     setLoading(false);
-                    navigate('/dashboard');
+                    navigate('/partylist');
                 }, 1000);
             } else {
                 setLoading(false);
@@ -198,6 +250,7 @@ const NewParty = () => {
         // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && countrtrySelect && State && CountryCode && PinCode && Status) {
         if (validateForm()) {
             const partyData = {
+                PartyNameId : PartyNameId?PartyNameId:"",
                 PartyName,
                 GSTNumber: countrtrySelect == 'China' ? '' : GSTNumber,
                 PANNumber: countrtrySelect == 'China' ? '' : PANNumber,
@@ -240,7 +293,7 @@ const NewParty = () => {
     };
 
     const handleback = () => {
-        navigate('/dashboard');
+        navigate('/partylist');
     };
 
     const handleMobileNumberChange = (e) => {
@@ -284,7 +337,7 @@ const NewParty = () => {
 
         // console.log(selectedCountry)
 
-        setHideFields(selectedCountry.value == 'China');
+  
         if (selectedOption.value == 'China') {
             setState('');
             setPANNumber('');
@@ -292,6 +345,17 @@ const NewParty = () => {
         }
         setErrors((prevErrors) => ({ ...prevErrors, countrtrySelect: '' }))
     };
+    useEffect(() => {
+        if (Country.value === 'China') {
+            setHideFields(true);
+            // Clear specific fields if needed
+            setState('');
+            setPANNumber('');
+            setGSTNumber('');
+        } else {
+            setHideFields(false);
+        }
+    }, [Country]);
 
     const countryCodes = [
         { code: '+91' },
@@ -348,7 +412,7 @@ const NewParty = () => {
                 <div className={`form-content ${loading ? 'blurred' : ''}`}>
                     <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
                     <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-                        Add New Party
+                       {PartyNameId? "Edit Party":"Add New Party"}
                     </h2>
                     <Form noValidate onSubmit={handleSubmit}>
                         <Row className="subCard1">
@@ -451,6 +515,7 @@ const NewParty = () => {
                                     onChange={handleCountry}
                                     // value={countrtrySelect}
                                     defaultValue={Country}
+                                    value={Country}
                                     options={countryOptions}
                                     placeholder="Select country"
                                     styles={{

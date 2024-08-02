@@ -311,6 +311,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -321,7 +322,11 @@ import PurchaseOrderIcon from '@mui/icons-material/ShoppingCart';
 import POListIcon from '@mui/icons-material/ListAlt';
 import AddSpareIcon from '@mui/icons-material/AddBox';
 import AddPartyIcon from '@mui/icons-material/GroupAdd';
-import AddMachineIcon from '@mui/icons-material/Build';
+import PeopleIcon from '@mui/icons-material/People';
+
+import ConstructionIcon from '@mui/icons-material/Construction';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -463,10 +468,10 @@ export default function Sidebar() {
     },
     {
       text: 'Party',
-      icon: <AddPartyIcon />,
+      icon: <PeopleIcon/>,
       children: [
         { text: 'Add Party', path: '/newParty', icon: <AddPartyIcon /> },
-        // { text: 'Party List', path: '/machine', icon: <POListIcon /> },
+       { text: 'Party List', path: '/partylist', icon: <POListIcon /> },
       ],
     },
     {
@@ -479,9 +484,9 @@ export default function Sidebar() {
     },
     {
       text: 'Machine',
-      icon: <AddMachineIcon />,
+      icon: <ConstructionIcon/>,
       children: [
-        { text: 'Add Machine', path: '/machine', icon: <AddMachineIcon /> },
+        { text: 'Add Machine', path: '/machine', icon: <SettingsIcon /> },
         // { text: 'Machine List', path: '/machine', icon: <POListIcon /> },
       ],
     },
