@@ -456,16 +456,33 @@ export default function Sidebar() {
       text: 'Purchase Order',
       icon: <PurchaseOrderIcon />,
       children: [
+        { text: 'Add PO', path: '/purchage', icon: <AddSpareIcon /> },
         { text: 'PO List', path: '/polist', icon: <POListIcon /> },
-        { text: 'Add PO', path: '/addPO', icon: <AddSpareIcon /> },
+       
       ],
     },
     {
-      text: 'Manage',
-      icon: <AddMachineIcon />,
+      text: 'Party',
+      icon: <AddPartyIcon />,
       children: [
         { text: 'Add Party', path: '/newParty', icon: <AddPartyIcon /> },
+        // { text: 'Party List', path: '/machine', icon: <POListIcon /> },
+      ],
+    },
+    {
+      text: 'Spare Part',
+      icon: <AddSpareIcon />,
+      children: [
+        { text: 'Add Spare Part', path: '/spare', icon: <AddSpareIcon /> },
+        // { text: 'Spare Part List', path: '/machine', icon: <POListIcon /> },
+      ],
+    },
+    {
+      text: 'Machine',
+      icon: <AddMachineIcon />,
+      children: [
         { text: 'Add Machine', path: '/machine', icon: <AddMachineIcon /> },
+        // { text: 'Machine List', path: '/machine', icon: <POListIcon /> },
       ],
     },
   ];

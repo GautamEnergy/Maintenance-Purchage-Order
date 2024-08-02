@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import Select from 'react-select';
 import img1 from "../../Assets/Images/LOGO.png";
 import { AppContext } from '../../ContextAPI';
@@ -31,6 +31,8 @@ const NewParty = () => {
     const [url, setUrl] = useState("");
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState();
+    const location = useLocation();
+    const {PartyNameId } = location.state || {};
 
 
     useEffect(() => {

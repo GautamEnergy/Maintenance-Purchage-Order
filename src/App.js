@@ -15,6 +15,7 @@ import Dashboard from './Pages/Dashboard';
 import PurchaseOrderList from './Components/PurchageOrder/PurchaseOrderList';
 import Sidebar from './Sidebar';
 import AvailableStock from './Components/PurchageOrder/AvailableStock';
+import PartList from './Components/PartyList/PartyList';
 
 
 const App = () => {
@@ -57,6 +58,7 @@ const AppWithNavbar = () => (
       <Route path="/itemMAster" element={<ItemMaster />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/polist" element={<PurchaseOrderList />} />
+      <Route path="/partylist" element={<PartList />} />
       <Route path="/availablestocklist" element={<AvailableStock />} />
 
     </Routes>
