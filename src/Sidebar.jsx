@@ -39,8 +39,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { Image } from 'react-bootstrap';
 
-import SelectAllTwoToneIcon from '@mui/icons-material/SelectAllTwoTone';
-import machineicon from '../src/Assets/Images/machine.png';
+import MachineListTable from '@mui/icons-material/ReceiptLong';
+import MachineList from '@mui/icons-material/DomainAdd';
 
 const drawerWidth = 240;
 
@@ -190,8 +190,8 @@ export default function Sidebar() {
       text: 'Machine',
       icon: <ConstructionIcon />,
       children: [
-        { text: 'Add Machine', path: '/machine', icon: <img src={machineicon} style={{ width: '24px', height: '24px' }} /> },
-        { text: 'Machine List', path: '/machinelist', icon: <SelectAllTwoToneIcon /> },
+        { text: 'Add Machine', path: '/machine', icon: <MachineList /> },
+        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable /> },
       ],
     },
 
