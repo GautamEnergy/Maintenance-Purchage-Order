@@ -16,6 +16,7 @@ import PurchaseOrderList from './Components/PurchageOrder/PurchaseOrderList';
 import Sidebar from './Sidebar';
 import AvailableStock from './Components/PurchageOrder/AvailableStock';
 import PartList from './Components/PartyList/PartyList';
+import MachineList from './Components/MachineList/MachineList';
 
 
 const App = () => {
@@ -47,7 +48,7 @@ const AppWithNavbar = () => (
 
       {/* <Route path="/nav" element={<Navbar />} /> */}
       <Route path="/nav" element={<Sidebar />} />
-     
+
       <Route path="/machine" element={<AddMachine />} />
       <Route path="/spare" element={<AddSpare />} />
       <Route path="/billing" element={<Billing />} />
@@ -59,6 +60,7 @@ const AppWithNavbar = () => (
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/polist" element={<PurchaseOrderList />} />
       <Route path="/partylist" element={<PartList />} />
+      <Route path="/machinelist" element={<MachineList />} />
       <Route path="/availablestocklist" element={<AvailableStock />} />
 
     </Routes>

@@ -10,28 +10,46 @@ import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
-import "../Table/table.css";
-
+import "../Table/table.css"
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
-const DataTableComponent = () => {
+
+
+const MachineTable = () => {
     const [data, setData] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
+    const [error, setErrors] = useState('');
 
     useEffect(() => {
         const url = localStorage.getItem('url');
-        setUrl(url)
+        setUrl(url);
+
         const fetchData = async () => {
             try {
-                const { data } = await axios.get(`${url}/Maintenance/GetPurchaseOrderList`);
-                setData(data.data);
+                const response = await axios.get(`${url}/Maintenance/MachineList`, {
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                });
+
+                console.log("Response status:", response.status);
+                console.log("Response data:", response.data);
+                // setData(response.data.data);
+                if (response.status === 200 && Array.isArray(response.data.data)) {
+                    console.log("Fetched data:", response.data); // Log the fetched data
+                    setData(response.data.data);
+                } else {
+                    console.error('Unexpected response:', response);
+                    setErrors('Failed to fetch party list. Unexpected response from server.');
+                }
                 setLoading(false);
             } catch (error) {
+                console.error('Error fetching party list:', error.message);
+                setErrors('Failed to fetch party list. Please check the server configuration.');
                 setLoading(false);
-                console.error("Error fetching data: ", error);
             }
         };
 
@@ -41,35 +59,33 @@ const DataTableComponent = () => {
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
-    const handleEditClick = (Purchase_Order_Id, Type) => {
-        navigate("/purchage", { state: { Purchase_Order_Id, Type: Type } });
+
+    const handleEditClick = (MachineId) => {
+        navigate("/machine", { state: { MachineId, Type: "" } });
     };
 
-    const handlePdfClick = async (PdfURL, customFileName) => {
+    const handlePdfClick = async (PdfURL) => {
         try {
             const response = await axios.get(PdfURL, {
                 responseType: 'blob',
             });
 
             const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-            saveAs(pdfBlob, "PurchaseOrder" + "-" + customFileName);
+            saveAs(pdfBlob, PdfURL);
         } catch (error) {
             console.error('Error downloading the PDF', error);
         }
     };
+
     const actionBodyTemplate = (rowData) => {
-        console.log(rowData)
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
-                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Purchase Order" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "")} />
-                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "Resend")} />
-                    <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download PO" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL, rowData.Voucher_Number)} />
-                    <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" style={{ backgroundColor: '#f27661' }} onClick={handleClick} />
+                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Machine" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.MachineId)} />
+
                 </div>
                 <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>
-
         );
     };
 
@@ -86,7 +102,7 @@ const DataTableComponent = () => {
                         </div>
                     </div>
                     <div className="col-md-5 d-flex justify-content-end align-items-center">
-                        <Link to="/purchage" className="plus mr-1" data-pr-tooltip="Add Purchase Order">
+                        <Link to="/machine" className="plus mr-1" data-pr-tooltip="Add New Machine">
                             <Image src={img1} alt="plus" rounded />
                         </Link>
                         <Tooltip target=".plus" content="Purchase Order" position="top" className="custom-tooltip" />
@@ -137,11 +153,10 @@ const DataTableComponent = () => {
                     globalFilter={globalFilter}
                     emptyMessage={loading ? null : "No items found."}
                 >
-                    <Column style={{ border: "0.5px dotted black" }} field="Voucher_Number" header="Voucher Number" filter filterPlaceholder="Search by Item Name" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="PartyName" header="Party Name" filter filterPlaceholder="Search by Item Type" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="CompanyName" header="Company Name" filter filterPlaceholder="Search by GST" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Purchase_Date" header="Purchase Date" filter filterPlaceholder="Search by Party" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Created_By" header="Created By" filter filterPlaceholder="Search by Date" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="MachineName" header="Machine Name" filter filterPlaceholder="Search by Party Name" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="MachineBrandName" header="Brand Name" filter filterPlaceholder="Country" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="MachineModelNumber" header="Model Number" filter filterPlaceholder="Search by Email" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="MachineNumber" header="Machine Number" filter filterPlaceholder="Search by Mobile Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />
                 </DataTable>
                 {loading && (
@@ -158,4 +173,4 @@ const DataTableComponent = () => {
     );
 };
 
-export default DataTableComponent;
+export default MachineTable;
