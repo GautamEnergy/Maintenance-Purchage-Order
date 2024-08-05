@@ -31,6 +31,8 @@ const AddSpare = () => {
   const [EquivalentSparePartsOptions, setEquivalentSparePartsOptions] = useState([]);
   const imageInputRef = useRef(null);
   const pdfInputRef = useRef(null);
+
+  const [pdfData, setpdfData] = useState([]);
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
@@ -61,8 +63,8 @@ const AddSpare = () => {
     console.log('URL CHECK');
     console.log(url);
     getMachineListData();
-  
-   
+
+
   }, []);
 
   let machineData = []
@@ -70,8 +72,8 @@ const AddSpare = () => {
   const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
-  const fetchEquivalentSpareParts = async (sparePartName, selectedMachines , EquivalentId) => {
-   
+  const fetchEquivalentSpareParts = async (sparePartName, selectedMachines, EquivalentId) => {
+
     try {
       const url = localStorage.getItem('url');
       const response = await axios.post(`${url}/Maintenance/Equ`, {
@@ -83,39 +85,49 @@ const AddSpare = () => {
         value: part.SparePartId,
         label: part.Value
       }));
-      setEquivalentSparePartsOptions(formattedSpareParts); 
-      if(SparPartId){
+      setEquivalentSparePartsOptions(formattedSpareParts);
+      if (SparPartId) {
         console.log("equivalentId......... bhanu", EquivalentId);
-        const formatedEquivalentData = formattedSpareParts.filter(item => EquivalentId.includes(item.value));  
-        console.log("formatedEquivalentData Bhanu.......", formatedEquivalentData);  
+        const formatedEquivalentData = formattedSpareParts.filter(item => EquivalentId.includes(item.value));
+        console.log("formatedEquivalentData Bhanu.......", formatedEquivalentData);
         setEquivalentSpareParts(formatedEquivalentData);
-      }    
+      }
 
-     
+
     } catch (error) {
       console.error('Error fetching equivalent spare parts:', error);
     }
   };
 
-// Get Spare Part By Id
+  // Get Spare Part By Id
 
-const getSparePartData = async () => {
+  const extractLast15Digits = (url) => {
+    // Extract the file name part from the URL
+    const fileName = url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('.pdf'));
+
+    // Extract the last 15 characters
+    const last15Digits = fileName.slice(-15);
+
+    return last15Digits;
+  };
+
+  const getSparePartData = async () => {
 
 
 
 
-  try {
-   
+    try {
+
       setLoading(true);
       const url = localStorage.getItem('url');
       const response = await axios.post(
-          `${url}/Maintenance/GetSpecificSparePart`,
-          {SparePartId: SparPartId }
+        `${url}/Maintenance/GetSpecificSparePart`,
+        { SparePartId: SparPartId }
       );
 
-  
 
-      const sparePartData = response.data.data[0];    
+
+      const sparePartData = response.data.data[0];
       setMasterSparePartName(sparePartData.MasterSparePartName || '');
       setSparePartName(sparePartData.SparePartName || '');
       setSparePartModelNo(sparePartData.SpareNumber || '');
@@ -124,31 +136,46 @@ const getSparePartData = async () => {
       setPCS(sparePartData.NumberOfPcs || '');
       setCycleTime(sparePartData.CycleTime || '');
       setCode(sparePartData.HSNCode || '');
-      setFileName(sparePartData.SparePartDrawingImageURL || '')
-      setEquivalentId(sparePartData.Equivalent);
 
- 
-      const machineIdsArray = sparePartData.MachineId.map(machine => machine.MachineId);  
+
+
+
+      const last15Digits = extractLast15Digits(sparePartData.SparePartDrawingImageURL);
+      console.log("Helllllllll", last15Digits)
+
+      setFileName(last15Digits || '')
+      setEquivalentId(sparePartData.Equivalent);
+      setpdfData(sparePartData.SparePartImageURL || [])
+
+
+      console.log('kkkkkkkkkkkkkkkkkkk')
+      console.log(sparePartData.SparePartImageURL);
+
+
+
+
+
+      const machineIdsArray = sparePartData.MachineId.map(machine => machine.MachineId);
       const machineName = machineData.filter(item => machineIdsArray.includes(item.value))
       setMachineNames(machineName);
 
       if (sparePartData.SparePartName && machineName.length > 0) {
         fetchEquivalentSpareParts(sparePartData.SparePartName, machineName, sparePartData.Equivalent);
       }
-    
-   
-    
 
 
 
-         
-     
+
+
+
+
+
       setLoading(false);
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching machine data:', error);
       setLoading(false);
-  }
-};
+    }
+  };
 
 
 
@@ -164,7 +191,7 @@ const getSparePartData = async () => {
         },
         body: JSON.stringify(SpareData),
       });
-   
+
       if (response.ok) {
         const responseData = await response.json();
         setSparePartName('');
@@ -217,8 +244,9 @@ const getSparePartData = async () => {
     // if (SparePartName && SparePartModelNo && Brand && Specification && MachineNames.length > 0 && Status) {
     if (Object.keys(newFieldErrors).length === 0) {
       const EquivalentSparePartValues = EquivalentSpareParts.map(part => part.value);
-    
+
       const SpareData = {
+        SparePartId: SparPartId ? SparPartId : "",
         MasterSparePartName: MasterSparePartName,
         SparePartName,
         SpareNumber: SparePartModelNo,
@@ -245,7 +273,7 @@ const getSparePartData = async () => {
 
         if ((files && files.length > 0) || (pdf && pdf.size > 0)) {
           let upload = await uploadPDF(formData);
-        }else{
+        } else {
           notifySuccess();
           setTimeout(() => {
             setLoading(false);
@@ -273,7 +301,7 @@ const getSparePartData = async () => {
         console.log(err)
       }
     } else {
-     // setError('Please fill in all required fields.');
+      // setError('Please fill in all required fields.');
     }
   };
   const handleFieldChange = (field, value) => {
@@ -300,7 +328,7 @@ const getSparePartData = async () => {
     setPdf(e.target.files[0]);
     if (pdf) {
       setFileName(pdf.name);
-    } 
+    }
   };
 
   const handleBack = (e) => {
@@ -308,7 +336,7 @@ const getSparePartData = async () => {
   };
 
   const handleMachineNameChange = (selectedMachines) => {
-    console.log("Machine Name....................?",selectedMachines);
+    console.log("Machine Name....................?", selectedMachines);
     setMachineNames(selectedMachines);
     handleFieldChange('MachineNames', selectedMachines);
   };
@@ -317,20 +345,20 @@ const getSparePartData = async () => {
     const { value } = e.target;
     setSparePartName(value);
     handleFieldChange('SparePartName', e.target.value);
-  
+
   };
 
   const handleEquivalentSparePartsOpen = () => {
-    // if (SparePartName && MachineNames.length > 0) {
-    //   fetchEquivalentSpareParts(SparePartName, MachineNames);
-    // }
+    if (SparePartName && MachineNames.length > 0) {
+      fetchEquivalentSpareParts(SparePartName, MachineNames);
+    }
   };
 
-  
+
   const handleEquivalentChange = (selectedOptions) => {
-    console.log("Equivalent Name....................?",selectedOptions);
+    console.log("Equivalent Name....................?", selectedOptions);
     setEquivalentSpareParts(selectedOptions)
-   
+
   };
 
 
@@ -339,7 +367,7 @@ const getSparePartData = async () => {
     console.log("hmmmmmmmmmmm");
     console.log(url);
     console.log(token);
-   // const url = `${url}/Maintenance/MachineDetailById`;
+    // const url = `${url}/Maintenance/MachineDetailById`;
     try {
       const response = await axios.get(`${url}/Maintenance/MachineDetailById`, {
         headers: {
@@ -355,10 +383,10 @@ const getSparePartData = async () => {
           value: machine.MachineId,
           label: machine.MachineName
         }));
-         console.log("MachData.......",machineData);
+        console.log("MachData.......", machineData);
         SetMachine(machineData)
 
-        if(SparPartId){
+        if (SparPartId) {
           getSparePartData();
         }
 
@@ -367,11 +395,11 @@ const getSparePartData = async () => {
         //   '143cd0ea-fa88-4164-9a04-eb1cf1b8d782',
         //   '2b6c90b8-9828-4b24-92da-e8290945fe94'
         // ]
-      
+
         // setMachineNames(machineData.filter(item => itemIds.includes(item.value)));
-        
-      
-    //  console.log("formated Data...ASAS..?", filteredData);
+
+
+        //  console.log("formated Data...ASAS..?", filteredData);
 
 
       } else {
@@ -403,10 +431,10 @@ const getSparePartData = async () => {
         console.log(response.data)
         console.log('image respnse')
         notifySuccess();
-          setTimeout(() => {
-            setLoading(false);
-            navigate('/sparepartlist');
-          }, 1000);
+        setTimeout(() => {
+          setLoading(false);
+          navigate('/sparepartlist');
+        }, 1000);
         return response.data;
       } else {
         setIsLoading(false);
@@ -435,21 +463,21 @@ const getSparePartData = async () => {
     borderColor: 'red',
     borderWidth: '1px',
     borderRadius: '5px',
-     boxShadow: 'none'
-};
+    boxShadow: 'none'
+  };
   const customSelectStyles = {
     control: (base, state) => ({
       ...base,
       height: 'auto',
       minHeight: '40px',
       width: '100%',
-      maxWidth : '300px',
+      maxWidth: '300px',
       //borderRadius: '5px',
       backgroundColor: 'white',
       borderColor: 'black',
       borderWidth: '1px',
       boxShadow: 'none',
-      
+
     }),
     menu: (base) => ({
       ...base,
@@ -492,258 +520,273 @@ const getSparePartData = async () => {
       borderColor: 'red',
       borderWidth: '1px',
       boxShadow: 'none',
-      
-    }),}
+
+    }),
+  }
 
   return (
 
-    <Container style={{ marginTop: "12%",maxWidth:"750px"  }} className="fullPage ">
+    <Container style={{ marginTop: "12%", maxWidth: "750px" }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-      {loading && (
-                <div className="loader-overlay">
-                    <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
-                </div>
-            )}
-             <div className={`form-content ${loading ? 'blurred' : ''}`}>
-        <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
-        <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-         {SparPartId ? "Edit Spare Part" : "Add New Spare Part"} 
-        </h2>
-        <Form onSubmit={handleSubmit}>
-          <div className="subCard2">
-            <Row>
-              <Col md={4}>
-                <Form.Group controlId="MasterSparePartName">
-                  <Form.Label style={{ fontWeight: "bold" }}> Master Spare Part Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="MasterSparePartName"
-                    value={MasterSparePartName}
-                    onChange={(e) => {setMasterSparePartName(e.target.value)
-                      handleFieldChange('MasterSparePartName', e.target.value);
-                    }}
-                    placeholder="Master Spare Part Name"
-                    // required
-                    style={!fieldErrors.MasterSparePartName?inputStyle : inputStyles}
-                  />
-                  {fieldErrors.MasterSparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MasterSparePartName}</div>}
-                </Form.Group>
-              </Col>
-
-              <Col md={4}>
-                <Form.Group controlId="SparePartName">
-                  <Form.Label style={{ fontWeight: "bold" }}>Spare Part Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="SparePartName"
-                    value={SparePartName}
-                    onChange={handleSparePartNameChange}
-                    placeholder="Spare Part Name"
-                    // required
-                    style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
-
-                  />
-                  {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
-                </Form.Group>
-              </Col>
-
-              <Col md={4}>
-                <Form.Group controlId="SparePartModelNo">
-                  <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="SparePartModelNo"
-                    value={SparePartModelNo}
-                    onChange={(e) => {setSparePartModelNo(e.target.value)
-                      handleFieldChange('SparePartModelNo', e.target.value);
-                    }}
-                    placeholder="Spare Part Model Number"
-                    // required
-                    style={!fieldErrors.SparePartModelNo ?inputStyle : inputStyles}
-                  />
-                  {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="Brand">
-                  <Form.Label style={{ fontWeight: "bold" }}>Brand</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="brand"
-                    value={Brand}
-                    onChange={(e) =>{ setBrand(e.target.value)
-                      handleFieldChange('Brand', e.target.value);
-                    }}
-                    placeholder="Brand"
-                    //  required
-                    style={!fieldErrors.Brand ? inputStyle : inputStyles}
-
-                  />
-                  {fieldErrors.Brand && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Brand}</div>}
-
-                </Form.Group>
-              </Col>
-
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="Specification">
-                  <Form.Label style={{ fontWeight: "bold" }}>Specification</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="specification"
-                    value={Specification}
-                    onChange={(e) =>{ setSpecification(e.target.value)
-                      handleFieldChange('Specification', e.target.value);
-                    }}
-                    placeholder="Specification"
-                    //  required
-                    style={!fieldErrors.Specification ? inputStyle : inputStyles}
-                  />
-                  {fieldErrors.Specification && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Specification}</div>}
-                </Form.Group>
-              </Col>
-
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="MachineNames">
-                  <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
-                  <Select
-                    isMulti
-                    value={MachineNames}
-                    
-                    onChange={handleMachineNameChange}
-                    placeholder="Select Machine"
-                    options={Machine}
-                    styles={!fieldErrors.MachineNames ? customSelectStyles :customSelectStyles1}
-                  //   required
-
-                  />
-                  {fieldErrors.MachineNames && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineNames}</div>}
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="PCS">
-                  <Form.Label style={{ fontWeight: "bold" }}>No.Of pcs Uses In 1 Time</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="Pieces"
-                    value={PCS}
-                    onChange={(e) => {setPCS(e.target.value)
-                      handleFieldChange('PCS', e.target.value);
-                    }}
-                    placeholder="No. Of PCS use in 1 Time"
-                    //   required
-                    style={!fieldErrors.PCS ? inputStyle : inputStyles}
-                  />
-                  {fieldErrors.PCS && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.PCS}</div>}
-
-                </Form.Group>
-              </Col>
-
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="CycleTime">
-                  <Form.Label style={{ fontWeight: "bold" }}>Cycle Time in Days</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="Cycle Time"
-                    value={CycleTime}
-                    onChange={(e) =>{ setCycleTime(e.target.value)
-                      handleFieldChange('CycleTime', e.target.value);
-                    }}
-                    placeholder="Cycle Time"
-                    //     required
-                    style={!fieldErrors.CycleTime ? inputStyle : inputStyles}
-                  />
-                  {fieldErrors.CycleTime && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.CycleTime}</div>}
-                </Form.Group>
-              </Col>
-
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="EquivalentSpareParts">
-                  <Form.Label style={{ fontWeight: "bold" }}>Equivalent Spare Part</Form.Label>
-                  <Select
-                    isMulti
-                    options={EquivalentSparePartsOptions}
-                    onMenuOpen={handleEquivalentSparePartsOpen}
-                    value={EquivalentSpareParts}     
-                    onChange={handleEquivalentChange}             
-                   // onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
-                    styles={customSelectStyles}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-            <Col className='py-2' md={4}>
-                <Form.Group controlId="Code">
-                  <Form.Label style={{ fontWeight: "bold" }}>HSN/SAC Code</Form.Label>
-                  <Form.Control
-                    type="Text"
-                    name="Pieces"
-                    value={Code}
-                    onChange={(e) => {setCode(e.target.value)
-                      handleFieldChange('Code', e.target.value);
-                    }}
-                    placeholder="Enter HSN/SAC Code"
-                    //   required
-                    style={inputStyle}
-                  />
-                  
-
-                </Form.Group>
-              </Col>
-              <Col className='py-2' md={4}>
-                <Form.Group controlId="Image">
-                  <Form.Label style={{ fontWeight: "bold" }}>Image</Form.Label>
-                  <Form.Control
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    ref={imageInputRef}
-                    multiple
-                    style={inputStyle}
-                  />
-                  <div>
-                    {files.map((file, index) => (
-                      <div key={index}>{/* Display file details or preview here */}</div>
-                    ))}
-                  </div>
-                </Form.Group>
-              </Col>
-
-              <Col className='py-2' md={4}>
-      <Form.Group controlId="PDF">
-        <Form.Label style={{ fontWeight: "bold" }}>PDF</Form.Label>
-        <Form.Control 
-          type="file" 
-          accept="application/pdf" 
-          onChange={handlePdfChange} 
-          ref={pdfInputRef} 
-          style={inputStyle} 
-        />
-        <div>{fileName}</div>
-      </Form.Group>
-    </Col>
-            </Row>
+        {loading && (
+          <div className="loader-overlay">
+            <Loader type="ThreeDots" color="#006bff" height={80} width={80} />
           </div>
+        )}
+        <div className={`form-content ${loading ? 'blurred' : ''}`}>
+          <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
+          <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+            {SparPartId ? "Edit Spare Part" : "Add New Spare Part"}
+          </h2>
+          <Form onSubmit={handleSubmit}>
+            <div className="subCard2">
+              <Row>
+                <Col md={4}>
+                  <Form.Group controlId="MasterSparePartName">
+                    <Form.Label style={{ fontWeight: "bold" }}> Master Spare Part Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="MasterSparePartName"
+                      value={MasterSparePartName}
+                      onChange={(e) => {
+                        setMasterSparePartName(e.target.value)
+                        handleFieldChange('MasterSparePartName', e.target.value);
+                      }}
+                      placeholder="Master Spare Part Name"
+                      // required
+                      style={!fieldErrors.MasterSparePartName ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.MasterSparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MasterSparePartName}</div>}
+                  </Form.Group>
+                </Col>
 
-          <Row>
-            <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button type="button" className="register" onClick={handleBack} style={{ width: '83px', height: '43px', background: '#545454', margin: '10px' }}>Back</Button>
-              <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
-            </Col>
-          </Row>
-        </Form>
+                <Col md={4}>
+                  <Form.Group controlId="SparePartName">
+                    <Form.Label style={{ fontWeight: "bold" }}>Spare Part Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="SparePartName"
+                      value={SparePartName}
+                      onChange={handleSparePartNameChange}
+                      placeholder="Spare Part Name"
+                      // required
+                      style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
+
+                    />
+                    {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
+                  </Form.Group>
+                </Col>
+
+                <Col md={4}>
+                  <Form.Group controlId="SparePartModelNo">
+                    <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="SparePartModelNo"
+                      value={SparePartModelNo}
+                      onChange={(e) => {
+                        setSparePartModelNo(e.target.value)
+                        handleFieldChange('SparePartModelNo', e.target.value);
+                      }}
+                      placeholder="Spare Part Model Number"
+                      // required
+                      style={!fieldErrors.SparePartModelNo ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="Brand">
+                    <Form.Label style={{ fontWeight: "bold" }}>Brand</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="brand"
+                      value={Brand}
+                      onChange={(e) => {
+                        setBrand(e.target.value)
+                        handleFieldChange('Brand', e.target.value);
+                      }}
+                      placeholder="Brand"
+                      //  required
+                      style={!fieldErrors.Brand ? inputStyle : inputStyles}
+
+                    />
+                    {fieldErrors.Brand && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Brand}</div>}
+
+                  </Form.Group>
+                </Col>
+
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="Specification">
+                    <Form.Label style={{ fontWeight: "bold" }}>Specification</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="specification"
+                      value={Specification}
+                      onChange={(e) => {
+                        setSpecification(e.target.value)
+                        handleFieldChange('Specification', e.target.value);
+                      }}
+                      placeholder="Specification"
+                      //  required
+                      style={!fieldErrors.Specification ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.Specification && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Specification}</div>}
+                  </Form.Group>
+                </Col>
+
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="MachineNames">
+                    <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
+                    <Select
+                      isMulti
+                      value={MachineNames}
+
+                      onChange={handleMachineNameChange}
+                      placeholder="Select Machine"
+                      options={Machine}
+                      styles={!fieldErrors.MachineNames ? customSelectStyles : customSelectStyles1}
+                    //   required
+
+                    />
+                    {fieldErrors.MachineNames && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineNames}</div>}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="PCS">
+                    <Form.Label style={{ fontWeight: "bold" }}>No.Of pcs Uses In 1 Time</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="Pieces"
+                      value={PCS}
+                      onChange={(e) => {
+                        setPCS(e.target.value)
+                        handleFieldChange('PCS', e.target.value);
+                      }}
+                      placeholder="No. Of PCS use in 1 Time"
+                      //   required
+                      style={!fieldErrors.PCS ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.PCS && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.PCS}</div>}
+
+                  </Form.Group>
+                </Col>
+
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="CycleTime">
+                    <Form.Label style={{ fontWeight: "bold" }}>Cycle Time in Days</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="Cycle Time"
+                      value={CycleTime}
+                      onChange={(e) => {
+                        setCycleTime(e.target.value)
+                        handleFieldChange('CycleTime', e.target.value);
+                      }}
+                      placeholder="Cycle Time"
+                      //     required
+                      style={!fieldErrors.CycleTime ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.CycleTime && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.CycleTime}</div>}
+                  </Form.Group>
+                </Col>
+
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="EquivalentSpareParts">
+                    <Form.Label style={{ fontWeight: "bold" }}>Equivalent Spare Part</Form.Label>
+                    <Select
+                      isMulti
+                      options={EquivalentSparePartsOptions}
+                      onMenuOpen={handleEquivalentSparePartsOpen}
+                      value={EquivalentSpareParts}
+                      onChange={handleEquivalentChange}
+                      // onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
+                      styles={customSelectStyles}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="Code">
+                    <Form.Label style={{ fontWeight: "bold" }}>HSN/SAC Code</Form.Label>
+                    <Form.Control
+                      type="Text"
+                      name="Pieces"
+                      value={Code}
+                      onChange={(e) => {
+                        setCode(e.target.value)
+                        handleFieldChange('Code', e.target.value);
+                      }}
+                      placeholder="Enter HSN/SAC Code"
+                      //   required
+                      style={inputStyle}
+                    />
+
+
+                  </Form.Group>
+                </Col>
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="Image">
+                    <Form.Label style={{ fontWeight: "bold" }}>Image</Form.Label>
+                    <Form.Control
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      ref={imageInputRef}
+                      multiple
+                      style={{ border: '1px solid #ced4da', borderRadius: '.25rem', padding: '.375rem .75rem' }}
+                    />
+                    <div className="mt-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                      {pdfData?.map((file, index) => (
+                        <img
+                          key={index}
+                          src={file}
+                          alt={`preview-${index}`}
+                          style={{ width: '30px', height: '30px', objectFit: 'cover' }} // Adjust dimensions as needed
+                        />
+                      ))}
+                    </div>
+
+                  </Form.Group>
+                </Col>
+
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="PDF">
+                    <Form.Label style={{ fontWeight: "bold" }}>PDF</Form.Label>
+                    <Form.Control
+                      type="file"
+                      accept="application/pdf"
+                      onChange={handlePdfChange}
+                      ref={pdfInputRef}
+                      style={inputStyle}
+                    />
+                    <div>{fileName}</div>
+                  </Form.Group>
+                </Col>
+
+              </Row>
+            </div>
+
+            <Row>
+              <Col md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button type="button" className="register" onClick={handleBack} style={{ width: '83px', height: '43px', background: '#545454', margin: '10px' }}>Back</Button>
+                <Button type="submit" className="register" style={{ width: '83px', height: '43px', background: '#006bff', margin: '10px' }}>Submit</Button>
+              </Col>
+            </Row>
+          </Form>
         </div>
         {/* {error && <p className="error">{error}</p>} */}
-        <ToastContainer position='top-center'/>
+        <ToastContainer position='top-center' />
       </div>
-    
+
       <style jsx>{`
             .loader-overlay {
                 position: absolute;
