@@ -27,7 +27,7 @@ const AddSpare = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [Machine, SetMachine] = useState([])
   const [files, setFiles] = useState([]);
-  const [EquivalentSpareParts, setEquivalentSpareParts] = useState([]);
+  const [EquivalentSpareParts, setEquivalentSpareParts] = useState();
   const [EquivalentSparePartsOptions, setEquivalentSparePartsOptions] = useState([]);
   const imageInputRef = useRef(null);
   const pdfInputRef = useRef(null);
@@ -70,7 +70,7 @@ const AddSpare = () => {
   const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
-  const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
+  const fetchEquivalentSpareParts = async (sparePartName, selectedMachines , EquivalentId) => {
    
     try {
       const url = localStorage.getItem('url');
@@ -83,10 +83,14 @@ const AddSpare = () => {
         value: part.SparePartId,
         label: part.Value
       }));
-      setEquivalentSparePartsOptions(formattedSpareParts);     
-   
-        const formatedEquivalentData = formattedSpareParts.filter(item => equivalentId.includes(item.value));    
+      setEquivalentSparePartsOptions(formattedSpareParts); 
+      if(SparPartId){
+        console.log("equivalentId......... bhanu", EquivalentId);
+        const formatedEquivalentData = formattedSpareParts.filter(item => EquivalentId.includes(item.value));  
+        console.log("formatedEquivalentData Bhanu.......", formatedEquivalentData);  
         setEquivalentSpareParts(formatedEquivalentData);
+      }    
+
      
     } catch (error) {
       console.error('Error fetching equivalent spare parts:', error);
@@ -95,7 +99,7 @@ const AddSpare = () => {
 
 // Get Spare Part By Id
 
-const getSparePartData = async (machineData) => {
+const getSparePartData = async () => {
 
 
 
@@ -121,6 +125,7 @@ const getSparePartData = async (machineData) => {
       setCycleTime(sparePartData.CycleTime || '');
       setCode(sparePartData.HSNCode || '');
       setFileName(sparePartData.SparePartDrawingImageURL || '')
+      setEquivalentId(sparePartData.Equivalent);
 
  
       const machineIdsArray = sparePartData.MachineId.map(machine => machine.MachineId);  
@@ -128,10 +133,10 @@ const getSparePartData = async (machineData) => {
       setMachineNames(machineName);
 
       if (sparePartData.SparePartName && machineName.length > 0) {
-        fetchEquivalentSpareParts(sparePartData.SparePartName, machineName);
+        fetchEquivalentSpareParts(sparePartData.SparePartName, machineName, sparePartData.Equivalent);
       }
     
-    setEquivalentId(sparePartData.Equivalent);
+   
     
 
 
@@ -316,11 +321,17 @@ const getSparePartData = async (machineData) => {
   };
 
   const handleEquivalentSparePartsOpen = () => {
-    if (SparePartName && MachineNames.length > 0) {
-      fetchEquivalentSpareParts(SparePartName, MachineNames);
-    }
+    // if (SparePartName && MachineNames.length > 0) {
+    //   fetchEquivalentSpareParts(SparePartName, MachineNames);
+    // }
   };
 
+  
+  const handleEquivalentChange = (selectedOptions) => {
+    console.log("Equivalent Name....................?",selectedOptions);
+    setEquivalentSpareParts(selectedOptions)
+   
+  };
 
 
   const getMachineListData = async () => {
@@ -348,7 +359,7 @@ const getSparePartData = async (machineData) => {
         SetMachine(machineData)
 
         if(SparPartId){
-          getSparePartData(machineData);
+          getSparePartData();
         }
 
 
@@ -658,8 +669,9 @@ const getSparePartData = async (machineData) => {
                     isMulti
                     options={EquivalentSparePartsOptions}
                     onMenuOpen={handleEquivalentSparePartsOpen}
-                    value={EquivalentSpareParts}                  
-                    onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
+                    value={EquivalentSpareParts}     
+                    onChange={handleEquivalentChange}             
+                   // onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
                     styles={customSelectStyles}
                   />
                 </Form.Group>
