@@ -183,7 +183,7 @@ export default function Sidebar() {
       icon: <AddSpareIcon />,
       children: [
         { text: 'Add Spare Part', path: '/spare', icon: <AddSpareIcon /> },
-        // { text: 'Spare Part List', path: '/machine', icon: <POListIcon /> },
+        { text: 'Spare Part List', path: '/sparepartlist', icon: <POListIcon /> },
       ],
     },
     {

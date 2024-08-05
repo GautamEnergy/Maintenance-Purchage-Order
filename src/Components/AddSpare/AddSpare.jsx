@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import Select from 'react-select';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import img1 from "../../Assets/Images/LOGO.png"
 import { AppContext } from '../../ContextAPI';
 import Loader from '../Loader/Loader';
@@ -36,12 +36,19 @@ const AddSpare = () => {
   const [url, setUrl] = useState("");
   const [Code, setCode] = useState("");
   const [loading, setLoading] = useState();
+  const [fileName, setFileName] = useState('');
+  const [equivalentId, setEquivalentId] = useState('');
+  const location = useLocation();
+  const { SparPartId } = location.state || {};
 
   // console.log(token);
   useEffect(() => {
+
+    console.log("Raaj,,,,,,,,", EquivalentSpareParts);
     const personID = localStorage.getItem("CurrentUser");
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
+    console.log("URL Kya hai.....?", url);
     setUrl(url);
 
     if (personID) {
@@ -54,6 +61,8 @@ const AddSpare = () => {
     console.log('URL CHECK');
     console.log(url);
     getMachineListData();
+  
+   
   }, []);
 
   let machineData = []
@@ -62,8 +71,9 @@ const AddSpare = () => {
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
   const fetchEquivalentSpareParts = async (sparePartName, selectedMachines) => {
-    console.log('Fetching equivalent spare parts with parameters:', sparePartName, selectedMachines);
+   
     try {
+      const url = localStorage.getItem('url');
       const response = await axios.post(`${url}/Maintenance/Equ`, {
         SparePartName: sparePartName,
         MachineName: selectedMachines.map(machine => machine.value)
@@ -73,11 +83,69 @@ const AddSpare = () => {
         value: part.SparePartId,
         label: part.Value
       }));
-      setEquivalentSparePartsOptions(formattedSpareParts);
+      setEquivalentSparePartsOptions(formattedSpareParts);     
+   
+        const formatedEquivalentData = formattedSpareParts.filter(item => equivalentId.includes(item.value));    
+        setEquivalentSpareParts(formatedEquivalentData);
+     
     } catch (error) {
       console.error('Error fetching equivalent spare parts:', error);
     }
   };
+
+// Get Spare Part By Id
+
+const getSparePartData = async (machineData) => {
+
+
+
+
+  try {
+   
+      setLoading(true);
+      const url = localStorage.getItem('url');
+      const response = await axios.post(
+          `${url}/Maintenance/GetSpecificSparePart`,
+          {SparePartId: SparPartId }
+      );
+
+  
+
+      const sparePartData = response.data.data[0];    
+      setMasterSparePartName(sparePartData.MasterSparePartName || '');
+      setSparePartName(sparePartData.SparePartName || '');
+      setSparePartModelNo(sparePartData.SpareNumber || '');
+      setBrand(sparePartData.BrandName || '');
+      setSpecification(sparePartData.Specification || '');
+      setPCS(sparePartData.NumberOfPcs || '');
+      setCycleTime(sparePartData.CycleTime || '');
+      setCode(sparePartData.HSNCode || '');
+      setFileName(sparePartData.SparePartDrawingImageURL || '')
+
+ 
+      const machineIdsArray = sparePartData.MachineId.map(machine => machine.MachineId);  
+      const machineName = machineData.filter(item => machineIdsArray.includes(item.value))
+      setMachineNames(machineName);
+
+      if (sparePartData.SparePartName && machineName.length > 0) {
+        fetchEquivalentSpareParts(sparePartData.SparePartName, machineName);
+      }
+    
+    setEquivalentId(sparePartData.Equivalent);
+    
+
+
+
+         
+     
+      setLoading(false);
+  } catch (error) {
+      console.error('Error fetching machine data:', error);
+      setLoading(false);
+  }
+};
+
+
 
 
 
@@ -91,8 +159,7 @@ const AddSpare = () => {
         },
         body: JSON.stringify(SpareData),
       });
-      // console.log("jiiiiiaAppppppp");
-      // console.log(response)
+   
       if (response.ok) {
         const responseData = await response.json();
         setSparePartName('');
@@ -145,8 +212,7 @@ const AddSpare = () => {
     // if (SparePartName && SparePartModelNo && Brand && Specification && MachineNames.length > 0 && Status) {
     if (Object.keys(newFieldErrors).length === 0) {
       const EquivalentSparePartValues = EquivalentSpareParts.map(part => part.value);
-      console.log("jajajjajaj");
-      console.log(EquivalentSparePartValues);
+    
       const SpareData = {
         MasterSparePartName: MasterSparePartName,
         SparePartName,
@@ -178,7 +244,7 @@ const AddSpare = () => {
           notifySuccess();
           setTimeout(() => {
             setLoading(false);
-            navigate('/dashboard');
+            navigate('/sparepartlist');
           }, 1000);
         }
         console.log("spare response")
@@ -227,15 +293,17 @@ const AddSpare = () => {
 
   const handlePdfChange = (e) => {
     setPdf(e.target.files[0]);
-
+    if (pdf) {
+      setFileName(pdf.name);
+    } 
   };
 
   const handleBack = (e) => {
-    navigate('/dashboard');
+    navigate('/sparepartlist');
   };
 
   const handleMachineNameChange = (selectedMachines) => {
-    console.log(selectedMachines);
+    console.log("Machine Name....................?",selectedMachines);
     setMachineNames(selectedMachines);
     handleFieldChange('MachineNames', selectedMachines);
   };
@@ -252,6 +320,8 @@ const AddSpare = () => {
       fetchEquivalentSpareParts(SparePartName, MachineNames);
     }
   };
+
+
 
   const getMachineListData = async () => {
     const url = localStorage.getItem('url');
@@ -274,8 +344,23 @@ const AddSpare = () => {
           value: machine.MachineId,
           label: machine.MachineName
         }));
-        // console.log(machineData);
+         console.log("MachData.......",machineData);
         SetMachine(machineData)
+
+        if(SparPartId){
+          getSparePartData(machineData);
+        }
+
+
+        // const itemIds = [
+        //   '143cd0ea-fa88-4164-9a04-eb1cf1b8d782',
+        //   '2b6c90b8-9828-4b24-92da-e8290945fe94'
+        // ]
+      
+        // setMachineNames(machineData.filter(item => itemIds.includes(item.value)));
+        
+      
+    //  console.log("formated Data...ASAS..?", filteredData);
 
 
       } else {
@@ -309,7 +394,7 @@ const AddSpare = () => {
         notifySuccess();
           setTimeout(() => {
             setLoading(false);
-            navigate('/dashboard');
+            navigate('/sparepartlist');
           }, 1000);
         return response.data;
       } else {
@@ -411,7 +496,7 @@ const AddSpare = () => {
              <div className={`form-content ${loading ? 'blurred' : ''}`}>
         <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
         <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-          Add New Spare Part
+         {SparPartId ? "Edit Spare Part" : "Add New Spare Part"} 
         </h2>
         <Form onSubmit={handleSubmit}>
           <div className="subCard2">
@@ -573,7 +658,7 @@ const AddSpare = () => {
                     isMulti
                     options={EquivalentSparePartsOptions}
                     onMenuOpen={handleEquivalentSparePartsOpen}
-                    value={EquivalentSpareParts}
+                    value={EquivalentSpareParts}                  
                     onChange={(selectedOptions) => setEquivalentSpareParts(selectedOptions)}
                     styles={customSelectStyles}
                   />
@@ -620,11 +705,18 @@ const AddSpare = () => {
               </Col>
 
               <Col className='py-2' md={4}>
-                <Form.Group controlId="PDF">
-                  <Form.Label style={{ fontWeight: "bold" }}>PDF</Form.Label>
-                  <Form.Control type="file" accept="application/pdf" onChange={handlePdfChange} ref={pdfInputRef} style={inputStyle} />
-                </Form.Group>
-              </Col>
+      <Form.Group controlId="PDF">
+        <Form.Label style={{ fontWeight: "bold" }}>PDF</Form.Label>
+        <Form.Control 
+          type="file" 
+          accept="application/pdf" 
+          onChange={handlePdfChange} 
+          ref={pdfInputRef} 
+          style={inputStyle} 
+        />
+        <div>{fileName}</div>
+      </Form.Group>
+    </Col>
             </Row>
           </div>
 

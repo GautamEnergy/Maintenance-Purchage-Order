@@ -17,6 +17,7 @@ import Sidebar from './Sidebar';
 import AvailableStock from './Components/PurchageOrder/AvailableStock';
 import PartList from './Components/PartyList/PartyList';
 import MachineList from './Components/MachineList/MachineList';
+import SparePartList from './Components/AddSpare/SparePartList';
 
 
 const App = () => {
@@ -51,6 +52,7 @@ const AppWithNavbar = () => (
 
       <Route path="/machine" element={<AddMachine />} />
       <Route path="/spare" element={<AddSpare />} />
+      <Route path="/sparepartlist" element={<SparePartList />} />
       <Route path="/billing" element={<Billing />} />
       <Route path="/newParty" element={<NewParty />} />
       <Route path="/OptionalField" element={<OptionalField />} />
