@@ -194,6 +194,14 @@ export default function Sidebar() {
         { text: 'Machine List', path: '/machinelist', icon: <MachineListTable /> },
       ],
     },
+    {
+      text: 'Spare Part In',
+      icon: <ConstructionIcon />,
+      children: [
+        { text: 'Spare part In', path: '/sparein', icon: <MachineList /> },
+        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable /> },
+      ],
+    },
 
   ];
 
