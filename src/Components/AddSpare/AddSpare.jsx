@@ -277,6 +277,7 @@ const AddSpare = () => {
 
         formData.append('DrawingImage', pdf);
         formData.append('SparePartId', UUID.SparePartId)
+        console.log("FormData",FormData)
 
         if ((files && files.length > 0) || (pdf && pdf.size > 0)) {
           let upload = await uploadPDF(formData);
