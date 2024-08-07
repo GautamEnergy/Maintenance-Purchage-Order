@@ -42,6 +42,7 @@ const AddSpare = () => {
   const [equivalentId, setEquivalentId] = useState('');
   const location = useLocation();
   const { SparPartId } = location.state || {};
+  const [Quantity, setQuantity] = useState('');
 
   // console.log(token);
   useEffect(() => {
@@ -79,6 +80,8 @@ const AddSpare = () => {
       const response = await axios.post(`${url}/Maintenance/Equ`, {
         SparePartName: sparePartName,
         MachineName: selectedMachines.map(machine => machine.value)
+
+
 
       });
       const formattedSpareParts = response.data.map(part => ({
@@ -126,8 +129,9 @@ const AddSpare = () => {
       );
 
 
-
       const sparePartData = response.data.data[0];
+      console.log('jjjjjjjjjjj', sparePartData);
+      console.log('spare Part name', sparePartData.SparePartName);
       setMasterSparePartName(sparePartData.MasterSparePartName || '');
       setSparePartName(sparePartData.SparePartName || '');
       setSparePartModelNo(sparePartData.SpareNumber || '');
@@ -136,38 +140,36 @@ const AddSpare = () => {
       setPCS(sparePartData.NumberOfPcs || '');
       setCycleTime(sparePartData.CycleTime || '');
       setCode(sparePartData.HSNCode || '');
+      setQuantity(sparePartData.MinimumQuantityRequired || '');
 
 
 
 
-      const last15Digits = extractLast15Digits(sparePartData.SparePartDrawingImageURL);
-      console.log("Helllllllll", last15Digits)
 
-      setFileName(last15Digits || '')
       setEquivalentId(sparePartData.Equivalent);
       setpdfData(sparePartData.SparePartImageURL || [])
 
-
-      console.log('kkkkkkkkkkkkkkkkkkk')
-      console.log(sparePartData.SparePartImageURL);
-
+      // console.log('kkkkkkkkkkkkkkkkkkk')
+      // console.log(sparePartData.SparePartImageURL);
 
 
 
 
       const machineIdsArray = sparePartData.MachineId.map(machine => machine.MachineId);
-      const machineName = machineData.filter(item => machineIdsArray.includes(item.value))
+      const machineName = machineData.filter(item => machineIdsArray.includes(item.value));
+      console.log('tttttttttt');
+
+
       setMachineNames(machineName);
+      // console.log('uuuuuuuuuuuuuuuuuuuuu', sparePartData);
+
+      const last15Digits = extractLast15Digits(sparePartData.SparePartDrawingImageURL);
+      setFileName(last15Digits || '');
+      console.log("Helllllllll", last15Digits);
 
       if (sparePartData.SparePartName && machineName.length > 0) {
         fetchEquivalentSpareParts(sparePartData.SparePartName, machineName, sparePartData.Equivalent);
       }
-
-
-
-
-
-
 
 
       setLoading(false);
@@ -176,8 +178,6 @@ const AddSpare = () => {
       setLoading(false);
     }
   };
-
-
 
 
 
@@ -200,6 +200,7 @@ const AddSpare = () => {
         setSpecification('');
         setMachineNames([]);
         setCycleTime('');
+        setQuantity('');
         setPCS('');
         setStatus('Active');
         setMasterSparePartName('');
@@ -224,6 +225,7 @@ const AddSpare = () => {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!personID) {
@@ -238,12 +240,15 @@ const AddSpare = () => {
     if (!Specification) newFieldErrors.Specification = 'Specification is required';
     if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine name is required';
     if (!CycleTime) newFieldErrors.CycleTime = 'Cycle time is required';
+    if (!Quantity) newFieldErrors.Quantity = 'Quantity  is required';
     if (!PCS) newFieldErrors.PCS = 'PCS is required';
 
     setFieldErrors(newFieldErrors);
     // if (SparePartName && SparePartModelNo && Brand && Specification && MachineNames.length > 0 && Status) {
     if (Object.keys(newFieldErrors).length === 0) {
-      const EquivalentSparePartValues = EquivalentSpareParts.map(part => part.value);
+      // const EquivalentSparePartValues = EquivalentSpareParts.map(part => part.value);
+      const machineNamesArray = Array.isArray(MachineNames) ? MachineNames : [];
+      const EquivalentSparePartValues = Array.isArray(EquivalentSpareParts) ? EquivalentSpareParts.map(part => part.value) : [];
 
       const SpareData = {
         SparePartId: SparPartId ? SparPartId : "",
@@ -254,6 +259,7 @@ const AddSpare = () => {
         Specification,
         MachineName: MachineNames.map((el) => { return el.value }),
         CycleTime,
+        Quantity: Quantity ? Quantity : "",
         NumberOfPcs: PCS,
         HSNCode: Code,
         Equivalent: EquivalentSparePartValues,
@@ -261,6 +267,7 @@ const AddSpare = () => {
         Status,
         CurrentUser: personID,
       };
+
 
       try {
         let UUID = await addNewSpare(SpareData);
@@ -304,6 +311,7 @@ const AddSpare = () => {
       // setError('Please fill in all required fields.');
     }
   };
+
   const handleFieldChange = (field, value) => {
     const newFieldErrors = { ...fieldErrors };
 
@@ -336,9 +344,10 @@ const AddSpare = () => {
   };
 
   const handleMachineNameChange = (selectedMachines) => {
-    console.log("Machine Name....................?", selectedMachines);
+    // console.log("Machine Name....................?", selectedMachines);
     setMachineNames(selectedMachines);
     handleFieldChange('MachineNames', selectedMachines);
+    console.log('ddddddddddddddddddddddd', selectedMachines);
   };
 
   const handleSparePartNameChange = (e) => {
@@ -714,7 +723,7 @@ const AddSpare = () => {
               </Row>
 
               <Row>
-                <Col className='py-2' md={4}>
+                <Col className='py-2' md={6}>
                   <Form.Group controlId="Code">
                     <Form.Label style={{ fontWeight: "bold" }}>HSN/SAC Code</Form.Label>
                     <Form.Control
@@ -733,7 +742,33 @@ const AddSpare = () => {
 
                   </Form.Group>
                 </Col>
-                <Col className='py-2' md={4}>
+
+
+                <Col className='py-2' md={6}>
+                  <Form.Group controlId="Quantity">
+                    <Form.Label style={{ fontWeight: "bold" }}>Minimum Qunatity Required in Pcs</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="Minimum Quantity"
+                      value={Quantity}
+                      onChange={(e) => {
+                        setQuantity(e.target.value)
+                        handleFieldChange('Quantity', e.target.value);
+                      }}
+                      placeholder="Minimum Qunatity"
+                      //     required
+                      style={!fieldErrors.Quantity ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.Quantity && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Quantity}</div>}
+                  </Form.Group>
+                </Col>
+
+
+
+              </Row>
+
+              <Row>
+                <Col className='py-2' md={6}>
                   <Form.Group controlId="Image">
                     <Form.Label style={{ fontWeight: "bold" }}>Image</Form.Label>
                     <Form.Control
@@ -758,7 +793,7 @@ const AddSpare = () => {
                   </Form.Group>
                 </Col>
 
-                <Col className='py-2' md={4}>
+                <Col className='py-2' md={6}>
                   <Form.Group controlId="PDF">
                     <Form.Label style={{ fontWeight: "bold" }}>PDF</Form.Label>
                     <Form.Control
@@ -771,7 +806,6 @@ const AddSpare = () => {
                     <div>{fileName}</div>
                   </Form.Group>
                 </Col>
-
               </Row>
             </div>
 
