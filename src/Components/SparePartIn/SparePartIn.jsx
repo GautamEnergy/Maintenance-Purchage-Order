@@ -328,7 +328,7 @@ const SparePartIn = () => {
     if (!SparePartName) newFieldErrors.SparePartName = 'Spare part name is required';
     if (PONumber.length===0) newFieldErrors.PONumber = 'P O Number is required';
     if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine name is required';
-    if (Brand.length === 0) newFieldErrors.Brand = 'Brand is required';
+    if (!Brand) newFieldErrors.Brand = 'Brand is required';
     if (!Specification) newFieldErrors.Specification = 'Specification is required';
     if (!PCS) newFieldErrors.PCS = 'PCS is required';
     if (RPCS.length===0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
@@ -569,7 +569,7 @@ const SparePartIn = () => {
   const handleCurrencyChange = (e) => {
     setCurrency(e.target.value);
     // handleFieldChange('Currency', e.target.value);
-    // calculateTotalCost(e.target.value, Price);
+    // calculateTotalCost(e.target.value, Price); 
   };
 
   const handlePriceChange = (e) => {
