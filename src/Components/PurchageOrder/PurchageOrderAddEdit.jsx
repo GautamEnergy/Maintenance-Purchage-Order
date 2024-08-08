@@ -30,7 +30,7 @@ const purchaseTypes = [
 
 const PurchageForm = () => {
     const [series, setSeries] = useState('GST-2024-2025');
-    const [vochNo, setVochNo] = useState('GST-2024-2025');
+    const [vochNo, setVochNo] = useState('');
     const [selectedPartyCountry, setSelectedPartyCountry] = useState("");
     const [purcType, setPurcType] = useState('');
     const [PartyName, setPartyName] = useState('');

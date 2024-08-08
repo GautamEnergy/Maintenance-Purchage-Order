@@ -61,49 +61,7 @@ const SparePartIn = () => {
 
 
 
-  const clearAllStates = () => {
-    
-    if(PONumber){
-      setMachineNames([]);
-      setModelNo('');
-      setBrand('');
-      setSpecification('');
-      setPCS('');
-      setUnits('');
-      setCurrency('');
-      setPrice('');
-      setTotalCost([]);
-      setInvoice('');
-      setFileName('');
-      setFieldErrors({});
-      setParty([]);
-      setSparePart([]);
-      setPO([]);
-      setRPCS([]);
-      setMinimumQuantityRequired([]);
-
-    }
-    if(SparePartModelNo){
-      setSparePartName('');
-      setPONumber([]);
-      setMachineNames([]);
-      setModelNo('');
-      setBrand('');
-      setSpecification('');
-      setPCS('');
-      setUnits('');
-      setCurrency('');
-      setPrice('');
-      setTotalCost([]);
-      setInvoice('');
-      setFileName('');
-      setRPCS([]);
-
-    }
-    
-};
-
-
+  
 
 
 
@@ -249,6 +207,7 @@ const SparePartIn = () => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
     console.log("Fetching party list...");
+    console.log("SparePartId:", SpId, "PurchaseOrderId:", PoId);
     console.log(url);
     console.log(token);
 
@@ -291,36 +250,8 @@ const SparePartIn = () => {
 
   //   let machineData = []
 
-  //   const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
-  //   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
-
-  //   const fetchEquivalentSpareParts = async (sparePartName, selectedMachines, EquivalentId) => {
-
-  //     try {
-  //       const url = localStorage.getItem('url');
-  //       const response = await axios.post(`${url}/Maintenance/Equ`, {
-  //         SparePartName: sparePartName,
-  //         MachineName: selectedMachines.map(machine => machine.value)
-
-  //       });
-  //       const formattedSpareParts = response.data.map(part => ({
-  //         value: part.SparePartId,
-  //         label: part.Value
-  //       }));
-  //       setEquivalentSparePartsOptions(formattedSpareParts);
-  //       if (SparPartId) {
-  //         console.log("equivalentId......... bhanu", EquivalentId);
-  //         const formatedEquivalentData = formattedSpareParts.filter(item => EquivalentId.includes(item.value));
-  //         console.log("formatedEquivalentData Bhanu.......", formatedEquivalentData);
-  //         setEquivalentSpareParts(formatedEquivalentData);
-  //       }
-
-
-  //     } catch (error) {
-  //       console.error('Error fetching equivalent spare parts:', error);
-  //     }
-  //   };
-
+    const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
+    const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
 
   //   const extractLast15Digits = (url) => {
@@ -332,72 +263,8 @@ const SparePartIn = () => {
   //     return last15Digits;
   //   };
 
-  //   const getSparePartData = async () => {
-
-
-
-
-  //     try {
-
-  //       setLoading(true);
-  //       const url = localStorage.getItem('url');
-  //       const response = await axios.post(
-  //         `${url}/Maintenance/GetSpecificSparePart`,
-  //         { SparePartId: SparPartId }
-  //       );
-
-
-
-  //       const sparePartData = response.data.data[0];
-  //       setMasterSparePartName(sparePartData.MasterSparePartName || '');
-  //       setSparePartName(sparePartData.SparePartName || '');
-  //       setSparePartModelNo(sparePartData.SpareNumber || '');
-  //       setBrand(sparePartData.BrandName || '');
-  //       setSpecification(sparePartData.Specification || '');
-  //       setPCS(sparePartData.NumberOfPcs || '');
-  //       setCycleTime(sparePartData.CycleTime || '');
-  //       setCode(sparePartData.HSNCode || '');
-
-
-
-
-  //       const last15Digits = extractLast15Digits(sparePartData.SparePartDrawingImageURL);
-  //       console.log("Helllllllll", last15Digits)
-
-  //       setFileName(last15Digits || '')
-  //       setEquivalentId(sparePartData.Equivalent);
-  //       setpdfData(sparePartData.SparePartImageURL || [])
-
-
-  //       console.log('kkkkkkkkkkkkkkkkkkk')
-  //       console.log(sparePartData.SparePartImageURL);
-
-
-
-
-
-  //       const machineIdsArray = sparePartData.MachineId.map(machine => machine.MachineId);
-  //       const machineName = machineData.filter(item => machineIdsArray.includes(item.value))
-  //       setMachineNames(machineName);
-
-  //       if (sparePartData.SparePartName && machineName.length > 0) {
-  //         fetchEquivalentSpareParts(sparePartData.SparePartName, machineName, sparePartData.Equivalent);
-  //       }
-
-
-
-
-
-
-
-
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error('Error fetching machine data:', error);
-  //       setLoading(false);
-  //     }
-  //   };
-
+ 
+ 
 
 
 
@@ -406,7 +273,7 @@ const SparePartIn = () => {
       const token = localStorage.getItem("token");
       const url = localStorage.getItem('url');
       try {
-        setLoading(true);
+        // setLoading(true);
         const response = await axios.post(`${url}/Maintenance/SparePartIn`,data, {
          
           headers: {
@@ -422,13 +289,13 @@ const SparePartIn = () => {
           return responseData;
 
         } else {
-          setLoading(false);
+          // setLoading(false);
           const errorData = await response.json();
           console.log(errorData)
          
         }
       } catch (error) {
-        setLoading(false);
+        // setLoading(false);
         return error
       }
     };
@@ -451,68 +318,74 @@ const SparePartIn = () => {
     if (!Brand) newFieldErrors.Brand = 'Brand is required';
     if (!Specification) newFieldErrors.Specification = 'Specification is required';
     if (!PCS) newFieldErrors.PCS = 'PCS is required';
-    if (!RPCS) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
+    if (RPCS.length===0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
     if (!Units) newFieldErrors.Units = 'Units are required';
     if (!Currency) newFieldErrors.Currency = 'Currency is required';
     if (!Price) newFieldErrors.Price = 'Price is required';
+    if (TotalCost.length===0) newFieldErrors.TotalCost = 'Total Cost is required';
     if (!Invoice) newFieldErrors.Invoice = 'Invoice number is required';
     if (!pdf) newFieldErrors.pdfInputRef = 'Invoice PDF is required';
     setFieldErrors(newFieldErrors);
-
-    if (Object.keys(newFieldErrors).length === 0) {
-      
-      var data = {
-        CreatedBy: personID,
-        PartyId: PartyName.value,
-        SparePartId: SparePartModelNo.value,
-        SparePartName: SparePartName,
-        PurchaseOrderId:PONumber.value ,
-        MachineNames:MachineNames.map(el => el.label),
-        SparePartBrandName: Brand,
-        Price: Price,
-        SparePartSpecification: Specification,
-        QuantityPurchaseOrder: PCS,
-        Currency: Currency,
-        Unit: Units,
-        QuantityRecieved: RPCS,
-        TotalCost: TotalCost,
-        InvoiceNumber: Invoice,
-        Status: "Active"
-      };
-      console.log("Inserting",data)
-      console.log("pdfffff",pdf)
-     // addSparePartIn(data);
-      try {
-        let UUID = await addSparePartIn(data);
-        console.log("uuid",UUID)
-        let formData = new FormData()
-       
-        formData.append('InvoicePdf', pdf);
-        formData.append('SparePartId', UUID.SparePartInId)
-        for (let [key, value] of formData.entries()) {
-          console.log(`${key}:`, value);
-        }
   
-        console.log("Upload FormData", formData);
+     
+      if (Object.keys(newFieldErrors).length === 0) {
+        setLoading(true)
+      
+        var data = {
+          CreatedBy: personID,
+          PartyId: PartyName.value,
+          SparePartId: SparePartModelNo.value,
+          SparePartName: SparePartName,
+          PurchaseOrderId:PONumber.value ,
+          MachineNames:MachineNames.map(el => el.label),
+          SparePartBrandName: Brand,
+          Price: Price,
+          SparePartSpecification: Specification,
+          QuantityPurchaseOrder: PCS,
+          Currency: Currency,
+          Unit: Units,
+          QuantityRecieved: RPCS,
+          TotalCost: TotalCost,
+          InvoiceNumber: Invoice,
+          Status: "Active"
+        };
+        console.log("Inserting",data)
+        console.log("pdfffff",pdf)
+       // addSparePartIn(data);
+        try {
+          let UUID = await addSparePartIn(data);
+          console.log("uuid",UUID)
+          let formData = new FormData()
+         
+          formData.append('InvoicePdf', pdf);
+          formData.append('SparePartId', UUID.SparePartInId)
+          for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+          }
+    
+          console.log("Upload FormData", formData);
+  
+          if ( (pdf && pdf.size > 0)) {
+            let upload = await uploadPDF(formData);
+            console.log("Upload response", upload);
+          } else {
+            notifyError('Error,Please Enter Valid Invoice PDF ')
 
-        if ( (pdf && pdf.size > 0)) {
-          let upload = await uploadPDF(formData);
-          console.log("Upload response", upload);
-        } else {
-          // notifySuccess();
-          setTimeout(() => {
-            setLoading(false);
-            navigate('/sparepartlist');
-          }, 1000);
+            // notifySuccess();
+           
+          }
+          console.log("spare response");
+  
+        } catch (err) {
+          console.log(err);
         }
-        console.log("spare response");
-
-      } catch (err) {
-        console.log(err);
+      } else {
+        console.log("Validation errors:", newFieldErrors);
       }
-    } else {
-      console.log("Validation errors:", newFieldErrors);
-    }
+
+    
+
+   
   };
   const apiCall = (selected) =>{
     console.log("PONumber",PONumber.value)
@@ -522,15 +395,24 @@ const SparePartIn = () => {
 
   const handleFieldChange = (field, value) => {
     const newFieldErrors = { ...fieldErrors };
-
-    if (!value || (Array.isArray(value) && value.length === 0)) {
-      newFieldErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
+    if (field === 'RPCS') {
+      if (Number(value) <= 0 || Number(value) > Number(PCS)) {
+        newFieldErrors[field] = 'Please Enter Valid Quantity.';
+      } else {
+        delete newFieldErrors[field]; 
+      }
     } else {
-      delete newFieldErrors[field];
+     
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        newFieldErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
+      } else {
+        delete newFieldErrors[field];
+      }
     }
-
+  
     setFieldErrors(newFieldErrors);
   };
+  
   //   const handleImageChange = (event) => {
   //     const selectedFiles = event.target.files;
   //     const filesArray = [];
@@ -552,7 +434,7 @@ const SparePartIn = () => {
     }
   };
   const handleBack = (e) => {
-    navigate('/sparepartlist');
+    navigate('/spareinList');
   };
 
   const handleMachineNameChange = (selectedMachines) => {
@@ -563,76 +445,101 @@ const SparePartIn = () => {
   const handlePartyNameChange = (selectedPartyName) => {
     console.log("Party Name....................?", selectedPartyName.value);
     setPartyName(selectedPartyName);
-    handleFieldChange('PartyName', selectedPartyName);
-    getVoucherListData();
-    
-  };
-  const handleSparePartModelChange = (selectedOption) => {
-    console.log("PONUMmmmmmm");
-    setPONumber(["Bhanu"])
-    console.log("PONUM");
-    setSparePartModelNo(selectedOption);
-    handleFieldChange('SparePartModelNo', selectedOption);
-    console.log("humm",selectedOption.value)
-   
-
-
-    // Find the selected spare part name based on selected model number
-    const selectedSparePart = SparePart.find(part => part.value === selectedOption.value);
-    if (selectedSparePart) {
-      setSparePartName(selectedSparePart.SparePartName);
-      getVoucherListData();
-
-    }
-    
-    setPONumber(["Bhanu"]);
+    setSparePartModelNo([])
+    setPONumber([]);
     setMachineNames([]);
     setModelNo('');
     setBrand('');
-    console.log("brands",Brand)
     setSpecification('');
     setPCS('');
+    setRPCS('');
     setUnits('');
     setCurrency('');
     setPrice('');
     setTotalCost([]);
     setInvoice('');
     setFileName('');
-    console.log("datatatattatat",selectedOption.value,PONumber.value)
-    // bindInListData(selectedOption.value,PONumber.value);
-    apiCall(selectedOption.value)
-   
-   
+    setSparePartName('');
+    setMinimumQuantityRequired('');
+    handleFieldChange('PartyName', selectedPartyName);
+    getVoucherListData();
     
-
   };
+  const handleSparePartModelChange = (selectedOption) => {
+    console.log("Selected Spare Part Model:", selectedOption);
+
+    // Update state and clear relevant fields
+    setSparePartModelNo(selectedOption);
+    setPONumber([]);
+    setMachineNames([]);
+    setModelNo('');
+    setBrand('');
+    setSpecification('');
+    setPCS('');
+    setRPCS('');
+    setUnits('');
+    setCurrency('');
+    setPrice('');
+    setTotalCost([]);
+    setInvoice('');
+    setFileName('');
+    setSparePartName('');
+    setMinimumQuantityRequired('');
+
+    // Handle field change
+    handleFieldChange('SparePartModelNo', selectedOption);
+
+    // Find the selected spare part name based on selected model number
+    const selectedSparePart = SparePart.find(part => part.value === selectedOption.value);
+    if (selectedSparePart) {
+        setSparePartName(selectedSparePart.SparePartName);
+        getVoucherListData();
+    }
+
+    // Use a callback to ensure we get the latest state values
+    setPONumber((prevPONumber) => {
+        if (prevPONumber && prevPONumber.value) {
+            bindInListData(selectedOption.value, prevPONumber.value);
+        }
+        return prevPONumber;
+    });
+};
   console.log("brandss",Brand)
   const handlePONumberChange = (selectedPoNumber) => {
-    console.log("Party Name....................?", selectedPoNumber.value);
-    setPONumber(selectedPoNumber);
-    handleFieldChange('Party Name', selectedPoNumber);
-    setMachineNames([]);
-      setModelNo('');
-      setBrand('');
-      
-      setSpecification('');
-      setPCS('');
-      setUnits('');
-      setCurrency('');
-      setPrice('');
-      setTotalCost([]);
-      setInvoice('');
-      setFileName('');
-    // clearAllStates()
-    bindInListData(SparePartModelNo.value,selectedPoNumber.value);
-    
+    console.log("Selected PO Number:", selectedPoNumber);
 
-  };
+    // Update state and clear relevant fields
+    setPONumber(selectedPoNumber);
+    setMachineNames([]);
+    setModelNo('');
+    setBrand('');
+    setSpecification('');
+    setPCS('');
+    setRPCS(''); 
+    setUnits('');
+    setCurrency('');
+    setPrice('');
+    setTotalCost([]);
+    setInvoice('');
+    setFileName('');
+
+    // Handle field change
+    handleFieldChange('Party Name', selectedPoNumber);
+
+    // Use a callback to ensure we get the latest state values
+    setSparePartModelNo((prevSparePartModelNo) => {
+        if (prevSparePartModelNo && prevSparePartModelNo.value) {
+            bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
+        }
+        return prevSparePartModelNo;
+    });
+};
 
 
   const handleSparePartNameChange = (e) => {
     const { value } = e.target;
     setSparePartName(value);
+    
     handleFieldChange('SparePartName', e.target.value);
 
   };
@@ -647,11 +554,23 @@ const SparePartIn = () => {
     handleFieldChange('Price', e.target.value);
     calculateTotalCost(RPCS, e.target.value);
   };
-  const handleRecievedPcs  = (e) => {
-    setRPCS(e.target.value)
-    handleFieldChange('RPCS', RPCS);
-    calculateTotalCost(Price, e.target.value);
-  }
+  const handleRecievedPcs = (e) => {
+    const newRPCS = e.target.value;
+    setRPCS(newRPCS);
+    if (Number(newRPCS) <= 0 || Number(newRPCS) > Number(PCS)) {
+      handleFieldChange('RPCS', newRPCS); 
+    } else {
+      setFieldErrors((prevErrors) => ({
+        ...prevErrors,
+        RPCS: '', 
+      }));
+    }
+  
+    console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS); 
+    handleFieldChange('RPCS', newRPCS); 
+    calculateTotalCost(Price, newRPCS);
+  };
+  
   const calculateTotalCost = (RPCS, price) => {
     const total = parseFloat((parseFloat(RPCS) * parseFloat(price)).toFixed(2));
     if (!isNaN(total)) {
@@ -661,60 +580,7 @@ const SparePartIn = () => {
     }
   };
 
-  //   const handleEquivalentSparePartsOpen = () => {
-  //     if (SparePartName && MachineNames.length > 0) {
-  //       fetchEquivalentSpareParts(SparePartName, MachineNames);
-  //     }
-  //   };
-
-
-  //   const handleEquivalentChange = (selectedOptions) => {
-  //     console.log("Equivalent Name....................?", selectedOptions);
-  //     setEquivalentSpareParts(selectedOptions)
-
-  //   };
-
-
-  //   const getMachineListData = async () => {
-  //     const url = localStorage.getItem('url');
-  //     console.log("hmmmmmmmmmmm");
-  //     console.log(url);
-  //     console.log(token);
-  //     // const url = `${url}/Maintenance/MachineDetailById`;
-  //     try {
-  //       const response = await axios.get(`${url}/Maintenance/MachineDetailById`, {
-  //         headers: {
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //         },
-  //       });
-
-  //       if (response.status === 200 && Array.isArray(response.data)) {
-  //         const machineBody = response.data;
-
-  //         machineData = machineBody.map(machine => ({
-  //           value: machine.MachineId,
-  //           label: machine.MachineName
-  //         }));
-  //         console.log("MachData.......", machineData);
-  //         SetMachine(machineData)
-
-  //         if (SparPartId) {
-  //           getSparePartData();
-  //         }
-
-
-
-  //       } else {
-  //         console.error('Unexpected response:', response);
-  //         setError('Failed to fetch machine list. Unexpected response from server.');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching machine list:', error.message);
-  //       console.error(error); 
-  //       setError('Failed to fetch machine list. Please check the server configuration.');
-  //     }
-  //   };
-
+ 
     const uploadPDF = async (formData) => {
       console.log("oyeyeyeyyeyeyey")
       console.log(formData);
@@ -729,31 +595,30 @@ const SparePartIn = () => {
         });
 
         if (response.status === 200) {
-          setIsLoading(false);
-          console.log(response.data)
-          console.log('image respnse')
-          // notifySuccess();
+         // setIsLoading(false);
+          
+          notifySuccess();
           setTimeout(() => {
             setLoading(false);
-            // navigate('/sparepartlist');
+            navigate('/spareinList');
           }, 1000);
           return response.data;
         } else {
-          setIsLoading(false);
+          notifyError('Error, Error On Server')
+          
 
           return response.data
         }
 
       } catch (err) {
         setIsLoading(false);
-        // notifyError('Error, While Sending File')
+         notifyError('Error, While Sending File')
         console.error('Error', err);
         return err;
       }
 
 
-      console.log('upload pdf & image checking');
-      console.log(formData);
+    
     };
   const inputStyle = {
     borderColor: 'black',

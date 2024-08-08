@@ -29,6 +29,9 @@ import PeopleIcon from '@mui/icons-material/People';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import ExpandLess from '@mui/icons-material/ExpandLess';
+import PrecisionManufacturing from '@mui/icons-material/PrecisionManufacturing';
+import BuildCircle from '@mui/icons-material/BuildCircle';
+
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
@@ -41,6 +44,8 @@ import { Image } from 'react-bootstrap';
 
 import MachineListTable from '@mui/icons-material/ReceiptLong';
 import MachineList from '@mui/icons-material/DomainAdd';
+import SparePartInTable from './Components/SparePartIn/SparePartInTable';
+import SparePartInListing from './Components/SparePartIn/SparePartInListing';
 
 const drawerWidth = 240;
 
@@ -191,15 +196,15 @@ export default function Sidebar() {
       icon: <ConstructionIcon />,
       children: [
         { text: 'Add Machine', path: '/machine', icon: <MachineList /> },
-        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable /> },
+        { text: 'Machine List', path: '/machinelist', icon: <MachineList />  },
       ],
     },
     {
       text: 'Spare Part In',
-      icon: <ConstructionIcon />,
+      icon:  <PrecisionManufacturing />,
       children: [
-        { text: 'Spare part In', path: '/sparein', icon: <MachineList /> },
-        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable /> },
+        { text: 'Spare part In', path: '/sparein', icon: <BuildCircle /> },
+        { text: 'Spare part In List', path: '/spareinList', icon: <MachineList />},
       ],
     },
 

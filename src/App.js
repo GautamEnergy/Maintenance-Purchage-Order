@@ -19,6 +19,7 @@ import PartList from './Components/PartyList/PartyList';
 import MachineList from './Components/MachineList/MachineList';
 import SparePartList from './Components/AddSpare/SparePartList';
 import SparePartIn from './Components/SparePartIn/SparePartIn';
+import SparePartInListing from './Components/SparePartIn/SparePartInListing';
 
 
 const App = () => {
@@ -66,6 +67,7 @@ const AppWithNavbar = () => (
       <Route path="/machinelist" element={<MachineList />} />
       <Route path="/availablestocklist" element={<AvailableStock />} />
       <Route path="/sparein" element={<SparePartIn />} />
+      <Route path="/spareinList" element={<SparePartInListing />} />
 
     </Routes>
   </>
