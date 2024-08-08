@@ -196,7 +196,7 @@ export default function Sidebar() {
       icon: <ConstructionIcon />,
       children: [
         { text: 'Add Machine', path: '/machine', icon: <MachineList /> },
-        { text: 'Machine List', path: '/machinelist', icon: <MachineList />  },
+        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable />  },
       ],
     },
     {

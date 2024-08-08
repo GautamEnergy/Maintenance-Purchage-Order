@@ -236,6 +236,19 @@ const SparePartIn = () => {
         setPrice(data.data.Price);
         setCurrency(data.data.Currency);
         setUnits(data.data.Unit);
+
+        setFieldErrors(prevErrors => {
+          const newErrors = { ...prevErrors };
+          delete newErrors.Brand;
+          delete newErrors.Specification;
+          delete newErrors.MinimumQuantityRequired;
+          delete newErrors.MachineNames;
+          delete newErrors.PCS;
+          delete newErrors.Price;
+          delete newErrors.Currency;
+          delete newErrors.Units;
+          return newErrors;
+      });
         
       } else {
         console.error('Unexpected response:', response);
@@ -315,10 +328,11 @@ const SparePartIn = () => {
     if (!SparePartName) newFieldErrors.SparePartName = 'Spare part name is required';
     if (PONumber.length===0) newFieldErrors.PONumber = 'P O Number is required';
     if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine name is required';
-    if (!Brand) newFieldErrors.Brand = 'Brand is required';
+    if (Brand.length === 0) newFieldErrors.Brand = 'Brand is required';
     if (!Specification) newFieldErrors.Specification = 'Specification is required';
     if (!PCS) newFieldErrors.PCS = 'PCS is required';
     if (RPCS.length===0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
+    if (RPCS>PCS || RPCS == 0) newFieldErrors.RPCS = 'Enter Valid Quantity';
     if (!Units) newFieldErrors.Units = 'Units are required';
     if (!Currency) newFieldErrors.Currency = 'Currency is required';
     if (!Price) newFieldErrors.Price = 'Price is required';
@@ -485,14 +499,22 @@ const SparePartIn = () => {
     setFileName('');
     setSparePartName('');
     setMinimumQuantityRequired('');
-
+   
     // Handle field change
     handleFieldChange('SparePartModelNo', selectedOption);
+   
 
     // Find the selected spare part name based on selected model number
     const selectedSparePart = SparePart.find(part => part.value === selectedOption.value);
     if (selectedSparePart) {
         setSparePartName(selectedSparePart.SparePartName);
+        setFieldErrors(prevErrors => {
+          const newErrors = { ...prevErrors };
+          delete newErrors.SparePartName;
+          
+          return newErrors;
+      });
+    
         getVoucherListData();
     }
 
@@ -504,9 +526,11 @@ const SparePartIn = () => {
         return prevPONumber;
     });
 };
+
   console.log("brandss",Brand)
   const handlePONumberChange = (selectedPoNumber) => {
     console.log("Selected PO Number:", selectedPoNumber);
+   
 
     // Update state and clear relevant fields
     setPONumber(selectedPoNumber);
@@ -523,10 +547,8 @@ const SparePartIn = () => {
     setInvoice('');
     setFileName('');
 
-    // Handle field change
-    handleFieldChange('Party Name', selectedPoNumber);
+    handleFieldChange('PONumber', selectedPoNumber);
 
-    // Use a callback to ensure we get the latest state values
     setSparePartModelNo((prevSparePartModelNo) => {
         if (prevSparePartModelNo && prevSparePartModelNo.value) {
             bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
@@ -534,6 +556,7 @@ const SparePartIn = () => {
         return prevSparePartModelNo;
     });
 };
+
 
 
   const handleSparePartNameChange = (e) => {
@@ -545,7 +568,7 @@ const SparePartIn = () => {
   };
   const handleCurrencyChange = (e) => {
     setCurrency(e.target.value);
-    handleFieldChange('Currency', e.target.value);
+    // handleFieldChange('Currency', e.target.value);
     // calculateTotalCost(e.target.value, Price);
   };
 
@@ -565,10 +588,17 @@ const SparePartIn = () => {
         RPCS: '', 
       }));
     }
+    
   
     console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS); 
     handleFieldChange('RPCS', newRPCS); 
     calculateTotalCost(Price, newRPCS);
+    setFieldErrors(prevErrors => {
+      const newErrors = { ...prevErrors };
+      delete newErrors.TotalCost;
+      
+      return newErrors;
+  });
   };
   
   const calculateTotalCost = (RPCS, price) => {
@@ -577,6 +607,8 @@ const SparePartIn = () => {
       setTotalCost(total);
     } else {
       setTotalCost('');
+    
+  
     }
   };
 
@@ -812,7 +844,7 @@ const SparePartIn = () => {
                       value={Brand}
                       onChange={(e) => {
                         setBrand(e.target.value)
-                        handleFieldChange('Brand', e.target.value);
+                        // handleFieldChange('Brand', e.target.value);
                       }}
                       placeholder="Spare Part Brand Name"
                       //   required
@@ -838,7 +870,7 @@ const SparePartIn = () => {
                       value={Specification}
                       onChange={(e) => {
                         setSpecification(e.target.value)
-                        handleFieldChange('Specification', e.target.value);
+                        // handleFieldChange('Specification', e.target.value);
                       }}
                       placeholder="Specification"
                       readOnly = "true"
@@ -858,7 +890,7 @@ const SparePartIn = () => {
                       value={PCS}
                       onChange={(e) => {
                         setPCS(e.target.value)
-                        handleFieldChange('PCS', e.target.value);
+                        // handleFieldChange('PCS', e.target.value);
                       }}
                       placeholder="PCS"
                       readOnly = "true"
@@ -898,7 +930,7 @@ const SparePartIn = () => {
                       value={Units}
                       onChange={(e) => {
                         setUnits(e.target.value)
-                        handleFieldChange('Units', e.target.value);
+                        // handleFieldChange('Units', e.target.value);
                       }}
                       placeholder="Enter Units"
                       readOnly = "true"

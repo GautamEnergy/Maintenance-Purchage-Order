@@ -72,7 +72,7 @@ const SparePartInTable = () => {
         );
     };
     const machineNamesTemplate = (rowData) => {
-        return rowData.Machine_Names.join(", ");
+        return rowData.Machine_Names.join(",");
     };
 
     const renderHeader = () => {
@@ -153,7 +153,6 @@ const SparePartInTable = () => {
                     <Column style={{ border: "0.5px dotted black" }} field="Available_Stock" header="Available Stock" filter filterPlaceholder="Search by Available Stock" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Invoice_Number" header="Invoice Number" filter filterPlaceholder="Search by Invoice Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Date" header="Received Date" filter filterPlaceholder="Search by Received Date" sortable />
-                    
                     <Column style={{ border: "0.5px dotted black" }} field="Name" header="Received By" filter filterPlaceholder="Search by Name" sortable />
                     <Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />
                 </DataTable>
