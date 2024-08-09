@@ -17,7 +17,7 @@ const MachineMaintenance = () => {
   const [Status, setStatus] = useState('Active');
 
   const [image, setImage] = useState(undefined);
-  const [pdf, setPdf] = useState(undefined);
+ 
   const [error, setError] = useState('');
   const [personID, setPersonID] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,9 +25,6 @@ const MachineMaintenance = () => {
  
 
  
-  const pdfInputRef = useRef(null);
-
-  const [pdfData, setpdfData] = useState([]);
 
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
@@ -46,6 +43,12 @@ const MachineMaintenance = () => {
   const [Quantity, setQuantity] = useState('');
   const [Process, setProcess] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+  const [fileName, setFileName] = useState('');
+
+
+
+  const fileInputRef = useRef(null);
+
  
  
 
@@ -781,31 +784,59 @@ const MachineMaintenance = () => {
     } else if (fieldName === 'EndTime') {
       setEndTime(value);
     }
-    if (StartTime && EndTime) {
-      calculateTimeTaken(StartTime, EndTime);
+    if (fieldName === 'StartTime' && EndTime) {
+      calculateTimeTaken(value, EndTime);
+    } else if (fieldName === 'EndTime' && StartTime) {
+      calculateTimeTaken(StartTime, value);
     }
   };
   const calculateTimeTaken = (start, end) => {
-    const [startHours, startMinutes] = start.split(':').map(Number);
-    const [endHours, endMinutes] = end.split(':').map(Number);
+    if (start && end) {
+      try {
+        const startDateTime = new Date(`2024-01-01T${start}:00`);
+        const endDateTime = new Date(`2024-01-01T${end}:00`);
 
-    let totalStartMinutes = startHours * 60 + startMinutes;
-    let totalEndMinutes = endHours * 60 + endMinutes;
+        const difference = endDateTime - startDateTime;
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
 
-    // If the end time is earlier than the start time, add 24 hours to the end time
-    if (totalEndMinutes < totalStartMinutes) {
-        totalEndMinutes += 24 * 60;
+        setTimeTaken(`${hours} hours and ${minutes} minutes`);
+      } catch (error) {
+        console.error('Invalid time format:', error);
+        setTimeTaken('');
+      }
     }
-
-    const difference = totalEndMinutes - totalStartMinutes;
-    const hoursTaken = Math.floor(difference / 60);
-    const minutesTaken = difference % 60;
-
-    // Format the time as "X hours Y mins"
-    const formattedTime = `${hoursTaken} hour${hoursTaken !== 1 ? 's' : ''} ${minutesTaken} min${minutesTaken !== 1 ? 's' : ''}`;
-
-    setTimeTaken(formattedTime);
 };
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  
+  if (file) {
+    const allowedTypes = [ 'image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        fileInputRef: 'Only PDF or image files are allowed',
+      }));
+    } else {
+      setFieldErrors((prev) => ({
+        ...prev,
+        fileInputRef: null,
+      }));
+      setFileName(file.name);
+
+      // You can handle the file upload process here
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Example: Perform an upload request (adjust based on your setup)
+      // axios.post('/upload', formData)
+      //   .then(response => console.log('File uploaded successfully'))
+      //   .catch(error => console.error('Error uploading file:', error));
+    }
+  }
+};
+
+
 
 
   return (
@@ -908,10 +939,10 @@ const MachineMaintenance = () => {
                       placeholder="Maintenance Time Taken"
                       readOnly = "true"
                       // required
-                      style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
+                      style={!fieldErrors.TimeTaken ? inputStyle : inputStyles}
 
                     />
-                    {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
+                    {fieldErrors.TimeTaken && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.TimeTaken}</div>}
                   </Form.Group>
                 </Col>
                 <Col className='py-2' md={4}>
@@ -936,6 +967,25 @@ const MachineMaintenance = () => {
               </Row>
 
               <Row>
+              <Col className='py-2' md={4}>
+                  <Form.Group controlId="sparepartname">
+                    <Form.Label style={{ fontWeight: "bold" }}>SparePartName</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="quantity"
+                      value={Quantity}
+                      onChange={(e) => {
+                        setQuantity(e.target.value)
+                        // handleFieldChange('Specification', e.target.value);
+                      }}
+                      placeholder="Specification"
+                      readOnly = "true"
+                      //  required
+                      style={!fieldErrors.Specification ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.Specification && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Specification}</div>}
+                  </Form.Group>
+                </Col>
 
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="quantity">
@@ -991,8 +1041,26 @@ const MachineMaintenance = () => {
                     {fieldErrors.RPCS && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.RPCS}</div>}
                   </Form.Group>
                 </Col> */}
-
-
+              </Row>
+              <Row>
+              <Col className='py-2' md={4}>
+  <Form.Group controlId="UploadFile">
+    <Form.Label style={{ fontWeight: "bold" }}>Upload Image</Form.Label>
+    <Form.Control
+      type="file"
+      accept="application/image/*"  
+      onChange={handleFileChange}  
+      ref={fileInputRef}  // Generic reference name
+      style={!fieldErrors.fileInputRef ? inputStyle : inputStyles}
+    />
+    {fieldErrors.fileInputRef && (
+      <div style={{ fontSize: "13px" }} className="text-danger">
+        {fieldErrors.fileInputRef}
+      </div>
+    )}
+    <div>{fileName}</div>
+  </Form.Group>
+</Col>
 
               </Row>
 
