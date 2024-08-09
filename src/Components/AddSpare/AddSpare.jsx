@@ -70,7 +70,9 @@ const AddSpare = () => {
 
   let machineData = []
 
-  const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
+
+  const notifySuccess = () => toast.success(SparPartId ? "Spare Part Update Successfully!" : "New Spare Part Added Successfully!", { autoClose: 5000 });
+
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
   const fetchEquivalentSpareParts = async (sparePartName, selectedMachines, EquivalentId) => {

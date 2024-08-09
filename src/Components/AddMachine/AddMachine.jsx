@@ -108,7 +108,8 @@ const AddMachine = () => {
         }
     };
 
-    const notifySuccess = () => toast.success("Machine added successfully!", { autoClose: 5000 });
+
+    const notifySuccess = () => toast.success(MachineId ? "Machine Update successfully!" : "Machine added successfully!", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
     const handleSubmit = (e) => {

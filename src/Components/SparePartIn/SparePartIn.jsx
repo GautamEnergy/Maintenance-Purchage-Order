@@ -643,8 +643,13 @@ const SparePartIn = () => {
       }
 
     } catch (err) {
-      setIsLoading(false);
-      notifyError('Error, While Sending File')
+
+      notifyError('Spare Part In Successfully Added But Error in Invoice Pdf')
+      setTimeout(() => {
+        setLoading(false);
+        navigate('/spareinList');
+      }, 3000);
+
       console.error('Error', err);
       return err;
     }
