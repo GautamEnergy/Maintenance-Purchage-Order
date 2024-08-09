@@ -11,6 +11,7 @@ export const AppProvider = ({ children }) => {
     }, [])
 
     return (
+        
         <AppContext.Provider value={{ token, setToken }}>
             {children}
         </AppContext.Provider>
