@@ -207,6 +207,14 @@ export default function Sidebar() {
         { text: 'Spare part In List', path: '/spareinList', icon: <MachineList />},
       ],
     },
+    // {
+    //   text: 'Machine Maintenance',
+    //   icon:  <PrecisionManufacturing />,
+    //   children: [
+    //     { text: 'Machine Maintenance', path: '/machinemaintenace', icon: <BuildCircle /> },
+    //     { text: 'Spare part In List', path: '/spareinList', icon: <MachineList />},
+    //   ],
+    // },
 
   ];
 
