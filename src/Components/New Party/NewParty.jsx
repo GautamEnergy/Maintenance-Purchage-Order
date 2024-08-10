@@ -36,7 +36,7 @@ const NewParty = () => {
     const location = useLocation();
     const { PartyNameId } = location.state || {};
     const [FormData, setFormData] = useState([]);
-    console.log("Country",Country)
+    console.log("Country", Country)
 
 
     useEffect(() => {
@@ -92,8 +92,8 @@ const NewParty = () => {
                     setState(partyData.State || '');
                     setEmail(partyData.Email || '');
                     setMobileNumber(partyData.MobileNumber.slice(4) || '');
-                    const CountryCode = partyData.MobileNumber.slice(0,3);
-                    console.log("CountryCode",CountryCode);
+                    const CountryCode = partyData.MobileNumber.slice(0, 3);
+                    console.log("CountryCode", CountryCode);
                     setCountryCode(CountryCode);
                     setStatus(partyData.Status || 'Active');
                     setPinCode(partyData.PinCode || '');
@@ -107,7 +107,7 @@ const NewParty = () => {
         }
     }, [PartyNameId]);
 
-    const notifySuccess = () => toast.success("New Party Added Successfully!", { autoClose: 5000 });
+    const notifySuccess = () => toast.success(PartyNameId ? "Party Update Successfully!" : "New Party Added Successfully!", { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
     const handleGSTChange = (e) => {
@@ -250,7 +250,7 @@ const NewParty = () => {
         // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && countrtrySelect && State && CountryCode && PinCode && Status) {
         if (validateForm()) {
             const partyData = {
-                PartyNameId : PartyNameId?PartyNameId:"",
+                PartyNameId: PartyNameId ? PartyNameId : "",
                 PartyName,
                 GSTNumber: countrtrySelect == 'China' ? '' : GSTNumber,
                 PANNumber: countrtrySelect == 'China' ? '' : PANNumber,
@@ -337,7 +337,7 @@ const NewParty = () => {
 
         // console.log(selectedCountry)
 
-  
+
         if (selectedOption.value == 'China') {
             setState('');
             setPANNumber('');
@@ -412,7 +412,7 @@ const NewParty = () => {
                 <div className={`form-content ${loading ? 'blurred' : ''}`}>
                     <Image src={img1} alt="" className="text-center" rounded style={{ width: '15%', marginLeft: "43%" }} />
                     <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-                       {PartyNameId? "Edit Party":"Add New Party"}
+                        {PartyNameId ? "Edit Party" : "Add New Party"}
                     </h2>
                     <Form noValidate onSubmit={handleSubmit}>
                         <Row className="subCard1">
