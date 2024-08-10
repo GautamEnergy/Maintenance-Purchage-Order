@@ -20,10 +20,16 @@ const SparePartInTable = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
+    const [designation,setDesignation] = useState('');
 
     useEffect(() => {
         const url = localStorage.getItem('url');
         setUrl(url)
+        const Designation = localStorage.getItem("Designation");
+    
+        if (Designation) {
+          setDesignation(Designation);
+        }
         const fetchData = async () => {
             try {
                 const { data } = await axios.post(`${url}/Maintenance/GetStockList`);
@@ -41,7 +47,7 @@ const SparePartInTable = () => {
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
-
+ 
 
     const handlePdfClick = (pdfUrl, voucherNumber) => {
         const link = document.createElement('a');
@@ -54,17 +60,19 @@ const SparePartInTable = () => {
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
-
-                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} />
-                    {rowData.Invoice_Pdf_URL != null && rowData.Invoice_Pdf_URL != "" ? <Button
-                        icon="pi pi-download"
-                        className="p-button-rounded"
-                        data-pr-tooltip="Download Invoice"
-                        style={{ marginRight: '5px' }}
-                        onClick={() => handlePdfClick(rowData.Invoice_Pdf_URL, rowData.Voucher_Number)}
-                    /> : ""}
-                    {/* <Tooltip target=".p-button-rounded" /> */}
-
+                    
+                   { designation === "Super Admin"?<Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }}  />:""}
+		   {rowData.Invoice_Pdf_URL != null && rowData.Invoice_Pdf_URL != "" ?
+                    <Button 
+		    
+                    icon="pi pi-download" 
+                    className="p-button-rounded" 
+                    data-pr-tooltip="Download Invoice" 
+                    style={{ marginRight: '5px' }} 
+                    onClick={() => handlePdfClick(rowData.Invoice_Pdf_URL, rowData.Voucher_Number)} 
+                />:""}
+                {/* <Tooltip target=".p-button-rounded" /> */}
+                   
                 </div>
                 <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>
@@ -88,17 +96,17 @@ const SparePartInTable = () => {
                         </div>
                     </div>
                     <div className="col-md-5 d-flex justify-content-end align-items-center">
-                        <Link to="/sparein" className="plus mr-1" data-pr-tooltip="Spare Part In">
+                        {designation === "Super Admin" ||designation === "Spare Part Store Manager"?<Link to="/sparein" className="plus mr-1" data-pr-tooltip="Spare Part In">
                             <Image src={img1} alt="plus" rounded />
-                        </Link>
+                        </Link>:""}
                         <Tooltip target=".plus" content="Spare Part In" position="top" className="custom-tooltip" />
-                        <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />
+                        {designation === "Super Admin"?<Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />:""}
                     </div>
                 </div>
             </div>
         );
     };
-
+   
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
@@ -154,7 +162,7 @@ const SparePartInTable = () => {
                     <Column style={{ border: "0.5px dotted black" }} field="Invoice_Number" header="Invoice Number" filter filterPlaceholder="Search by Invoice Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Date" header="Received Date" filter filterPlaceholder="Search by Received Date" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Name" header="Received By" filter filterPlaceholder="Search by Name" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />
+                    {designation === "Super Admin" ||designation === "Spare Part Store Manager" ?<Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />: ""}
                 </DataTable>
                 {loading && (
                     <div className="p-p-3">
