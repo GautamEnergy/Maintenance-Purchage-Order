@@ -41,7 +41,7 @@ const SparePartInTable = () => {
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
- 
+
 
     const handlePdfClick = (pdfUrl, voucherNumber) => {
         const link = document.createElement('a');
@@ -54,17 +54,17 @@ const SparePartInTable = () => {
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
-                    
-                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }}  />
-                    <Button 
-                    icon="pi pi-download" 
-                    className="p-button-rounded" 
-                    data-pr-tooltip="Download Invoice" 
-                    style={{ marginRight: '5px' }} 
-                    onClick={() => handlePdfClick(rowData.Invoice_Pdf_URL, rowData.Voucher_Number)} 
-                />
-                {/* <Tooltip target=".p-button-rounded" /> */}
-                   
+
+                    <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} />
+                    {rowData.Invoice_Pdf_URL != null && rowData.Invoice_Pdf_URL != "" ? <Button
+                        icon="pi pi-download"
+                        className="p-button-rounded"
+                        data-pr-tooltip="Download Invoice"
+                        style={{ marginRight: '5px' }}
+                        onClick={() => handlePdfClick(rowData.Invoice_Pdf_URL, rowData.Voucher_Number)}
+                    /> : ""}
+                    {/* <Tooltip target=".p-button-rounded" /> */}
+
                 </div>
                 <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>

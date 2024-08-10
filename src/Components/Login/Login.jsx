@@ -29,6 +29,8 @@ const Login = () => {
 
         const ProfileImg = localStorage.getItem("ProfileImg");
         const Name = localStorage.getItem("Name");
+        const Designation = localStorage.getItem("Designation");
+
 
         if (token && ProfileImg && Name && PersonID) {
             setLoginOpen(false);
@@ -36,6 +38,7 @@ const Login = () => {
             setLoginOpen(true);
         }
     }, []);
+   
 
     const notifySuccess = (message) => toast.success(message, { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
@@ -79,10 +82,13 @@ const Login = () => {
                     const ProfileImg = firstPerson.ProfileImg;
                     const PersonID = firstPerson.PersonID;
                     const Name = firstPerson.Name;
+                    const Designation = firstPerson.Designation
 
                     localStorage.setItem('profilePic', ProfileImg);
                     localStorage.setItem('CurrentUser', PersonID);
                     localStorage.setItem('Name', Name);
+                    localStorage.setItem('Designation', Designation);
+
 
                     console.log("Token:", token);
 
@@ -92,6 +98,7 @@ const Login = () => {
                     console.log("ProfileImg:", ProfileImg);
                     console.log("CurrentUser:", PersonID);
                     console.log("Name:", Name);
+                    console.log("Designation",Designation)
 
                     console.log("Admin logged in successfully!");
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;

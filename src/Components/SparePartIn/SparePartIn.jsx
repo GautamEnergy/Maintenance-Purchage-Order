@@ -22,9 +22,9 @@ const SparePartIn = () => {
   const [personID, setPersonID] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [Machine, SetMachine] = useState([])
- 
 
- 
+
+
   const pdfInputRef = useRef(null);
 
   const [pdfData, setpdfData] = useState([]);
@@ -61,7 +61,7 @@ const SparePartIn = () => {
 
 
 
-  
+
 
 
 
@@ -88,16 +88,16 @@ const SparePartIn = () => {
 
 
   //   }, []);
-   
+
   useEffect(() => {
     const personID = localStorage.getItem("CurrentUser");
     setPersonID(personID)
-    
-    
+
+
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
     setUrl(url);
-    
+
 
 
 
@@ -172,7 +172,7 @@ const SparePartIn = () => {
       console.error(error); // Log the full error object
     }
   };
-  const getVoucherListData = async () => {
+  const getVoucherListData = async (PName, SpareModelNo) => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
     console.log("Fetching voucher list...");
@@ -181,8 +181,8 @@ const SparePartIn = () => {
 
     try {
       const response = await axios.post(`${url}/Maintenance/GetVoucherList`, {
-        "SparePartId": SparePartModelNo.value,
-        "PartyId": PartyName.value,
+        "SparePartId": SpareModelNo,
+        "PartyId": PName,
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -203,7 +203,7 @@ const SparePartIn = () => {
     }
   };
   console.log("Brand", Brand);
-  const bindInListData = async (SpId,PoId) => {
+  const bindInListData = async (SpId, PoId) => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
     console.log("Fetching party list...");
@@ -248,8 +248,8 @@ const SparePartIn = () => {
           delete newErrors.Currency;
           delete newErrors.Units;
           return newErrors;
-      });
-        
+        });
+
       } else {
         console.error('Unexpected response:', response);
       }
@@ -263,8 +263,8 @@ const SparePartIn = () => {
 
   //   let machineData = []
 
-    const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
-    const notifyError = (message) => toast.error(message, { autoClose: 5000 });
+  const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
+  const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
 
   //   const extractLast15Digits = (url) => {
@@ -276,42 +276,42 @@ const SparePartIn = () => {
   //     return last15Digits;
   //   };
 
- 
- 
 
 
 
 
-    const addSparePartIn = async (data) => {
-      const token = localStorage.getItem("token");
-      const url = localStorage.getItem('url');
-      try {
-        // setLoading(true);
-        const response = await axios.post(`${url}/Maintenance/SparePartIn`,data, {
-         
-          headers: {
-            'Content-Type': 'application/json',
-          },
-         
-        });
-        console.log("responsebhanu",response.status)
-        if (response.status===200) {
-          console.log("responsebhanusaif",response)
-          const responseData = response.data[0];
-        
-          return responseData;
 
-        } else {
-          // setLoading(false);
-          const errorData = await response.json();
-          console.log(errorData)
-         
-        }
-      } catch (error) {
+
+  const addSparePartIn = async (data) => {
+    const token = localStorage.getItem("token");
+    const url = localStorage.getItem('url');
+    try {
+      // setLoading(true);
+      const response = await axios.post(`${url}/Maintenance/SparePartIn`, data, {
+
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+      });
+      console.log("responsebhanu", response.status)
+      if (response.status === 200) {
+        console.log("responsebhanusaif", response)
+        const responseData = response.data[0];
+
+        return responseData;
+
+      } else {
         // setLoading(false);
-        return error
+        const errorData = await response.json();
+        console.log(errorData)
+
       }
-    };
+    } catch (error) {
+      // setLoading(false);
+      return error
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -323,87 +323,87 @@ const SparePartIn = () => {
     console.log("Errorrrrrrr")
 
     const newFieldErrors = {};
-    if (PartyName.length===0) newFieldErrors.PartyName = 'Party name is required';
-    if (SparePartModelNo.length===0) newFieldErrors.SparePartModelNo = 'Spare part model number is required';
+    if (PartyName.length === 0) newFieldErrors.PartyName = 'Party name is required';
+    if (SparePartModelNo.length === 0) newFieldErrors.SparePartModelNo = 'Spare part model number is required';
     if (!SparePartName) newFieldErrors.SparePartName = 'Spare part name is required';
-    if (PONumber.length===0) newFieldErrors.PONumber = 'P O Number is required';
+    if (PONumber.length === 0) newFieldErrors.PONumber = 'P O Number is required';
     if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine name is required';
     if (!Brand) newFieldErrors.Brand = 'Brand is required';
     if (!Specification) newFieldErrors.Specification = 'Specification is required';
     if (!PCS) newFieldErrors.PCS = 'PCS is required';
-    if (RPCS.length===0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
-    if (RPCS>PCS || RPCS == 0) newFieldErrors.RPCS = 'Enter Valid Quantity';
+    if (RPCS.length === 0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
+    if (RPCS > PCS || RPCS == 0) newFieldErrors.RPCS = 'Enter Valid Quantity';
     if (!Units) newFieldErrors.Units = 'Units are required';
     if (!Currency) newFieldErrors.Currency = 'Currency is required';
     if (!Price) newFieldErrors.Price = 'Price is required';
-    if (TotalCost.length===0) newFieldErrors.TotalCost = 'Total Cost is required';
+    if (TotalCost.length === 0) newFieldErrors.TotalCost = 'Total Cost is required';
     if (!Invoice) newFieldErrors.Invoice = 'Invoice number is required';
     if (!pdf) newFieldErrors.pdfInputRef = 'Invoice PDF is required';
     setFieldErrors(newFieldErrors);
-  
-     
-      if (Object.keys(newFieldErrors).length === 0) {
-        setLoading(true)
-      
-        var data = {
-          CreatedBy: personID,
-          PartyId: PartyName.value,
-          SparePartId: SparePartModelNo.value,
-          SparePartName: SparePartName,
-          PurchaseOrderId:PONumber.value ,
-          MachineNames:MachineNames.map(el => el.label),
-          SparePartBrandName: Brand,
-          Price: Price,
-          SparePartSpecification: Specification,
-          QuantityPurchaseOrder: PCS,
-          Currency: Currency,
-          Unit: Units,
-          QuantityRecieved: RPCS,
-          TotalCost: TotalCost,
-          InvoiceNumber: Invoice,
-          Status: "Active"
-        };
-        console.log("Inserting",data)
-        console.log("pdfffff",pdf)
-       // addSparePartIn(data);
-        try {
-          let UUID = await addSparePartIn(data);
-          console.log("uuid",UUID)
-          let formData = new FormData()
-         
-          formData.append('InvoicePdf', pdf);
-          formData.append('SparePartId', UUID.SparePartInId)
-          for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-          }
-    
-          console.log("Upload FormData", formData);
-  
-          if ( (pdf && pdf.size > 0)) {
-            let upload = await uploadPDF(formData);
-            console.log("Upload response", upload);
-          } else {
-            notifyError('Error,Please Enter Valid Invoice PDF ')
 
-            // notifySuccess();
-           
-          }
-          console.log("spare response");
-  
-        } catch (err) {
-          console.log(err);
+
+    if (Object.keys(newFieldErrors).length === 0) {
+      setLoading(true)
+
+      var data = {
+        CreatedBy: personID,
+        PartyId: PartyName.value,
+        SparePartId: SparePartModelNo.value,
+        SparePartName: SparePartName,
+        PurchaseOrderId: PONumber.value,
+        MachineNames: MachineNames.map(el => el.label),
+        SparePartBrandName: Brand,
+        Price: Price,
+        SparePartSpecification: Specification,
+        QuantityPurchaseOrder: PCS,
+        Currency: Currency,
+        Unit: Units,
+        QuantityRecieved: RPCS,
+        TotalCost: TotalCost,
+        InvoiceNumber: Invoice,
+        Status: "Active"
+      };
+      console.log("Inserting", data)
+      console.log("pdfffff", pdf)
+      // addSparePartIn(data);
+      try {
+        let UUID = await addSparePartIn(data);
+        console.log("uuid", UUID)
+        let formData = new FormData()
+
+        formData.append('InvoicePdf', pdf);
+        formData.append('SparePartId', UUID.SparePartInId)
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}:`, value);
         }
-      } else {
-        console.log("Validation errors:", newFieldErrors);
+
+        console.log("Upload FormData", formData);
+
+        if ((pdf && pdf.size > 0)) {
+          let upload = await uploadPDF(formData);
+          console.log("Upload response", upload);
+        } else {
+          notifyError('Error,Please Enter Valid Invoice PDF ')
+
+          // notifySuccess();
+
+        }
+        console.log("spare response");
+
+      } catch (err) {
+        console.log(err);
       }
+    } else {
+      console.log("Validation errors:", newFieldErrors);
+    }
 
-    
 
-   
+
+
   };
-  const apiCall = (selected) =>{
-    console.log("PONumber",PONumber.value)
-    bindInListData(selected,PONumber.value);
+  const apiCall = (selected) => {
+    console.log("PONumber", PONumber.value)
+    bindInListData(selected, PONumber.value);
 
   }
 
@@ -413,20 +413,20 @@ const SparePartIn = () => {
       if (Number(value) <= 0 || Number(value) > Number(PCS)) {
         newFieldErrors[field] = 'Please Enter Valid Quantity.';
       } else {
-        delete newFieldErrors[field]; 
+        delete newFieldErrors[field];
       }
     } else {
-     
+
       if (!value || (Array.isArray(value) && value.length === 0)) {
         newFieldErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
       } else {
         delete newFieldErrors[field];
       }
     }
-  
+
     setFieldErrors(newFieldErrors);
   };
-  
+
   //   const handleImageChange = (event) => {
   //     const selectedFiles = event.target.files;
   //     const filesArray = [];
@@ -438,8 +438,8 @@ const SparePartIn = () => {
 
   const handlePdfChange = (e) => {
     const file = e.target.files[0];
-    console.log("Fileeeee",file);
-    
+    console.log("Fileeeee", file);
+
 
     if (file) {
       setPdf(file);
@@ -476,8 +476,8 @@ const SparePartIn = () => {
     setSparePartName('');
     setMinimumQuantityRequired('');
     handleFieldChange('PartyName', selectedPartyName);
-    getVoucherListData();
-    
+    getVoucherListData(selectedPartyName.value, SparePartModelNo.value);
+
   };
   const handleSparePartModelChange = (selectedOption) => {
     console.log("Selected Spare Part Model:", selectedOption);
@@ -499,38 +499,38 @@ const SparePartIn = () => {
     setFileName('');
     setSparePartName('');
     setMinimumQuantityRequired('');
-   
+
     // Handle field change
     handleFieldChange('SparePartModelNo', selectedOption);
-   
+
 
     // Find the selected spare part name based on selected model number
     const selectedSparePart = SparePart.find(part => part.value === selectedOption.value);
     if (selectedSparePart) {
-        setSparePartName(selectedSparePart.SparePartName);
-        setFieldErrors(prevErrors => {
-          const newErrors = { ...prevErrors };
-          delete newErrors.SparePartName;
-          
-          return newErrors;
+      setSparePartName(selectedSparePart.SparePartName);
+      setFieldErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.SparePartName;
+
+        return newErrors;
       });
-    
-        getVoucherListData();
+
+      getVoucherListData(PartyName.value, selectedOption.value);
     }
 
     // Use a callback to ensure we get the latest state values
     setPONumber((prevPONumber) => {
-        if (prevPONumber && prevPONumber.value) {
-            bindInListData(selectedOption.value, prevPONumber.value);
-        }
-        return prevPONumber;
+      if (prevPONumber && prevPONumber.value) {
+        bindInListData(selectedOption.value, prevPONumber.value);
+      }
+      return prevPONumber;
     });
-};
+  };
 
-  console.log("brandss",Brand)
+  console.log("brandss", Brand)
   const handlePONumberChange = (selectedPoNumber) => {
     console.log("Selected PO Number:", selectedPoNumber);
-   
+
 
     // Update state and clear relevant fields
     setPONumber(selectedPoNumber);
@@ -539,7 +539,7 @@ const SparePartIn = () => {
     setBrand('');
     setSpecification('');
     setPCS('');
-    setRPCS(''); 
+    setRPCS('');
     setUnits('');
     setCurrency('');
     setPrice('');
@@ -550,19 +550,19 @@ const SparePartIn = () => {
     handleFieldChange('PONumber', selectedPoNumber);
 
     setSparePartModelNo((prevSparePartModelNo) => {
-        if (prevSparePartModelNo && prevSparePartModelNo.value) {
-            bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
-        }
-        return prevSparePartModelNo;
+      if (prevSparePartModelNo && prevSparePartModelNo.value) {
+        bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
+      }
+      return prevSparePartModelNo;
     });
-};
+  };
 
 
 
   const handleSparePartNameChange = (e) => {
     const { value } = e.target;
     setSparePartName(value);
-    
+
     handleFieldChange('SparePartName', e.target.value);
 
   };
@@ -581,77 +581,82 @@ const SparePartIn = () => {
     const newRPCS = e.target.value;
     setRPCS(newRPCS);
     if (Number(newRPCS) <= 0 || Number(newRPCS) > Number(PCS)) {
-      handleFieldChange('RPCS', newRPCS); 
+      handleFieldChange('RPCS', newRPCS);
     } else {
       setFieldErrors((prevErrors) => ({
         ...prevErrors,
-        RPCS: '', 
+        RPCS: '',
       }));
     }
-    
-  
-    console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS); 
-    handleFieldChange('RPCS', newRPCS); 
+
+
+    console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS);
+    handleFieldChange('RPCS', newRPCS);
     calculateTotalCost(Price, newRPCS);
     setFieldErrors(prevErrors => {
       const newErrors = { ...prevErrors };
       delete newErrors.TotalCost;
-      
+
       return newErrors;
-  });
+    });
   };
-  
+
   const calculateTotalCost = (RPCS, price) => {
     const total = parseFloat((parseFloat(RPCS) * parseFloat(price)).toFixed(2));
     if (!isNaN(total)) {
       setTotalCost(total);
     } else {
       setTotalCost('');
-    
-  
+
+
     }
   };
 
- 
-    const uploadPDF = async (formData) => {
-      console.log("oyeyeyeyyeyeyey")
-      console.log(formData);
+
+  const uploadPDF = async (formData) => {
+    console.log("oyeyeyeyyeyeyey")
+    console.log(formData);
 
 
 
-      try {
-        const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+    try {
+      const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-        if (response.status === 200) {
-         // setIsLoading(false);
-          
-          notifySuccess();
-          setTimeout(() => {
-            setLoading(false);
-            navigate('/spareinList');
-          }, 1000);
-          return response.data;
-        } else {
-          notifyError('Error, Error On Server')
-          
+      if (response.status === 200) {
+        // setIsLoading(false);
 
-          return response.data
-        }
+        notifySuccess();
+        setTimeout(() => {
+          setLoading(false);
+          navigate('/spareinList');
+        }, 1000);
+        return response.data;
+      } else {
+        notifyError('Error, Error On Server')
 
-      } catch (err) {
-        setIsLoading(false);
-         notifyError('Error, While Sending File')
-        console.error('Error', err);
-        return err;
+
+        return response.data
       }
 
+    } catch (err) {
 
-    
-    };
+      notifyError('Spare Part In Successfully Added But Error in Invoice Pdf')
+      setTimeout(() => {
+        setLoading(false);
+        navigate('/spareinList');
+      }, 3000);
+
+      console.error('Error', err);
+      return err;
+    }
+
+
+
+  };
   const inputStyle = {
     borderColor: 'black',
     borderWidth: '1px',
@@ -785,7 +790,7 @@ const SparePartIn = () => {
                       value={SparePartName}
                       onChange={handleSparePartNameChange}
                       placeholder="Spare Part Name"
-                      readOnly = "true"
+                      readOnly="true"
                       // required
                       style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
 
@@ -828,7 +833,7 @@ const SparePartIn = () => {
                       options={Machine}
                       styles={!fieldErrors.MachineNames ? customSelectStyles : customSelectStyles1}
                       readOnly
-                      isDisabled={true} 
+                      isDisabled={true}
                     //   required
 
                     />
@@ -849,7 +854,7 @@ const SparePartIn = () => {
                       placeholder="Spare Part Brand Name"
                       //   required
                       style={!fieldErrors.Brand ? inputStyle : inputStyles}
-                      readOnly = "true"
+                      readOnly="true"
                     />
                     {fieldErrors.Brand && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Brand}</div>}
 
@@ -873,7 +878,7 @@ const SparePartIn = () => {
                         // handleFieldChange('Specification', e.target.value);
                       }}
                       placeholder="Specification"
-                      readOnly = "true"
+                      readOnly="true"
                       //  required
                       style={!fieldErrors.Specification ? inputStyle : inputStyles}
                     />
@@ -893,7 +898,7 @@ const SparePartIn = () => {
                         // handleFieldChange('PCS', e.target.value);
                       }}
                       placeholder="PCS"
-                      readOnly = "true"
+                      readOnly="true"
                       //     required
                       style={!fieldErrors.PCS ? inputStyle : inputStyles}
                     />
@@ -907,7 +912,7 @@ const SparePartIn = () => {
                       type="number"
                       name="rpcs"
                       value={RPCS}
-                      onChange=  {handleRecievedPcs}
+                      onChange={handleRecievedPcs}
                       placeholder="RPCS"
                       //     required
                       style={!fieldErrors.RPCS ? inputStyle : inputStyles}
@@ -933,7 +938,7 @@ const SparePartIn = () => {
                         // handleFieldChange('Units', e.target.value);
                       }}
                       placeholder="Enter Units"
-                      readOnly = "true"
+                      readOnly="true"
                       //   required
                       style={!fieldErrors.Units ? inputStyle : inputStyles}
                     />
@@ -951,7 +956,7 @@ const SparePartIn = () => {
                       value={Currency}
                       onChange={handleCurrencyChange}
                       placeholder="Enter Currency"
-                      readOnly = "true"
+                      readOnly="true"
                       //   required
                       style={!fieldErrors.Currency ? inputStyle : inputStyles}
                     />
@@ -969,7 +974,7 @@ const SparePartIn = () => {
                       value={Price}
                       onChange={handlePriceChange}
                       placeholder="Enter Price"
-                      readOnly = "true"
+                      readOnly="true"
                       //   required
                       style={!fieldErrors.Price ? inputStyle : inputStyles}
                     />
@@ -1025,8 +1030,8 @@ const SparePartIn = () => {
                       ref={pdfInputRef}
                       style={!fieldErrors.pdfInputRef ? inputStyle : inputStyles}
 
-                      />
-                      {fieldErrors.pdfInputRef && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.pdfInputRef}</div>}
+                    />
+                    {fieldErrors.pdfInputRef && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.pdfInputRef}</div>}
                     <div>{fileName}</div>
                   </Form.Group>
                 </Col>

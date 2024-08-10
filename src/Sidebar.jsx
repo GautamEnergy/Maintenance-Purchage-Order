@@ -123,15 +123,20 @@ export default function Sidebar() {
   const [name, setName] = useState('');
   const [showCard, setShowCard] = useState(false);
   const [openNestedList, setOpenNestedList] = useState({});
+  const [designation , setDesignation] = useState('');
 
   useEffect(() => {
     const profileImgUrl = localStorage.getItem("profilePic");
     const Name = localStorage.getItem("Name");
+    const Designation = localStorage.getItem("Designation");
     if (profileImgUrl) {
       setProfileImg(profileImgUrl);
     }
     if (Name) {
       setName(Name);
+    }
+    if (Designation) {
+      setDesignation(Designation);
     }
   }, []);
 
@@ -161,8 +166,25 @@ export default function Sidebar() {
       [listName]: !prevOpenNestedList[listName],
     }));
   };
+  console.log("designation",designation)
 
   const isSelected = (path) => location.pathname === path;
+  const getVisibleMenuItems = (designation) => {
+    switch (designation) {
+      case 'Super Admin':
+        return menuItems;
+      case 'Maintenance Head':
+        return menuItems.filter(item =>
+          item.text === 'DashBoard'||item.text === 'Spare Part In' || item.text === 'Machine Maintenance'
+        );
+      case 'Spare Part Store Manager':
+        return menuItems.filter(item =>  item.text === 'DashBoard'|| item.text === 'Spare Part In');
+      case 'Maintenance Engineer':
+        return menuItems.filter(item =>  item.text === 'DashBoard'|| item.text === 'Machine Maintenance');
+      default:
+        return []; // No menu items visible for unknown designations
+    }
+  };
 
   const menuItems = [
     { text: 'DashBoard', path: '/dashboard', icon: <DashboardIcon /> },
@@ -217,6 +239,8 @@ export default function Sidebar() {
     // },
 
   ];
+  const visibleMenuItems = getVisibleMenuItems(designation);
+  
 
   return (
     <>
@@ -296,7 +320,7 @@ export default function Sidebar() {
           </DrawerHeader>
           <Divider />
           <List>
-            {menuItems.map((item, index) => (
+            {visibleMenuItems.map((item, index) => (
               <React.Fragment key={item.text}>
                 <ListItem disablePadding sx={{ display: 'block' }}>
                   <ListItemButton
@@ -362,6 +386,7 @@ export default function Sidebar() {
     </>
   );
 }
+
 
 
 

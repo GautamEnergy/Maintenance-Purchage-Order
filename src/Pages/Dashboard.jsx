@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import { Container, Row, Col, Card, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,8 +13,19 @@ import AvailableStock from '../Components/PurchageOrder/AvailableStock';
 import PurchaseOrderList from '../Components/PurchageOrder/PurchaseOrderList';
 import "../Components/Table/table.css"
 import StockLess from '../Components/PurchageOrder/StockLess';
+import SparePartInListing from '../Components/SparePartIn/SparePartInListing';
 
 const Dashboard = () => {
+    const [designation , setDesignation] = useState('');
+
+    useEffect(() => {
+    
+      const Designation = localStorage.getItem("Designation");
+    
+      if (Designation) {
+        setDesignation(Designation);
+      }
+    }, []);
     
     return (
         <>
@@ -31,7 +42,7 @@ const Dashboard = () => {
 
             <div className="container" style={{ display: "flex" }}>
                 <div style={{ width: "100%", marginTop: '-210px' }}>
-                    <PurchaseOrderList />
+                    {designation === "Super Admin"?<PurchaseOrderList />:<SparePartInListing/>}
 
 
                 </div>

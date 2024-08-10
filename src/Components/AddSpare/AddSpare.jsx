@@ -70,7 +70,9 @@ const AddSpare = () => {
 
   let machineData = []
 
-  const notifySuccess = () => toast.success("New Spare Part Added Successfully!", { autoClose: 5000 });
+
+  const notifySuccess = () => toast.success(SparPartId ? "Spare Part Update Successfully!" : "New Spare Part Added Successfully!", { autoClose: 5000 });
+
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
   const fetchEquivalentSpareParts = async (sparePartName, selectedMachines, EquivalentId) => {
@@ -277,7 +279,7 @@ const AddSpare = () => {
 
         formData.append('DrawingImage', pdf);
         formData.append('SparePartId', UUID.SparePartId)
-        console.log("FormData",FormData)
+        console.log("FormData", FormData)
 
         if ((files && files.length > 0) || (pdf && pdf.size > 0)) {
           let upload = await uploadPDF(formData);
@@ -455,6 +457,7 @@ const AddSpare = () => {
     } catch (err) {
       setIsLoading(false);
       notifyError('Error, While Sending File')
+      setLoading(false)
       console.error('Error', err);
       return err;
     }
