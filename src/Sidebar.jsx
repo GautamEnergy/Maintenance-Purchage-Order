@@ -47,6 +47,9 @@ import MachineList from '@mui/icons-material/DomainAdd';
 import SparePartInTable from './Components/SparePartIn/SparePartInTable';
 import SparePartInListing from './Components/SparePartIn/SparePartInListing';
 
+import BlurLinearIcon from '@mui/icons-material/BlurLinear';
+import FitbitIcon from '@mui/icons-material/Fitbit';
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -123,7 +126,7 @@ export default function Sidebar() {
   const [name, setName] = useState('');
   const [showCard, setShowCard] = useState(false);
   const [openNestedList, setOpenNestedList] = useState({});
-  const [designation , setDesignation] = useState('');
+  const [designation, setDesignation] = useState('');
 
   useEffect(() => {
     const profileImgUrl = localStorage.getItem("profilePic");
@@ -166,7 +169,7 @@ export default function Sidebar() {
       [listName]: !prevOpenNestedList[listName],
     }));
   };
-  console.log("designation",designation)
+  console.log("designation", designation)
 
   const isSelected = (path) => location.pathname === path;
   const getVisibleMenuItems = (designation) => {
@@ -175,12 +178,12 @@ export default function Sidebar() {
         return menuItems;
       case 'Maintenance Head':
         return menuItems.filter(item =>
-          item.text === 'DashBoard'||item.text === 'Spare Part In' || item.text === 'Machine Maintenance'
+          item.text === 'DashBoard' || item.text === 'Spare Part In' || item.text === 'Machine Maintenance'
         );
       case 'Spare Part Store Manager':
-        return menuItems.filter(item =>  item.text === 'DashBoard'|| item.text === 'Spare Part In');
+        return menuItems.filter(item => item.text === 'DashBoard' || item.text === 'Spare Part In');
       case 'Maintenance Engineer':
-        return menuItems.filter(item =>  item.text === 'DashBoard'|| item.text === 'Machine Maintenance');
+        return menuItems.filter(item => item.text === 'DashBoard' || item.text === 'Machine Maintenance');
       default:
         return []; // No menu items visible for unknown designations
     }
@@ -218,29 +221,29 @@ export default function Sidebar() {
       icon: <ConstructionIcon />,
       children: [
         { text: 'Add Machine', path: '/machine', icon: <MachineList /> },
-        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable />  },
+        { text: 'Machine List', path: '/machinelist', icon: <MachineListTable /> },
       ],
     },
     {
       text: 'Spare Part In',
-      icon:  <PrecisionManufacturing />,
+      icon: <PrecisionManufacturing />,
       children: [
         { text: 'Spare part In', path: '/sparein', icon: <BuildCircle /> },
-        { text: 'Spare part In List', path: '/spareinList', icon: <MachineList />},
+        { text: 'Spare part In List', path: '/spareinList', icon: <MachineList /> },
       ],
     },
-    // {
-    //   text: 'Machine Maintenance',
-    //   icon:  <PrecisionManufacturing />,
-    //   children: [
-    //     { text: 'Machine Maintenance', path: '/machinemaintenace', icon: <BuildCircle /> },
-    //     { text: 'Spare part In List', path: '/spareinList', icon: <MachineList />},
-    //   ],
-    // },
+    {
+      text: 'Machine Maintenance',
+      icon: <PrecisionManufacturing />,
+      children: [
+        { text: 'Maintenance', path: '/machinemaintenace', icon: <BlurLinearIcon /> },
+        { text: 'Maintenance List', path: '/spareinList', icon: <FitbitIcon /> },
+      ],
+    },
 
   ];
   const visibleMenuItems = getVisibleMenuItems(designation);
-  
+
 
   return (
     <>
