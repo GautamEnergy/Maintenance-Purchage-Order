@@ -54,6 +54,7 @@ const MachineMaintenance = () => {
   const [Stock, setStock] = useState('')
   const [selectedChambers, setSelectedChambers] = useState([]);
   const [showChamberModal, setShowChamberModal] = useState(false);
+  const [remarks , setRemarks] = useState("");
 
 
 
@@ -138,51 +139,9 @@ const MachineMaintenance = () => {
     const url = localStorage.getItem('url');
     setUrl(url);
 
-
-
-
-    // if (token) {
-    //   setToken(token);
-    // }
-    // console.log('URL CHECK');
-    //console.log("baaaaba", Purchase_Order_Id);
-    // getPartyListData();
-    // getSparePartModelListData();
-    //getVoucherListData();
-    // getCompanyName();
-
-
-
   }, []);
 
-  //   const getPartyListData = async () => {
-  //     const token = localStorage.getItem("token");
-  //     const url = localStorage.getItem('url');
-  //     console.log("Fetching party list...");
-  //     console.log(url);
-  //     console.log(token);
-
-  //     try {
-  //       const response = await axios.get(`${url}/Maintenance/GetParty`, {
-  //         headers: {
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //         },
-  //       });
-
-  //       if (response.status === 200 && Array.isArray(response.data)) {
-  //         const partyNames = response.data.map(party => ({
-  //           label: party.PartyName,
-  //           value: party.PartyNameId,
-  //         }));
-  //         setParty(partyNames);
-  //       } else {
-  //         console.error('Unexpected response:', response);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching party list:', error.message);
-  //       console.error(error); // Log the full error object
-  //     }
-  //   };
+  
   const getSparePartModelListData = async (Machinename) => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
@@ -213,116 +172,13 @@ const MachineMaintenance = () => {
       console.error(error); // Log the full error object
     }
   };
-  //   const getVoucherListData = async () => {
-  //     const token = localStorage.getItem("token");
-  //     const url = localStorage.getItem('url');
-  //     console.log("Fetching voucher list...");
-  //     console.log(url);
-  //     console.log(token);
+ 
 
-  //     try {
-  //       const response = await axios.post(`${url}/Maintenance/GetVoucherList`, {
-  //         "SparePartId": SparePartModelNo.value,
-  //         "PartyId": PartyName.value,
-  //         headers: {
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //         },
-  //       });
-
-  //       if (response.status === 200 && Array.isArray(response.data)) {
-  //         const voucherList = response.data.map(voucher => ({
-  //           label: voucher.Voucher_Number,
-  //           value: voucher.Purchase_Order_Id,
-  //         }));
-  //         setPO(voucherList);
-  //       } else {
-  //         console.error('Unexpected response:', response);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching voucher list:', error.message);
-  //       console.error(error); // Log the full error object
-  //     }
-  //   };
-  //   console.log("Brand", Brand);
-  //   const bindInListData = async (SpId,PoId) => {
-  //     const token = localStorage.getItem("token");
-  //     const url = localStorage.getItem('url');
-  //     console.log("Fetching party list...");
-  //     console.log("SparePartId:", SpId, "PurchaseOrderId:", PoId);
-  //     console.log(url);
-  //     console.log(token);
-
-  //     try {
-  //       const response = await axios.post(`${url}/Maintenance/GetPO&SparePartDetail`, {
-  //         SparePartId: SpId,
-  //         PurchaseOrderId: PoId,
-  //         headers: {
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //         },
-  //       });
-
-  //       if (response.status === 200) {
-  //         console.log("bhaaaaanu");
-
-  //         const data = response;
-  //         console.log("branddata", data.data.BrandName)// Assuming the first object contains the data you need
-
-  //         setBrand(data.data.BrandName);
+  const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
+  const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
 
-  //         setSpecification(data.data.Specification);
-  //         setMinimumQuantityRequired(data.data.MinimumQuantityRequired);
-  //         setMachineNames(data.data.Machine.map(machine => ({ label: machine, value: machine })));
-  //         setPCS(data.data.Quantity);
-  //         setPrice(data.data.Price);
-  //         setCurrency(data.data.Currency);
-  //         setUnits(data.data.Unit);
-
-  //         setFieldErrors(prevErrors => {
-  //           const newErrors = { ...prevErrors };
-  //           delete newErrors.Brand;
-  //           delete newErrors.Specification;
-  //           delete newErrors.MinimumQuantityRequired;
-  //           delete newErrors.MachineNames;
-  //           delete newErrors.PCS;
-  //           delete newErrors.Price;
-  //           delete newErrors.Currency;
-  //           delete newErrors.Units;
-  //           return newErrors;
-  //       });
-
-  //       } else {
-  //         console.error('Unexpected response:', response);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching party list:', error.message);
-  //       console.error(error); // Log the full error object
-  //     }
-  //   };
-
-
-
-  //   let machineData = []
-
-  // const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
-  // const notifyError = (message) => toast.error(message, { autoClose: 5000 });
-
-
-  //   const extractLast15Digits = (url) => {
-
-  //     const fileName = url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('.pdf'));
-
-  //     const last15Digits = fileName.slice(-15);
-
-  //     return last15Digits;
-  //   };
-
-
-
-
-
-
-
+ 
   const addSparePartIn = async (data) => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
@@ -339,7 +195,7 @@ const MachineMaintenance = () => {
       console.log("responsebhanu", response.status)
       if (response.status === 200) {
         console.log("responsebhanusaif", response)
-        const responseData = response.data[0];
+        const responseData = response.data.data[0];
         console.log("responseData", responseData)
 
         return responseData;
@@ -372,16 +228,7 @@ const MachineMaintenance = () => {
     if (!StartTime.length) newFieldErrors.StartTime = 'Start Time is required';
     if (!EndTime.length) newFieldErrors.EndTime = 'End Time is required';
     if (!TimeTaken) newFieldErrors.TimeTaken = 'Time Taken is required';
-    // if (!Specification) newFieldErrors.Specification = 'Specification is required';
-    // if (!PCS) newFieldErrors.PCS = 'PCS is required';
-    // if (RPCS.length===0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
-    // if (RPCS>PCS || RPCS == 0) newFieldErrors.RPCS = 'Enter Valid Quantity';
-    // if (!Units) newFieldErrors.Units = 'Units are required';
-    // if (!Currency) newFieldErrors.Currency = 'Currency is required';
-    // if (!Price) newFieldErrors.Price = 'Price is required';
-    // if (TotalCost.length===0) newFieldErrors.TotalCost = 'Total Cost is required';
-    // if (!Invoice) newFieldErrors.Invoice = 'Invoice number is required';
-    // if (!pdf) newFieldErrors.pdfInputRef = 'Invoice PDF is required';
+    if (!Process) newFieldErrors.Process = 'Process is required';
     setFieldErrors(newFieldErrors);
 
 
@@ -390,18 +237,18 @@ const MachineMaintenance = () => {
 
       const data = {
         CreatedBy: personID,
-        MachineName: MachineName.value, // Assuming MachineName is an object with label and value
-        Line: selectedLine, // The selected line
+        MachineName: MachineName.value?MachineName.value:"",
+        Line: selectedLine?selectedLine:"", 
         Chamber: selectedChambers.map(chamber => ({
-          Chamber1: chamber.value,
-          ChamberQuantity: chamber.details // assuming you are capturing details for each chamber
+          Chamber1: chamber.chamberId,
+          ChamberQuantity: chamber.chamberDetails 
         })),
 
         Issue: Issue,
         BreakDownStartTime: StartTime,
         BreakDownEndTime: EndTime,
         BreakDownTotalTime: TimeTaken,
-        SparePartModelNumber: SparePartModelNo.value, // Assuming SparePartModelNo is an object with label and value
+        SparePartModelNumber: SparePartModelNo?.value??"", 
 
         Quantity: Quantity,
         SolutionProcess: Process,
@@ -410,30 +257,25 @@ const MachineMaintenance = () => {
       };
 
       console.log("Inserting", data)
-      // console.log("pdfffff",pdf)
-      // addSparePartIn(data);
+      console.log()
+   
       try {
         let UUID = await addSparePartIn(data);
-        // console.log("uuid",UUID)
-        // let formData = new FormData()
+         console.log("uuid",UUID)
+        let formData = new FormData()
 
-        // formData.append('InvoicePdf', pdf);
-        // formData.append('SparePartId', UUID.SparePartInId)
-        // for (let [key, value] of formData.entries()) {
-        //   console.log(`${key}:`, value);
-        // }
+        formData.append('MachineMaintenancePdf',image);
+        formData.append('SparePartId', UUID.stockCheck)
 
-        // console.log("Upload FormData", formData);
+        if ( (image && image.size > 0)) {
+          let upload = await uploadPDF(formData);
+          console.log("Upload response", upload);
+        } else {
+          notifyError('Error,Please Enter Valid Invoice PDF ')
 
-        // if ( (pdf && pdf.size > 0)) {
-        //   let upload = await uploadPDF(formData);
-        //   console.log("Upload response", upload);
-        // } else {
-        //   notifyError('Error,Please Enter Valid Invoice PDF ')
+          // notifySuccess();
 
-        //   // notifySuccess();
-
-        // }
+        }
         console.log("spare response");
 
       } catch (err) {
@@ -447,11 +289,6 @@ const MachineMaintenance = () => {
 
 
   };
-  //   const apiCall = (selected) =>{
-  //     console.log("PONumber",PONumber.value)
-  //     bindInListData(selected,PONumber.value);
-
-  //   }
   const handleFieldChange = (field, value) => {
     const newFieldErrors = { ...fieldErrors };
     if (!value) {
@@ -463,41 +300,29 @@ const MachineMaintenance = () => {
     setError('');
   };
 
-  //   const handleImageChange = (event) => {
-  //     const selectedFiles = event.target.files;
-  //     const filesArray = [];
-  //     for (let i = 0; i < selectedFiles.length; i++) {
-  //       filesArray.push(selectedFiles[i]);
-  //     }
-  //     setFiles(filesArray);
-  //   };
-
-  //   const handlePdfChange = (e) => {
-  //     const file = e.target.files[0];
-  //     console.log("Fileeeee",file);
-
-
-  //     if (file) {
-  //       setPdf(file);
-  //       setFileName(file.name);
-  //       handleFieldChange('pdfInputRef', file);
-  //     }
-  //   };
+ 
   const handleBack = (e) => {
-    navigate('/spareinList');
+    navigate('/');
   };
 
   const handleMachineNameChange = (selectedMachine) => {
     console.log("Machine Name....................?", selectedMachine);
     setMachineName(selectedMachine);
-    if (selectedMachine && selectedMachine.label === 'gear5') {
-      setShowLineModal(true);  // Open the Line modal
-    } else if (selectedMachine && selectedMachine.label === 'gearj') {
-      setShowChamberModal(true); // Open the Chamber modal
+    if (selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-2'||
+      selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-1'||
+      selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-3'||
+      selectedMachine && selectedMachine.label === 'Stringer(MS40K)-1'||
+      selectedMachine && selectedMachine.label === 'Stringer(MS40K)-2'
+    ) {
+      setShowLineModal(true); 
+    } else if (selectedMachine && selectedMachine.label === 'Laminator (Jinchen)'||
+      selectedMachine && selectedMachine.label === 'Laminator (GMEE)') {
+      setShowChamberModal(true); 
     } else {
-      setSelectedLine(null); // Reset the selected line if it's not Gear5
-      setSelectedChambers([]); // Reset the selected chambers if it's not Gear6
+      setSelectedLine(null); 
+      setSelectedChambers([]); 
     }
+    handleFieldChange("MachineName", MachineName)
 
     console.log(selectedMachine.label);
 
@@ -512,8 +337,9 @@ const MachineMaintenance = () => {
         return newErrors;
       });
     }
+ 
     getSparePartModelListData(selectedMachine.label)
-    handleFieldChange("MachineName", MachineName)
+   
   };
   const handleLineChange = (selectedOption) => {
     setSelectedLine(selectedOption ? selectedOption.value : null);
@@ -521,21 +347,23 @@ const MachineMaintenance = () => {
   const handleChamberChange = (e) => {
     const { value, checked } = e.target;
     setSelectedChambers(prev => {
-      if (checked) {
-        // Add selected chamber with empty details
-        return [...prev, { chamberId: value, chamberDetails: '' }];
-      } else {
-        // Remove deselected chamber
-        return prev.filter(chamber => chamber.chamberId !== value);
-      }
+        if (checked) {
+            // Add selected chamber with empty details
+            return [...prev, { chamberId: value, chamberDetails: '' }];
+        } else {
+            // Remove deselected chamber
+            return prev.filter(chamber => chamber.chamberId !== value);
+        }
     });
-  };
+};
+
 
 
 
 
   const handleModalClose = () => {
-    setShowLineModal(false); // Close the modal without selecting a line
+    setShowLineModal(false);
+    setShowChamberModal(false) // Close the modal without selecting a line
   };
   const handleOkClick = () => {
     if (!selectedLine) {
@@ -556,77 +384,47 @@ const MachineMaintenance = () => {
 
   const handleChamberOkClick = () => {
     if (selectedChambers.length === 0) {
-      setFieldErrors(prevErrors => ({
-        ...prevErrors,
-        selectedChambers: 'Please select at least one chamber before proceeding.',
-      }));
-      return;
+        setFieldErrors(prevErrors => ({
+            ...prevErrors,
+            selectedChambers: 'Please select at least one chamber before proceeding.',
+        }));
+        return;
     }
 
     let incompleteDetails = false;
 
     const updatedChambers = selectedChambers.map(chamber => {
-      const chamberDetailElement = document.getElementById(`${chamber.chamberId}Field`);
-      const chamberDetails = chamberDetailElement ? chamberDetailElement.value : '';
+        const chamberDetailElement = document.getElementById(`${chamber.chamberId}Field`);
+        const chamberDetails = chamberDetailElement ? chamberDetailElement.value.trim() : '';
 
-      if (!chamberDetails) {
-        incompleteDetails = true;
-      }
+        if (!chamberDetails) {
+            incompleteDetails = true;
+        }
 
-      return {
-        chamberId: chamber.chamberId,
-        chamberDetails: chamberDetails,
-      };
+        return {
+            chamberId: chamber.chamberId,
+            chamberDetails: chamberDetails,
+        };
     });
 
     if (incompleteDetails) {
-      setFieldErrors(prevErrors => ({
-        ...prevErrors,
-        selectedChambers: 'Please fill out all details for the selected chambers.',
-      }));
+        setFieldErrors(prevErrors => ({
+            ...prevErrors,
+            selectedChambers: 'Please fill out all details for the selected chambers.',
+        }));
     } else {
-      setSelectedChambers(updatedChambers);
-      setFieldErrors(prevErrors => {
-        const newErrors = { ...prevErrors };
-        delete newErrors.selectedChambers;
-        return newErrors;
-      });
-      setShowChamberModal(false);
-      console.log('Selected Chambers with details:', updatedChambers);
+        setSelectedChambers(updatedChambers);
+        setFieldErrors(prevErrors => {
+            const newErrors = { ...prevErrors };
+            delete newErrors.selectedChambers;
+            return newErrors;
+        });
+        setShowChamberModal(false);
+        console.log('Selected Chambers with details:', updatedChambers);
     }
-  };
+};
 
 
-
-
-
-
-
-
-
-
-  //     console.log("Party Name....................?", selectedPartyName.value);
-  //     setPartyName(selectedPartyName);
-  //     setSparePartModelNo([])
-  //     setPONumber([]);
-  //     setMachineNames([]);
-  //     setModelNo('');
-  //     setBrand('');
-  //     setSpecification('');
-  //     setPCS('');
-  //     setRPCS('');
-  //     setUnits('');
-  //     setCurrency('');
-  //     setPrice('');
-  //     setTotalCost([]);
-  //     setInvoice('');
-  //     setFileName('');
-  //     setSparePartName('');
-  //     setMinimumQuantityRequired('');
-  //     handleFieldChange('PartyName', selectedPartyName);
-  //     getVoucherListData();
-
-  //   };
   const handleSparePartModelChange = (selectedOption) => {
     console.log("Selected Spare Part Model:", selectedOption);
 
@@ -648,140 +446,45 @@ const MachineMaintenance = () => {
     }
   }
 
-  //     // Use a callback to ensure we get the latest state values
-  //     setPONumber((prevPONumber) => {
-  //         if (prevPONumber && prevPONumber.value) {
-  //             bindInListData(selectedOption.value, prevPONumber.value);
-  //         }
-  //         return prevPONumber;
-  //     });
-  // };
-
-  //   console.log("brandss",Brand)
-  //   const handlePONumberChange = (selectedPoNumber) => {
-  //     console.log("Selected PO Number:", selectedPoNumber);
-
-
-  //     // Update state and clear relevant fields
-  //     setPONumber(selectedPoNumber);
-  //     setMachineNames([]);
-  //     setModelNo('');
-  //     setBrand('');
-  //     setSpecification('');
-  //     setPCS('');
-  //     setRPCS(''); 
-  //     setUnits('');
-  //     setCurrency('');
-  //     setPrice('');
-  //     setTotalCost([]);
-  //     setInvoice('');
-  //     setFileName('');
-
-  //     handleFieldChange('PONumber', selectedPoNumber);
-
-  //     setSparePartModelNo((prevSparePartModelNo) => {
-  //         if (prevSparePartModelNo && prevSparePartModelNo.value) {
-  //             bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
-  //         }
-  //         return prevSparePartModelNo;
-  //     });
-  // };
+      const uploadPDF = async (formData) => {
+        console.log("oyeyeyeyyeyeyey")
+        console.log(formData);
 
 
 
-  //   const handleSparePartNameChange = (e) => {
-  //     const { value } = e.target;
-  //     setSparePartName(value);
+        try {
+          const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
 
-  //     handleFieldChange('SparePartName', e.target.value);
+          if (response.status === 200) {
+           // setIsLoading(false);
 
-  //   };
-  //   const handleCurrencyChange = (e) => {
-  //     setCurrency(e.target.value);
-  //     // handleFieldChange('Currency', e.target.value);
-  //     // calculateTotalCost(e.target.value, Price); 
-  //   };
-
-  //   const handlePriceChange = (e) => {
-  //     setPrice(e.target.value);
-  //     handleFieldChange('Price', e.target.value);
-  //     calculateTotalCost(RPCS, e.target.value);
-  //   };
-  //   const handleRecievedPcs = (e) => {
-  //     const newRPCS = e.target.value;
-  //     setRPCS(newRPCS);
-  //     if (Number(newRPCS) <= 0 || Number(newRPCS) > Number(PCS)) {
-  //       handleFieldChange('RPCS', newRPCS); 
-  //     } else {
-  //       setFieldErrors((prevErrors) => ({
-  //         ...prevErrors,
-  //         RPCS: '', 
-  //       }));
-  //     }
+            notifySuccess();
+            setTimeout(() => {
+              setLoading(false);
+              navigate('/spareinList');
+            }, 1000);
+            return response.data;
+          } else {
+            notifyError('Error, Error On Server')
 
 
-  //     console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS); 
-  //     handleFieldChange('RPCS', newRPCS); 
-  //     calculateTotalCost(Price, newRPCS);
-  //     setFieldErrors(prevErrors => {
-  //       const newErrors = { ...prevErrors };
-  //       delete newErrors.TotalCost;
+            return response.data
+          }
 
-  //       return newErrors;
-  //   });
-  //   };
-
-  //   const calculateTotalCost = (RPCS, price) => {
-  //     const total = parseFloat((parseFloat(RPCS) * parseFloat(price)).toFixed(2));
-  //     if (!isNaN(total)) {
-  //       setTotalCost(total);
-  //     } else {
-  //       setTotalCost('');
-
-
-  //     }
-  //   };
-
-
-  //     const uploadPDF = async (formData) => {
-  //       console.log("oyeyeyeyyeyeyey")
-  //       console.log(formData);
+        } catch (err) {
+          setIsLoading(false);
+           notifyError('Error, While Sending File')
+          console.error('Error', err);
+          return err;
+        }
 
 
 
-  //       try {
-  //         const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
-  //           headers: {
-  //             'Content-Type': 'multipart/form-data',
-  //           },
-  //         });
-
-  //         if (response.status === 200) {
-  //          // setIsLoading(false);
-
-  //           notifySuccess();
-  //           setTimeout(() => {
-  //             setLoading(false);
-  //             navigate('/spareinList');
-  //           }, 1000);
-  //           return response.data;
-  //         } else {
-  //           notifyError('Error, Error On Server')
-
-
-  //           return response.data
-  //         }
-
-  //       } catch (err) {
-  //         setIsLoading(false);
-  //          notifyError('Error, While Sending File')
-  //         console.error('Error', err);
-  //         return err;
-  //       }
-
-
-
-  //     };
+      };
   const inputStyle = {
     borderColor: 'black',
     borderWidth: '1px',
@@ -917,6 +620,7 @@ const MachineMaintenance = () => {
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setImage(file)
 
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -932,20 +636,9 @@ const MachineMaintenance = () => {
         }));
         setFileName(file.name);
 
-        // You can handle the file upload process here
-        const formData = new FormData();
-        formData.append('file', file);
-
-        // Example: Perform an upload request (adjust based on your setup)
-        // axios.post('/upload', formData)
-        //   .then(response => console.log('File uploaded successfully'))
-        //   .catch(error => console.error('Error uploading file:', error));
       }
     }
   };
-
-
-
 
   return (
 
@@ -1231,11 +924,35 @@ const MachineMaintenance = () => {
                       name="quantity"
                       value={Quantity}
                       onChange={(e) => {
-                        const value = e.target.value
-                        setQuantity(value)
-                        if (value > Stock || value < 1) { }
-
-                        // handleFieldChange('Specification', e.target.value);
+                        const value = parseInt(e.target.value, 10);
+                        setQuantity(value);
+                
+                        // Check if stock is available
+                        if (SparePartModelNo) {
+                          // Validate Quantity
+                          if (value > Stock) {
+                            setFieldErrors((prev) => ({
+                              ...prev,
+                              Quantity: 'Quantity cannot exceed available stock.',
+                            }));
+                          } else if (value < 1) {
+                            setFieldErrors((prev) => ({
+                              ...prev,
+                              Quantity: 'Quantity must be at least 1.',
+                            }));
+                          } else {
+                            setFieldErrors((prev) => ({
+                              ...prev,
+                              Quantity: "", // Clear any existing error
+                            }));
+                          }
+                        } else {
+                          // If no stock is available, clear any error messages related to Quantity
+                          setFieldErrors((prev) => ({
+                            ...prev,
+                            Quantity: "",
+                          }));
+                        }
                       }}
                       placeholder="Quantity"
 
@@ -1256,7 +973,7 @@ const MachineMaintenance = () => {
                       value={Process}
                       onChange={(e) => {
                         setProcess(e.target.value)
-                        // handleFieldChange('PCS', e.target.value);
+                         handleFieldChange('Process', e.target.value);
                       }}
                       placeholder="Solution Process"
                       
@@ -1267,11 +984,35 @@ const MachineMaintenance = () => {
                   </Form.Group>
                 </Col>
                 <Col className='py-2' md={4}>
+                  <Form.Group controlId="remarks">
+                    <Form.Label style={{ fontWeight: "bold" }}>Remarks</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="remarks"
+                      value={remarks}
+                      onChange={(e) => {
+                        setRemarks(e.target.value)
+                        // handleFieldChange('PCS', e.target.value);
+                      }}
+                      placeholder="Remarkss"
+                      
+                      //     required
+                      style={!fieldErrors.Process ? inputStyle : inputStyles}
+                    />
+                    {fieldErrors.Process && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Process}</div>}
+                  </Form.Group>
+                </Col>
+                
+                
+
+              </Row>
+              <Row>
+              <Col className='py-2' md={4}>
                   <Form.Group controlId="UploadFile">
                     <Form.Label style={{ fontWeight: "bold" }}>Upload Image</Form.Label>
                     <Form.Control
                       type="file"
-                      accept="application/image/*"
+                      accept="image/*"
                       onChange={handleFileChange}
                       ref={fileInputRef}  // Generic reference name
                       style={!fieldErrors.fileInputRef ? inputStyle : inputStyles}

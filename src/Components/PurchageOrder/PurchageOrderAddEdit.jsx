@@ -462,6 +462,7 @@ const PurchageForm = () => {
 
 
     const handleSubmit = async (e) => {
+        fetchVoucherNumber()
         const personID = localStorage.getItem("CurrentUser");
         console.log("lalalallalallala");
 

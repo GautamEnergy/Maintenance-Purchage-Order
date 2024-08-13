@@ -237,7 +237,7 @@ export default function Sidebar() {
       icon: <PrecisionManufacturing />,
       children: [
         { text: 'Maintenance', path: '/machinemaintenace', icon: <BlurLinearIcon /> },
-        { text: 'Maintenance List', path: '/spareinList', icon: <FitbitIcon /> },
+        { text: 'Maintenance List', path: '/maintenaceList', icon: <FitbitIcon /> },
       ],
     },
 

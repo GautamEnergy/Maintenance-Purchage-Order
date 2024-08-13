@@ -14,6 +14,7 @@ import PurchaseOrderList from '../Components/PurchageOrder/PurchaseOrderList';
 import "../Components/Table/table.css"
 import StockLess from '../Components/PurchageOrder/StockLess';
 import SparePartInListing from '../Components/SparePartIn/SparePartInListing';
+import MaintenanceStock from '../MachineMaintenance/MaintenanceStock';
 
 const Dashboard = () => {
     const [designation , setDesignation] = useState('');
@@ -30,13 +31,9 @@ const Dashboard = () => {
     return (
         <>
             <div className="container py-1" style={{ display: "flex" }}>
-                <div style={{ width: "50%" }}>
-                    {/* <PurchaseOrderList /> */}
-                    <StockLess />
-
-                </div>
-                <div style={{ width: "50%" }}>
-                    <AvailableStock />
+               
+                <div style={{ width: "auto" }}>
+                    <MaintenanceStock />
                 </div>
             </div>
 
