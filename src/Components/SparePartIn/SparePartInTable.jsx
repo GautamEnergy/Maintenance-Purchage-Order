@@ -162,7 +162,7 @@ const SparePartInTable = () => {
                     <Column style={{ border: "0.5px dotted black" }} field="Invoice_Number" header="Invoice Number" filter filterPlaceholder="Search by Invoice Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Date" header="Received Date" filter filterPlaceholder="Search by Received Date" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Name" header="Received By" filter filterPlaceholder="Search by Name" sortable />
-                    {designation === "Super Admin" ||designation === "Spare Part Store Manager" ?<Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />: ""}
+                    {designation === "Super Admin" || designation === "Spare Part Store Manager" ?<Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />: ""}
                 </DataTable>
                 {loading && (
                     <div className="p-p-3">

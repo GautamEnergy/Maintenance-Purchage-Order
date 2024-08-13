@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Image, Modal } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import Select from 'react-select';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import img1 from "../Assets/Images/LOGO.png"
 import { AppContext } from '../ContextAPI';
+import "./Maintenance.css"
 // import Loader from '../Loader/Loader';
 
 const MachineMaintenance = () => {
@@ -17,14 +18,14 @@ const MachineMaintenance = () => {
   const [Status, setStatus] = useState('Active');
 
   const [image, setImage] = useState(undefined);
- 
+
   const [error, setError] = useState('');
   const [personID, setPersonID] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [Machine, SetMachine] = useState([])
- 
 
- 
+
+
 
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
@@ -35,97 +36,108 @@ const MachineMaintenance = () => {
 
   // New State
   const [MachineName, setMachineName] = useState(null);
+  const [showLineOptions, setShowLineOptions] = useState(false);
+  const [selectedLine, setSelectedLine] = useState(null);
   const [Issue, setIssue] = useState('');
   const [StartTime, setStartTime] = useState('');
   const [EndTime, setEndTime] = useState('');
   const [TimeTaken, setTimeTaken] = useState('');
   const [SparePartModelNo, setSparePartModelNo] = useState(null);
+  const [ModelNo, setModelNo] = useState('');
   const [Quantity, setQuantity] = useState('');
   const [Process, setProcess] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [fileName, setFileName] = useState('');
+  const [MachineNumber, setMachineNumber] = useState('');
+  const [SparePartName, setSparePartName] = useState('');
+  const [showLineModal, setShowLineModal] = useState(false);
+  const [Stock, setStock] = useState('')
+  const [selectedChambers, setSelectedChambers] = useState([]);
+  const [showChamberModal, setShowChamberModal] = useState(false);
+
 
 
 
   const fileInputRef = useRef(null);
+  const LineOptions = [
+    { value: 'LineA', label: 'Line A' },
+    { value: 'LineB', label: 'Line B' },
+    { value: 'None', label: 'None' }
+  ]
+  const ChamberOptions = [
+    { value: 'Chamber1', label: 'Chamber 1' },
+    { value: 'Chamber2', label: 'Chamber 2' },
+    { value: 'Chamber3', label: 'Chamber 3' },
+    { value: 'Chamber4', label: 'Chamber 4' }
+  ];
 
- 
- 
+  useEffect(() => {
 
 
+    const personID = localStorage.getItem("CurrentUser");
+    const token = localStorage.getItem("token");
+    const url = localStorage.getItem('url');
+    console.log("URL Kya hai.....?", url);
+    setUrl(url);
 
-  
+    if (personID) {
+      setPersonID(personID);
+    }
+
+    if (token) {
+      setToken(token);
+    }
+    console.log('URL CHECK');
+    console.log(url);
+    getMachineListData();
 
 
+  }, []);
+  const getMachineListData = async () => {
+    const url = localStorage.getItem('url');
+    console.log("hmmmmmmmmmmm");
+    console.log(url);
+    console.log(token);
+    // const url = `${url}/Maintenance/MachineDetailById`;
+    try {
+      const response = await axios.get(`${url}/Maintenance/MachineList`, {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      });
 
-  // console.log(token);
-    useEffect(() => {
+      if (response.status === 200 && Array.isArray(response.data.data)) {
+        const machineBody = response.data.data;
 
-      
-      const personID = localStorage.getItem("CurrentUser");
-      const token = localStorage.getItem("token");
-      const url = localStorage.getItem('url');
-      console.log("URL Kya hai.....?", url);
-      setUrl(url);
+        const machineData = machineBody.map(machine => ({
+          MachineId: machine.MachineId,
+          MachineName: machine.MachineName,
+          MachineNumber: machine.MachineNumber
+        }));
 
-      if (personID) {
-        setPersonID(personID);
+        SetMachine(machineData)
+
+
+      } else {
+        console.error('Unexpected response:', response);
+        setError('Failed to fetch machine list. Unexpected response from server.');
       }
+    } catch (error) {
+      console.error('Error fetching machine list:', error.message);
+      console.error(error); // Log the full error object
+      setError('Failed to fetch machine list. Please check the server configuration.');
+    }
+  };
 
-      if (token) {
-        setToken(token);
-      }
-      console.log('URL CHECK');
-      console.log(url);
-      getMachineListData();
-
-
-    }, []);
-    const getMachineListData = async () => {
-        const url = localStorage.getItem('url');
-        console.log("hmmmmmmmmmmm");
-        console.log(url);
-        console.log(token);
-        // const url = `${url}/Maintenance/MachineDetailById`;
-        try {
-          const response = await axios.get(`${url}/Maintenance/MachineDetailById`, {
-            headers: {
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-          });
-          // console.log('Response:', response); 
-          if (response.status === 200 && Array.isArray(response.data)) {
-            const machineBody = response.data;
-            // machineList(machineBody);
-            //setMachineList(machineBody);
-          const  machineData = machineBody.map(machine => ({
-              value: machine.MachineId,
-              label: machine.MachineName
-            }));
-     
-            SetMachine(machineData)
-    
-    
-          } else {
-            console.error('Unexpected response:', response);
-            setError('Failed to fetch machine list. Unexpected response from server.');
-          }
-        } catch (error) {
-          console.error('Error fetching machine list:', error.message);
-          console.error(error); // Log the full error object
-          setError('Failed to fetch machine list. Please check the server configuration.');
-        }
-      };
-   
   useEffect(() => {
     const personID = localStorage.getItem("CurrentUser");
     setPersonID(personID)
-    
-    
+
+
     // const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
     setUrl(url);
-    
+
 
 
 
@@ -143,156 +155,157 @@ const MachineMaintenance = () => {
 
   }, []);
 
-//   const getPartyListData = async () => {
-//     const token = localStorage.getItem("token");
-//     const url = localStorage.getItem('url');
-//     console.log("Fetching party list...");
-//     console.log(url);
-//     console.log(token);
+  //   const getPartyListData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     const url = localStorage.getItem('url');
+  //     console.log("Fetching party list...");
+  //     console.log(url);
+  //     console.log(token);
 
-//     try {
-//       const response = await axios.get(`${url}/Maintenance/GetParty`, {
-//         headers: {
-//           'Content-Type': 'application/json; charset=UTF-8',
-//         },
-//       });
+  //     try {
+  //       const response = await axios.get(`${url}/Maintenance/GetParty`, {
+  //         headers: {
+  //           'Content-Type': 'application/json; charset=UTF-8',
+  //         },
+  //       });
 
-//       if (response.status === 200 && Array.isArray(response.data)) {
-//         const partyNames = response.data.map(party => ({
-//           label: party.PartyName,
-//           value: party.PartyNameId,
-//         }));
-//         setParty(partyNames);
-//       } else {
-//         console.error('Unexpected response:', response);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching party list:', error.message);
-//       console.error(error); // Log the full error object
-//     }
-//   };
-//   const getSparePartModelListData = async () => {
-//     const token = localStorage.getItem("token");
-//     const url = localStorage.getItem('url');
-//     console.log("Fetching spare part model list...");
-//     console.log(url);
-//     console.log(token);
+  //       if (response.status === 200 && Array.isArray(response.data)) {
+  //         const partyNames = response.data.map(party => ({
+  //           label: party.PartyName,
+  //           value: party.PartyNameId,
+  //         }));
+  //         setParty(partyNames);
+  //       } else {
+  //         console.error('Unexpected response:', response);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching party list:', error.message);
+  //       console.error(error); // Log the full error object
+  //     }
+  //   };
+  const getSparePartModelListData = async (Machinename) => {
+    const token = localStorage.getItem("token");
+    const url = localStorage.getItem('url');
+    console.log("Fetching spare part model list...");
+    console.log(url);
+    console.log(token);
 
-//     try {
-//       const response = await axios.post(`${url}/Maintenance/GetAutoData`, { required: "Spare Part Model No" }, {
-//         headers: {
-//           'Content-Type': 'application/json; charset=UTF-8',
-//         },
-//       });
+    try {
+      const response = await axios.post(`${url}/Maintenance/GetStockByMachine`, { MachineName: Machinename }, {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      });
 
-//       if (response.status === 200 && Array.isArray(response.data.data)) {
-//         const sparePartModels = response.data.data.map(part => ({
-//           label: part.SparePartModelNumber,
-//           value: part.SparePartId,
-//           SparePartName: part.SparePartName,
-//         }));
-//         setSparePart(sparePartModels);
-//       } else {
-//         console.error('Unexpected response:', response);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching spare part model list:', error.message);
-//       console.error(error); // Log the full error object
-//     }
-//   };
-//   const getVoucherListData = async () => {
-//     const token = localStorage.getItem("token");
-//     const url = localStorage.getItem('url');
-//     console.log("Fetching voucher list...");
-//     console.log(url);
-//     console.log(token);
+      if (response.status === 200 && Array.isArray(response.data)) {
+        const sparePartModels = response.data.map(part => ({
+          value: part.Spare_Part_Id,
+          label: part.SpareNumber,
+          SparePartName: part.SparePartName,
+          Available_Stock: part.Available_Stock
+        }));
+        setModelNo(sparePartModels);
+      } else {
+        console.error('Unexpected response:', response);
+      }
+    } catch (error) {
+      console.error('Error fetching spare part model list:', error.message);
+      console.error(error); // Log the full error object
+    }
+  };
+  //   const getVoucherListData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     const url = localStorage.getItem('url');
+  //     console.log("Fetching voucher list...");
+  //     console.log(url);
+  //     console.log(token);
 
-//     try {
-//       const response = await axios.post(`${url}/Maintenance/GetVoucherList`, {
-//         "SparePartId": SparePartModelNo.value,
-//         "PartyId": PartyName.value,
-//         headers: {
-//           'Content-Type': 'application/json; charset=UTF-8',
-//         },
-//       });
+  //     try {
+  //       const response = await axios.post(`${url}/Maintenance/GetVoucherList`, {
+  //         "SparePartId": SparePartModelNo.value,
+  //         "PartyId": PartyName.value,
+  //         headers: {
+  //           'Content-Type': 'application/json; charset=UTF-8',
+  //         },
+  //       });
 
-//       if (response.status === 200 && Array.isArray(response.data)) {
-//         const voucherList = response.data.map(voucher => ({
-//           label: voucher.Voucher_Number,
-//           value: voucher.Purchase_Order_Id,
-//         }));
-//         setPO(voucherList);
-//       } else {
-//         console.error('Unexpected response:', response);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching voucher list:', error.message);
-//       console.error(error); // Log the full error object
-//     }
-//   };
-//   console.log("Brand", Brand);
-//   const bindInListData = async (SpId,PoId) => {
-//     const token = localStorage.getItem("token");
-//     const url = localStorage.getItem('url');
-//     console.log("Fetching party list...");
-//     console.log("SparePartId:", SpId, "PurchaseOrderId:", PoId);
-//     console.log(url);
-//     console.log(token);
+  //       if (response.status === 200 && Array.isArray(response.data)) {
+  //         const voucherList = response.data.map(voucher => ({
+  //           label: voucher.Voucher_Number,
+  //           value: voucher.Purchase_Order_Id,
+  //         }));
+  //         setPO(voucherList);
+  //       } else {
+  //         console.error('Unexpected response:', response);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching voucher list:', error.message);
+  //       console.error(error); // Log the full error object
+  //     }
+  //   };
+  //   console.log("Brand", Brand);
+  //   const bindInListData = async (SpId,PoId) => {
+  //     const token = localStorage.getItem("token");
+  //     const url = localStorage.getItem('url');
+  //     console.log("Fetching party list...");
+  //     console.log("SparePartId:", SpId, "PurchaseOrderId:", PoId);
+  //     console.log(url);
+  //     console.log(token);
 
-//     try {
-//       const response = await axios.post(`${url}/Maintenance/GetPO&SparePartDetail`, {
-//         SparePartId: SpId,
-//         PurchaseOrderId: PoId,
-//         headers: {
-//           'Content-Type': 'application/json; charset=UTF-8',
-//         },
-//       });
+  //     try {
+  //       const response = await axios.post(`${url}/Maintenance/GetPO&SparePartDetail`, {
+  //         SparePartId: SpId,
+  //         PurchaseOrderId: PoId,
+  //         headers: {
+  //           'Content-Type': 'application/json; charset=UTF-8',
+  //         },
+  //       });
 
-//       if (response.status === 200) {
-//         console.log("bhaaaaanu");
+  //       if (response.status === 200) {
+  //         console.log("bhaaaaanu");
 
-//         const data = response;
-//         console.log("branddata", data.data.BrandName)// Assuming the first object contains the data you need
+  //         const data = response;
+  //         console.log("branddata", data.data.BrandName)// Assuming the first object contains the data you need
 
-//         setBrand(data.data.BrandName);
+  //         setBrand(data.data.BrandName);
 
 
-//         setSpecification(data.data.Specification);
-//         setMinimumQuantityRequired(data.data.MinimumQuantityRequired);
-//         setMachineNames(data.data.Machine.map(machine => ({ label: machine, value: machine })));
-//         setPCS(data.data.Quantity);
-//         setPrice(data.data.Price);
-//         setCurrency(data.data.Currency);
-//         setUnits(data.data.Unit);
+  //         setSpecification(data.data.Specification);
+  //         setMinimumQuantityRequired(data.data.MinimumQuantityRequired);
+  //         setMachineNames(data.data.Machine.map(machine => ({ label: machine, value: machine })));
+  //         setPCS(data.data.Quantity);
+  //         setPrice(data.data.Price);
+  //         setCurrency(data.data.Currency);
+  //         setUnits(data.data.Unit);
 
-//         setFieldErrors(prevErrors => {
-//           const newErrors = { ...prevErrors };
-//           delete newErrors.Brand;
-//           delete newErrors.Specification;
-//           delete newErrors.MinimumQuantityRequired;
-//           delete newErrors.MachineNames;
-//           delete newErrors.PCS;
-//           delete newErrors.Price;
-//           delete newErrors.Currency;
-//           delete newErrors.Units;
-//           return newErrors;
-//       });
-        
-//       } else {
-//         console.error('Unexpected response:', response);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching party list:', error.message);
-//       console.error(error); // Log the full error object
-//     }
-//   };
+  //         setFieldErrors(prevErrors => {
+  //           const newErrors = { ...prevErrors };
+  //           delete newErrors.Brand;
+  //           delete newErrors.Specification;
+  //           delete newErrors.MinimumQuantityRequired;
+  //           delete newErrors.MachineNames;
+  //           delete newErrors.PCS;
+  //           delete newErrors.Price;
+  //           delete newErrors.Currency;
+  //           delete newErrors.Units;
+  //           return newErrors;
+  //       });
+
+  //       } else {
+  //         console.error('Unexpected response:', response);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching party list:', error.message);
+  //       console.error(error); // Log the full error object
+  //     }
+  //   };
 
 
 
   //   let machineData = []
 
-    // const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
-    // const notifyError = (message) => toast.error(message, { autoClose: 5000 });
+  // const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
+  // const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
 
   //   const extractLast15Digits = (url) => {
@@ -304,42 +317,44 @@ const MachineMaintenance = () => {
   //     return last15Digits;
   //   };
 
- 
- 
 
 
 
 
-//     const addSparePartIn = async (data) => {
-//       const token = localStorage.getItem("token");
-//       const url = localStorage.getItem('url');
-//       try {
-//         // setLoading(true);
-//         const response = await axios.post(`${url}/Maintenance/SparePartIn`,data, {
-         
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-         
-//         });
-//         console.log("responsebhanu",response.status)
-//         if (response.status===200) {
-//           console.log("responsebhanusaif",response)
-//           const responseData = response.data[0];
-        
-//           return responseData;
 
-//         } else {
-//           // setLoading(false);
-//           const errorData = await response.json();
-//           console.log(errorData)
-         
-//         }
-//       } catch (error) {
-//         // setLoading(false);
-//         return error
-//       }
-//     };
+
+  const addSparePartIn = async (data) => {
+    const token = localStorage.getItem("token");
+    const url = localStorage.getItem('url');
+    console.log("jiiiii")
+    try {
+      // setLoading(true);
+      const response = await axios.post(`${url}/Maintenance/SparePartOut`, data, {
+
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+      });
+      console.log("responsebhanu", response.status)
+      if (response.status === 200) {
+        console.log("responsebhanusaif", response)
+        const responseData = response.data[0];
+        console.log("responseData", responseData)
+
+        return responseData;
+
+      } else {
+        // setLoading(false);
+        const errorData = await response.json();
+        console.log(errorData)
+
+      }
+    } catch (error) {
+      // setLoading(false);
+      return error
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -350,13 +365,13 @@ const MachineMaintenance = () => {
     }
     console.log("Errorrrrrrr")
 
-    // const newFieldErrors = {};
-    // if (PartyName.length===0) newFieldErrors.PartyName = 'Party name is required';
-    // if (SparePartModelNo.length===0) newFieldErrors.SparePartModelNo = 'Spare part model number is required';
-    // if (!SparePartName) newFieldErrors.SparePartName = 'Spare part name is required';
-    // if (PONumber.length===0) newFieldErrors.PONumber = 'P O Number is required';
-    // if (MachineNames.length === 0) newFieldErrors.MachineNames = 'Machine name is required';
-    // if (!Brand) newFieldErrors.Brand = 'Brand is required';
+    const newFieldErrors = {};
+    if (!MachineName) newFieldErrors.MachineName = 'Machine Name is required';
+    if (MachineNumber.length === 0) newFieldErrors.MachineNumber = 'Machine Number number is required';
+    if (!Issue) newFieldErrors.Issue = 'Issue is required';
+    if (!StartTime.length) newFieldErrors.StartTime = 'Start Time is required';
+    if (!EndTime.length) newFieldErrors.EndTime = 'End Time is required';
+    if (!TimeTaken) newFieldErrors.TimeTaken = 'Time Taken is required';
     // if (!Specification) newFieldErrors.Specification = 'Specification is required';
     // if (!PCS) newFieldErrors.PCS = 'PCS is required';
     // if (RPCS.length===0) newFieldErrors.RPCS = 'Recieved quantity in PCS is required';
@@ -367,94 +382,87 @@ const MachineMaintenance = () => {
     // if (TotalCost.length===0) newFieldErrors.TotalCost = 'Total Cost is required';
     // if (!Invoice) newFieldErrors.Invoice = 'Invoice number is required';
     // if (!pdf) newFieldErrors.pdfInputRef = 'Invoice PDF is required';
-    // setFieldErrors(newFieldErrors);
-  
-     
-    //   if (Object.keys(newFieldErrors).length === 0) {
-    //     setLoading(true)
-      
-    //     var data = {
-    //       CreatedBy: personID,
-    //       PartyId: PartyName.value,
-    //       SparePartId: SparePartModelNo.value,
-    //       SparePartName: SparePartName,
-    //       PurchaseOrderId:PONumber.value ,
-    //       MachineNames:MachineNames.map(el => el.label),
-    //       SparePartBrandName: Brand,
-    //       Price: Price,
-    //       SparePartSpecification: Specification,
-    //       QuantityPurchaseOrder: PCS,
-    //       Currency: Currency,
-    //       Unit: Units,
-    //       QuantityRecieved: RPCS,
-    //       TotalCost: TotalCost,
-    //       InvoiceNumber: Invoice,
-    //       Status: "Active"
-    //     };
-    //     console.log("Inserting",data)
-    //     console.log("pdfffff",pdf)
-    //    // addSparePartIn(data);
-    //     try {
-    //       let UUID = await addSparePartIn(data);
-    //       console.log("uuid",UUID)
-    //       let formData = new FormData()
-         
-    //       formData.append('InvoicePdf', pdf);
-    //       formData.append('SparePartId', UUID.SparePartInId)
-    //       for (let [key, value] of formData.entries()) {
-    //         console.log(`${key}:`, value);
-    //       }
-    
-    //       console.log("Upload FormData", formData);
-  
-    //       if ( (pdf && pdf.size > 0)) {
-    //         let upload = await uploadPDF(formData);
-    //         console.log("Upload response", upload);
-    //       } else {
-    //         notifyError('Error,Please Enter Valid Invoice PDF ')
+    setFieldErrors(newFieldErrors);
 
-    //         // notifySuccess();
-           
-    //       }
-    //       console.log("spare response");
-  
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    //   } else {
-    //     console.log("Validation errors:", newFieldErrors);
-    //   }
 
-    
+    if (Object.keys(newFieldErrors).length === 0) {
+      setLoading(true)
 
-   
+      const data = {
+        CreatedBy: personID,
+        MachineName: MachineName.value, // Assuming MachineName is an object with label and value
+        Line: selectedLine, // The selected line
+        Chamber: selectedChambers.map(chamber => ({
+          Chamber1: chamber.value,
+          ChamberQuantity: chamber.details // assuming you are capturing details for each chamber
+        })),
+
+        Issue: Issue,
+        BreakDownStartTime: StartTime,
+        BreakDownEndTime: EndTime,
+        BreakDownTotalTime: TimeTaken,
+        SparePartModelNumber: SparePartModelNo.value, // Assuming SparePartModelNo is an object with label and value
+
+        Quantity: Quantity,
+        SolutionProcess: Process,
+
+        Status: "Active"
+      };
+
+      console.log("Inserting", data)
+      // console.log("pdfffff",pdf)
+      // addSparePartIn(data);
+      try {
+        let UUID = await addSparePartIn(data);
+        // console.log("uuid",UUID)
+        // let formData = new FormData()
+
+        // formData.append('InvoicePdf', pdf);
+        // formData.append('SparePartId', UUID.SparePartInId)
+        // for (let [key, value] of formData.entries()) {
+        //   console.log(`${key}:`, value);
+        // }
+
+        // console.log("Upload FormData", formData);
+
+        // if ( (pdf && pdf.size > 0)) {
+        //   let upload = await uploadPDF(formData);
+        //   console.log("Upload response", upload);
+        // } else {
+        //   notifyError('Error,Please Enter Valid Invoice PDF ')
+
+        //   // notifySuccess();
+
+        // }
+        console.log("spare response");
+
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      console.log("Validation errors:", newFieldErrors);
+    }
+
+
+
+
   };
-//   const apiCall = (selected) =>{
-//     console.log("PONumber",PONumber.value)
-//     bindInListData(selected,PONumber.value);
+  //   const apiCall = (selected) =>{
+  //     console.log("PONumber",PONumber.value)
+  //     bindInListData(selected,PONumber.value);
 
-//   }
-
-  // const handleFieldChange = (field, value) => {
-  //   const newFieldErrors = { ...fieldErrors };
-  //   if (field === 'RPCS') {
-  //     if (Number(value) <= 0 || Number(value) > Number(PCS)) {
-  //       newFieldErrors[field] = 'Please Enter Valid Quantity.';
-  //     } else {
-  //       delete newFieldErrors[field]; 
-  //     }
-  //   } else {
-     
-  //     if (!value || (Array.isArray(value) && value.length === 0)) {
-  //       newFieldErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
-  //     } else {
-  //       delete newFieldErrors[field];
-  //     }
   //   }
-  
-  //   setFieldErrors(newFieldErrors);
-  // };
-  
+  const handleFieldChange = (field, value) => {
+    const newFieldErrors = { ...fieldErrors };
+    if (!value) {
+      newFieldErrors[field] = `${field.replace('machine', '').replace(/([A-Z])/g, ' $1')} is required`;
+    } else {
+      delete newFieldErrors[field];
+    }
+    setFieldErrors(newFieldErrors);
+    setError('');
+  };
+
   //   const handleImageChange = (event) => {
   //     const selectedFiles = event.target.files;
   //     const filesArray = [];
@@ -464,222 +472,316 @@ const MachineMaintenance = () => {
   //     setFiles(filesArray);
   //   };
 
-//   const handlePdfChange = (e) => {
-//     const file = e.target.files[0];
-//     console.log("Fileeeee",file);
-    
+  //   const handlePdfChange = (e) => {
+  //     const file = e.target.files[0];
+  //     console.log("Fileeeee",file);
 
-//     if (file) {
-//       setPdf(file);
-//       setFileName(file.name);
-//       handleFieldChange('pdfInputRef', file);
-//     }
-//   };
+
+  //     if (file) {
+  //       setPdf(file);
+  //       setFileName(file.name);
+  //       handleFieldChange('pdfInputRef', file);
+  //     }
+  //   };
   const handleBack = (e) => {
     navigate('/spareinList');
   };
 
-  const handleMachineNameChange = (selectedMachines) => {
-    console.log("Machine Name....................?", selectedMachines);
-    setMachineName(selectedMachines);
-    // handleFieldChange('MachineNames', selectedMachines);
+  const handleMachineNameChange = (selectedMachine) => {
+    console.log("Machine Name....................?", selectedMachine);
+    setMachineName(selectedMachine);
+    if (selectedMachine && selectedMachine.label === 'gear5') {
+      setShowLineModal(true);  // Open the Line modal
+    } else if (selectedMachine && selectedMachine.label === 'gearj') {
+      setShowChamberModal(true); // Open the Chamber modal
+    } else {
+      setSelectedLine(null); // Reset the selected line if it's not Gear5
+      setSelectedChambers([]); // Reset the selected chambers if it's not Gear6
+    }
+
+    console.log(selectedMachine.label);
+
+    const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
+
+    if (selectedMachineData) {
+      setMachineNumber(selectedMachineData.MachineNumber);
+      setFieldErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.MachineNumber;
+
+        return newErrors;
+      });
+    }
+    getSparePartModelListData(selectedMachine.label)
+    handleFieldChange("MachineName", MachineName)
   };
-//   const handlePartyNameChange = (selectedPartyName) => {
-//     console.log("Party Name....................?", selectedPartyName.value);
-//     setPartyName(selectedPartyName);
-//     setSparePartModelNo([])
-//     setPONumber([]);
-//     setMachineNames([]);
-//     setModelNo('');
-//     setBrand('');
-//     setSpecification('');
-//     setPCS('');
-//     setRPCS('');
-//     setUnits('');
-//     setCurrency('');
-//     setPrice('');
-//     setTotalCost([]);
-//     setInvoice('');
-//     setFileName('');
-//     setSparePartName('');
-//     setMinimumQuantityRequired('');
-//     handleFieldChange('PartyName', selectedPartyName);
-//     getVoucherListData();
-    
-//   };
-//   const handleSparePartModelChange = (selectedOption) => {
-//     console.log("Selected Spare Part Model:", selectedOption);
-
-//     // Update state and clear relevant fields
-//     setSparePartModelNo(selectedOption);
-//     setPONumber([]);
-//     setMachineNames([]);
-//     setModelNo('');
-//     setBrand('');
-//     setSpecification('');
-//     setPCS('');
-//     setRPCS('');
-//     setUnits('');
-//     setCurrency('');
-//     setPrice('');
-//     setTotalCost([]);
-//     setInvoice('');
-//     setFileName('');
-//     setSparePartName('');
-//     setMinimumQuantityRequired('');
-   
-//     // Handle field change
-//     handleFieldChange('SparePartModelNo', selectedOption);
-   
-
-//     // Find the selected spare part name based on selected model number
-//     const selectedSparePart = SparePart.find(part => part.value === selectedOption.value);
-//     if (selectedSparePart) {
-//         setSparePartName(selectedSparePart.SparePartName);
-//         setFieldErrors(prevErrors => {
-//           const newErrors = { ...prevErrors };
-//           delete newErrors.SparePartName;
-          
-//           return newErrors;
-//       });
-    
-//         getVoucherListData();
-//     }
-
-//     // Use a callback to ensure we get the latest state values
-//     setPONumber((prevPONumber) => {
-//         if (prevPONumber && prevPONumber.value) {
-//             bindInListData(selectedOption.value, prevPONumber.value);
-//         }
-//         return prevPONumber;
-//     });
-// };
-
-//   console.log("brandss",Brand)
-//   const handlePONumberChange = (selectedPoNumber) => {
-//     console.log("Selected PO Number:", selectedPoNumber);
-   
-
-//     // Update state and clear relevant fields
-//     setPONumber(selectedPoNumber);
-//     setMachineNames([]);
-//     setModelNo('');
-//     setBrand('');
-//     setSpecification('');
-//     setPCS('');
-//     setRPCS(''); 
-//     setUnits('');
-//     setCurrency('');
-//     setPrice('');
-//     setTotalCost([]);
-//     setInvoice('');
-//     setFileName('');
-
-//     handleFieldChange('PONumber', selectedPoNumber);
-
-//     setSparePartModelNo((prevSparePartModelNo) => {
-//         if (prevSparePartModelNo && prevSparePartModelNo.value) {
-//             bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
-//         }
-//         return prevSparePartModelNo;
-//     });
-// };
+  const handleLineChange = (selectedOption) => {
+    setSelectedLine(selectedOption ? selectedOption.value : null);
+  };
+  const handleChamberChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedChambers(prev => {
+      if (checked) {
+        // Add selected chamber with empty details
+        return [...prev, { chamberId: value, chamberDetails: '' }];
+      } else {
+        // Remove deselected chamber
+        return prev.filter(chamber => chamber.chamberId !== value);
+      }
+    });
+  };
 
 
 
-//   const handleSparePartNameChange = (e) => {
-//     const { value } = e.target;
-//     setSparePartName(value);
-    
-//     handleFieldChange('SparePartName', e.target.value);
 
-//   };
-//   const handleCurrencyChange = (e) => {
-//     setCurrency(e.target.value);
-//     // handleFieldChange('Currency', e.target.value);
-//     // calculateTotalCost(e.target.value, Price); 
-//   };
+  const handleModalClose = () => {
+    setShowLineModal(false); // Close the modal without selecting a line
+  };
+  const handleOkClick = () => {
+    if (!selectedLine) {
+      setFieldErrors(prevErrors => ({
+        ...prevErrors,
+        selectedLine: 'Please select a line before proceeding.',
+      }));
+    } else {
+      setFieldErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.selectedLine;
+        return newErrors;
+      });
+      setShowLineModal(false); // Close the modal if validation passes
+      console.log('Selected Line:', selectedLine);
+    }
+  };
 
-//   const handlePriceChange = (e) => {
-//     setPrice(e.target.value);
-//     handleFieldChange('Price', e.target.value);
-//     calculateTotalCost(RPCS, e.target.value);
-//   };
-//   const handleRecievedPcs = (e) => {
-//     const newRPCS = e.target.value;
-//     setRPCS(newRPCS);
-//     if (Number(newRPCS) <= 0 || Number(newRPCS) > Number(PCS)) {
-//       handleFieldChange('RPCS', newRPCS); 
-//     } else {
-//       setFieldErrors((prevErrors) => ({
-//         ...prevErrors,
-//         RPCS: '', 
-//       }));
-//     }
-    
-  
-//     console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS); 
-//     handleFieldChange('RPCS', newRPCS); 
-//     calculateTotalCost(Price, newRPCS);
-//     setFieldErrors(prevErrors => {
-//       const newErrors = { ...prevErrors };
-//       delete newErrors.TotalCost;
-      
-//       return newErrors;
-//   });
-//   };
-  
-//   const calculateTotalCost = (RPCS, price) => {
-//     const total = parseFloat((parseFloat(RPCS) * parseFloat(price)).toFixed(2));
-//     if (!isNaN(total)) {
-//       setTotalCost(total);
-//     } else {
-//       setTotalCost('');
-    
-  
-//     }
-//   };
+  const handleChamberOkClick = () => {
+    if (selectedChambers.length === 0) {
+      setFieldErrors(prevErrors => ({
+        ...prevErrors,
+        selectedChambers: 'Please select at least one chamber before proceeding.',
+      }));
+      return;
+    }
 
- 
-//     const uploadPDF = async (formData) => {
-//       console.log("oyeyeyeyyeyeyey")
-//       console.log(formData);
+    let incompleteDetails = false;
 
+    const updatedChambers = selectedChambers.map(chamber => {
+      const chamberDetailElement = document.getElementById(`${chamber.chamberId}Field`);
+      const chamberDetails = chamberDetailElement ? chamberDetailElement.value : '';
 
+      if (!chamberDetails) {
+        incompleteDetails = true;
+      }
 
-//       try {
-//         const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
-//           headers: {
-//             'Content-Type': 'multipart/form-data',
-//           },
-//         });
+      return {
+        chamberId: chamber.chamberId,
+        chamberDetails: chamberDetails,
+      };
+    });
 
-//         if (response.status === 200) {
-//          // setIsLoading(false);
-          
-//           notifySuccess();
-//           setTimeout(() => {
-//             setLoading(false);
-//             navigate('/spareinList');
-//           }, 1000);
-//           return response.data;
-//         } else {
-//           notifyError('Error, Error On Server')
-          
-
-//           return response.data
-//         }
-
-//       } catch (err) {
-//         setIsLoading(false);
-//          notifyError('Error, While Sending File')
-//         console.error('Error', err);
-//         return err;
-//       }
+    if (incompleteDetails) {
+      setFieldErrors(prevErrors => ({
+        ...prevErrors,
+        selectedChambers: 'Please fill out all details for the selected chambers.',
+      }));
+    } else {
+      setSelectedChambers(updatedChambers);
+      setFieldErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.selectedChambers;
+        return newErrors;
+      });
+      setShowChamberModal(false);
+      console.log('Selected Chambers with details:', updatedChambers);
+    }
+  };
 
 
-    
-//     };
+
+
+
+
+
+
+
+
+  //     console.log("Party Name....................?", selectedPartyName.value);
+  //     setPartyName(selectedPartyName);
+  //     setSparePartModelNo([])
+  //     setPONumber([]);
+  //     setMachineNames([]);
+  //     setModelNo('');
+  //     setBrand('');
+  //     setSpecification('');
+  //     setPCS('');
+  //     setRPCS('');
+  //     setUnits('');
+  //     setCurrency('');
+  //     setPrice('');
+  //     setTotalCost([]);
+  //     setInvoice('');
+  //     setFileName('');
+  //     setSparePartName('');
+  //     setMinimumQuantityRequired('');
+  //     handleFieldChange('PartyName', selectedPartyName);
+  //     getVoucherListData();
+
+  //   };
+  const handleSparePartModelChange = (selectedOption) => {
+    console.log("Selected Spare Part Model:", selectedOption);
+
+    // Update state and clear relevant fields
+    setSparePartModelNo(selectedOption);
+    const selectedSparePart = ModelNo.find(part => part.value === selectedOption.value);
+    if (selectedSparePart) {
+      setSparePartName(selectedSparePart.SparePartName);
+      setStock(selectedSparePart.Available_Stock)
+      setFieldErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.SparePartName;
+
+        return newErrors;
+      });
+
+
+
+    }
+  }
+
+  //     // Use a callback to ensure we get the latest state values
+  //     setPONumber((prevPONumber) => {
+  //         if (prevPONumber && prevPONumber.value) {
+  //             bindInListData(selectedOption.value, prevPONumber.value);
+  //         }
+  //         return prevPONumber;
+  //     });
+  // };
+
+  //   console.log("brandss",Brand)
+  //   const handlePONumberChange = (selectedPoNumber) => {
+  //     console.log("Selected PO Number:", selectedPoNumber);
+
+
+  //     // Update state and clear relevant fields
+  //     setPONumber(selectedPoNumber);
+  //     setMachineNames([]);
+  //     setModelNo('');
+  //     setBrand('');
+  //     setSpecification('');
+  //     setPCS('');
+  //     setRPCS(''); 
+  //     setUnits('');
+  //     setCurrency('');
+  //     setPrice('');
+  //     setTotalCost([]);
+  //     setInvoice('');
+  //     setFileName('');
+
+  //     handleFieldChange('PONumber', selectedPoNumber);
+
+  //     setSparePartModelNo((prevSparePartModelNo) => {
+  //         if (prevSparePartModelNo && prevSparePartModelNo.value) {
+  //             bindInListData(prevSparePartModelNo.value, selectedPoNumber.value);
+  //         }
+  //         return prevSparePartModelNo;
+  //     });
+  // };
+
+
+
+  //   const handleSparePartNameChange = (e) => {
+  //     const { value } = e.target;
+  //     setSparePartName(value);
+
+  //     handleFieldChange('SparePartName', e.target.value);
+
+  //   };
+  //   const handleCurrencyChange = (e) => {
+  //     setCurrency(e.target.value);
+  //     // handleFieldChange('Currency', e.target.value);
+  //     // calculateTotalCost(e.target.value, Price); 
+  //   };
+
+  //   const handlePriceChange = (e) => {
+  //     setPrice(e.target.value);
+  //     handleFieldChange('Price', e.target.value);
+  //     calculateTotalCost(RPCS, e.target.value);
+  //   };
+  //   const handleRecievedPcs = (e) => {
+  //     const newRPCS = e.target.value;
+  //     setRPCS(newRPCS);
+  //     if (Number(newRPCS) <= 0 || Number(newRPCS) > Number(PCS)) {
+  //       handleFieldChange('RPCS', newRPCS); 
+  //     } else {
+  //       setFieldErrors((prevErrors) => ({
+  //         ...prevErrors,
+  //         RPCS: '', 
+  //       }));
+  //     }
+
+
+  //     console.log('PCS:', PCS, 'newRPCS:', newRPCS, 'Errors:', fieldErrors.RPCS); 
+  //     handleFieldChange('RPCS', newRPCS); 
+  //     calculateTotalCost(Price, newRPCS);
+  //     setFieldErrors(prevErrors => {
+  //       const newErrors = { ...prevErrors };
+  //       delete newErrors.TotalCost;
+
+  //       return newErrors;
+  //   });
+  //   };
+
+  //   const calculateTotalCost = (RPCS, price) => {
+  //     const total = parseFloat((parseFloat(RPCS) * parseFloat(price)).toFixed(2));
+  //     if (!isNaN(total)) {
+  //       setTotalCost(total);
+  //     } else {
+  //       setTotalCost('');
+
+
+  //     }
+  //   };
+
+
+  //     const uploadPDF = async (formData) => {
+  //       console.log("oyeyeyeyyeyeyey")
+  //       console.log(formData);
+
+
+
+  //       try {
+  //         const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data',
+  //           },
+  //         });
+
+  //         if (response.status === 200) {
+  //          // setIsLoading(false);
+
+  //           notifySuccess();
+  //           setTimeout(() => {
+  //             setLoading(false);
+  //             navigate('/spareinList');
+  //           }, 1000);
+  //           return response.data;
+  //         } else {
+  //           notifyError('Error, Error On Server')
+
+
+  //           return response.data
+  //         }
+
+  //       } catch (err) {
+  //         setIsLoading(false);
+  //          notifyError('Error, While Sending File')
+  //         console.error('Error', err);
+  //         return err;
+  //       }
+
+
+
+  //     };
   const inputStyle = {
     borderColor: 'black',
     borderWidth: '1px',
@@ -801,40 +903,46 @@ const MachineMaintenance = () => {
         const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
 
         setTimeTaken(`${hours} hours and ${minutes} minutes`);
+        setFieldErrors(prevErrors => {
+          const newErrors = { ...prevErrors };
+          delete newErrors.TimeTaken;
+
+          return newErrors;
+        });
       } catch (error) {
         console.error('Invalid time format:', error);
         setTimeTaken('');
       }
     }
-};
-const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  
-  if (file) {
-    const allowedTypes = [ 'image/jpeg', 'image/png', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        fileInputRef: 'Only PDF or image files are allowed',
-      }));
-    } else {
-      setFieldErrors((prev) => ({
-        ...prev,
-        fileInputRef: null,
-      }));
-      setFileName(file.name);
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
 
-      // You can handle the file upload process here
-      const formData = new FormData();
-      formData.append('file', file);
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          fileInputRef: 'Only image files are allowed',
+        }));
+      } else {
+        setFieldErrors((prev) => ({
+          ...prev,
+          fileInputRef: null,
+        }));
+        setFileName(file.name);
 
-      // Example: Perform an upload request (adjust based on your setup)
-      // axios.post('/upload', formData)
-      //   .then(response => console.log('File uploaded successfully'))
-      //   .catch(error => console.error('Error uploading file:', error));
+        // You can handle the file upload process here
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Example: Perform an upload request (adjust based on your setup)
+        // axios.post('/upload', formData)
+        //   .then(response => console.log('File uploaded successfully'))
+        //   .catch(error => console.error('Error uploading file:', error));
+      }
     }
-  }
-};
+  };
 
 
 
@@ -851,30 +959,125 @@ const handleFileChange = (e) => {
         <div className={`form-content ${loading ? 'blurred' : ''}`}>
           <Image src={img1} alt="" className="text-center" rounded style={{ width: '14%', marginLeft: "43%" }} />
           <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-           Machine Maintenance
+            Machine Maintenance
           </h2>
           <Form onSubmit={handleSubmit}>
             <div className="subCard2">
               <Row>
                 <Col className='py-2' md={4}>
-                  <Form.Group controlId="PartyName">
+                  <Form.Group controlId="MachineName">
                     <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
                     <Select
 
                       value={MachineName}
 
-                       onChange={handleMachineNameChange}
+                      onChange={handleMachineNameChange}
                       placeholder="Select Machine Name"
-                      options={Machine}
-
-                      styles={!fieldErrors.PartyName ? customSelectStyles : customSelectStyles1}
+                      options={Machine.map(machine => ({
+                        value: machine.MachineId,
+                        label: machine.MachineName
+                      }))}
+                      styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
                     //   required
 
                     />
-                    {fieldErrors.PartyName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.PartyName}</div>}
+                    {fieldErrors.MachineName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineName}</div>}
                   </Form.Group>
                 </Col>
-               
+                <Modal show={showLineModal} onHide={handleModalClose} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Select Line</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Select
+                      value={LineOptions.find(option => option.value === selectedLine)}
+                      onChange={handleLineChange}
+                      options={LineOptions}
+                      placeholder="Select Line"
+                    />
+                    {fieldErrors.selectedLine && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedLine}</div>}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleModalClose}>
+                      Close
+                    </Button>
+                    <Button variant="primary" onClick={handleOkClick}>
+                      OK
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+                {/* Modal For Chamber */}
+                <Modal show={showChamberModal} onHide={handleModalClose} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Select Chambers</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {ChamberOptions.map(chamber => (
+                      <Row key={chamber.value} className="mb-2 align-items-center">
+                        <Col xs={5}>
+                          <Form.Check
+                            type="checkbox"
+                            id={chamber.value}
+                            label={chamber.label}
+                            value={chamber.value}
+                            checked={selectedChambers.some(selected => selected.chamberId === chamber.value)}
+                            onChange={handleChamberChange}
+                          />
+                        </Col>
+                        <Col xs={7}>
+                          {selectedChambers.some(selected => selected.chamberId === chamber.value) && (
+                            <Form.Group controlId={`${chamber.value}Field`}>
+                              <Form.Control
+                                type="text"
+                                placeholder={`Enter details for ${chamber.label}`}
+                                value={selectedChambers.find(selected => selected.chamberId === chamber.value)?.chamberDetails || ''}
+                                onChange={(e) => {
+                                  const details = e.target.value;
+                                  setSelectedChambers(prev => prev.map(ch =>
+                                    ch.chamberId === chamber.value
+                                      ? { ...ch, chamberDetails: details }
+                                      : ch
+                                  ));
+                                }}
+                              />
+                            </Form.Group>
+                          )}
+                        </Col>
+                      </Row>
+                    ))}
+
+
+                    {fieldErrors.selectedChambers && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedChambers}</div>}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleModalClose}>
+                      Close
+                    </Button>
+                    <Button variant="primary" onClick={handleChamberOkClick}>
+                      OK
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+                <Col md={4}>
+                  <Form.Group controlId="MachineNumber">
+                    <Form.Label style={{ fontWeight: "bold" }}>Machine Number</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="MachineNumber"
+                      value={MachineNumber}
+                      //   onChange={handleIssue}
+                      placeholder="Machine Number"
+
+                      // required
+                      style={!fieldErrors.MachineNumber ? inputStyle : inputStyles}
+
+                    />
+                    {fieldErrors.MachineNumber && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineNumber}</div>}
+                  </Form.Group>
+                </Col>
+
                 <Col md={4}>
                   <Form.Group controlId="Issue">
                     <Form.Label style={{ fontWeight: "bold" }}>Issue</Form.Label>
@@ -882,26 +1085,33 @@ const handleFileChange = (e) => {
                       type="text"
                       name="Issue"
                       value={Issue}
-                    //   onChange={handleIssue}
+                      onChange={(e) => {
+                        setIssue(e.target.value)
+                        handleFieldChange('Issue', e.target.value);
+                      }}
                       placeholder="Issue"
-                      
+
                       // required
-                      style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
+                      style={!fieldErrors.Issue ? inputStyle : inputStyles}
 
                     />
-                    {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
+                    {fieldErrors.Issue && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Issue}</div>}
                   </Form.Group>
                 </Col>
+
+              </Row>
+
+              <Row>
                 <Col md={4}>
                   <Form.Group controlId="StartTime">
-                    <Form.Label style={{ fontWeight: "bold" }}>Maintenance Start Time</Form.Label>
+                    <Form.Label style={{ fontWeight: "bold" }}>BreakDown Start Time</Form.Label>
                     <Form.Control
                       type="text"
                       name="StartTime"
                       value={StartTime}
-                       onChange={(e)=>handleTimeChange(e, 'StartTime')}
+                      onChange={(e) => handleTimeChange(e, 'StartTime')}
                       placeholder="e.g., 18:05 (HH:MM)"
-                     
+
                       // required
                       style={!fieldErrors.StartTime ? inputStyle : inputStyles}
 
@@ -909,17 +1119,14 @@ const handleFileChange = (e) => {
                     {fieldErrors.StartTime && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.StartTime}</div>}
                   </Form.Group>
                 </Col>
-              </Row>
-
-              <Row>
-              <Col md={4}>
+                <Col md={4}>
                   <Form.Group controlId="EndTime">
-                    <Form.Label style={{ fontWeight: "bold" }}>Maintenance End Time</Form.Label>
+                    <Form.Label style={{ fontWeight: "bold" }}>BreakDown End Time</Form.Label>
                     <Form.Control
                       type="text"
                       name="EndTime"
                       value={EndTime}
-                      onChange={(e)=>handleTimeChange(e, 'EndTime')}
+                      onChange={(e) => handleTimeChange(e, 'EndTime')}
                       placeholder="e.g., 18:05 (HH:MM)"
                       // required
                       style={!fieldErrors.EndTime ? inputStyle : inputStyles}
@@ -930,14 +1137,14 @@ const handleFileChange = (e) => {
                 </Col>
                 <Col md={4}>
                   <Form.Group controlId="EndTime">
-                    <Form.Label style={{ fontWeight: "bold" }}>Maintenance Time Taken</Form.Label>
+                    <Form.Label style={{ fontWeight: "bold" }}>Total BreakDown Time</Form.Label>
                     <Form.Control
                       type="text"
                       name="timeTaken"
                       value={TimeTaken}
-                    //   onChange={handleTimeTaken}
+                      //   onChange={handleTimeTaken}
                       placeholder="Maintenance Time Taken"
-                      readOnly = "true"
+                      readOnly="true"
                       // required
                       style={!fieldErrors.TimeTaken ? inputStyle : inputStyles}
 
@@ -945,16 +1152,23 @@ const handleFileChange = (e) => {
                     {fieldErrors.TimeTaken && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.TimeTaken}</div>}
                   </Form.Group>
                 </Col>
+
+
+
+              </Row>
+
+              <Row>
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="partModelNo">
                     <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
                     <Select
 
                       value={SparePartModelNo}
+                      options={ModelNo}
 
-                    //   onChange={handleSparePartModelChange}
+                      onChange={handleSparePartModelChange}
                       placeholder="Select Spare Part Model Number"
-//options={SparePart}
+                      //options={SparePart}
                       styles={!fieldErrors.SparePartModelNo ? customSelectStyles : customSelectStyles1}
                     //   required
 
@@ -962,109 +1176,118 @@ const handleFileChange = (e) => {
                     {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
                   </Form.Group>
                 </Col>
-
-
-              </Row>
-
-              <Row>
-              <Col className='py-2' md={4}>
+                <Col className='py-2' md={4}>
                   <Form.Group controlId="sparepartname">
-                    <Form.Label style={{ fontWeight: "bold" }}>SparePartName</Form.Label>
+                    <Form.Label style={{ fontWeight: "bold" }}>Spare Part Name</Form.Label>
                     <Form.Control
                       type="text"
                       name="quantity"
-                      value={Quantity}
+                      value={SparePartName}
                       onChange={(e) => {
-                        setQuantity(e.target.value)
+                        setSparePartName(e.target.value)
                         // handleFieldChange('Specification', e.target.value);
                       }}
-                      placeholder="Specification"
-                      readOnly = "true"
+                      placeholder="Spare Part Name"
+                      readOnly="true"
                       //  required
-                      style={!fieldErrors.Specification ? inputStyle : inputStyles}
+                      style={!fieldErrors.SparePartName ? inputStyle : inputStyles}
                     />
-                    {fieldErrors.Specification && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Specification}</div>}
+                    {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
                   </Form.Group>
                 </Col>
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="databox">
+                    <Form.Label style={{ fontWeight: "bold" }}> Available Stock</Form.Label>
+                    <div
+                      style={{
+                        border: "1px solid #ced4da",
+                        borderRadius: ".25rem",
+                        padding: "0.375rem 0.75rem",
+                        height: "calc(1.5em + .75rem + 2px)",
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        lineHeight: "1.5",
+                        color: "rgb(41 97 72)",
+                        backgroundColor: "#e9ecef",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "start",
+                        boxShadow: "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px"
+                      }}
+                    >
+                      {Stock}
+                    </div>
+                    {fieldErrors.Stock && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Stock}</div>}
+                  </Form.Group>
+                </Col>
+              </Row>
 
+              <Row>
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="quantity">
                     <Form.Label style={{ fontWeight: "bold" }}>Quantity</Form.Label>
                     <Form.Control
-                      type="text"
+                      type="number"
                       name="quantity"
                       value={Quantity}
                       onChange={(e) => {
-                        setQuantity(e.target.value)
+                        const value = e.target.value
+                        setQuantity(value)
+                        if (value > Stock || value < 1) { }
+
                         // handleFieldChange('Specification', e.target.value);
                       }}
-                      placeholder="Specification"
-                      readOnly = "true"
+                      placeholder="Quantity"
+
                       //  required
-                      style={!fieldErrors.Specification ? inputStyle : inputStyles}
+                      style={!fieldErrors.Quantity ? inputStyle : inputStyles}
                     />
-                    {fieldErrors.Specification && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Specification}</div>}
+                    {fieldErrors.Quantity && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Quantity}</div>}
                   </Form.Group>
                 </Col>
+
 
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="pcs">
                     <Form.Label style={{ fontWeight: "bold" }}>Solution Process</Form.Label>
                     <Form.Control
                       type="text"
-                      name="pcs"
+                      name="Process"
                       value={Process}
                       onChange={(e) => {
                         setProcess(e.target.value)
                         // handleFieldChange('PCS', e.target.value);
                       }}
                       placeholder="Solution Process"
-                      readOnly = "true"
+                      
                       //     required
-                      style={!fieldErrors.PCS ? inputStyle : inputStyles}
+                      style={!fieldErrors.Process ? inputStyle : inputStyles}
                     />
-                    {fieldErrors.PCS && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.PCS}</div>}
+                    {fieldErrors.Process && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Process}</div>}
                   </Form.Group>
                 </Col>
-                {/* <Col className='py-2' md={4}>
-                  <Form.Group controlId="rpcs">
-                    <Form.Label style={{ fontWeight: "bold" }}>Quantity in PCS(Recieved)</Form.Label>
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="UploadFile">
+                    <Form.Label style={{ fontWeight: "bold" }}>Upload Image</Form.Label>
                     <Form.Control
-                      type="number"
-                      name="rpcs"
-                      value={RPCS}
-                      onChange=  {handleRecievedPcs}
-                      placeholder="RPCS"
-                      //     required
-                      style={!fieldErrors.RPCS ? inputStyle : inputStyles}
+                      type="file"
+                      accept="application/image/*"
+                      onChange={handleFileChange}
+                      ref={fileInputRef}  // Generic reference name
+                      style={!fieldErrors.fileInputRef ? inputStyle : inputStyles}
                     />
-                    {fieldErrors.RPCS && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.RPCS}</div>}
+                    {fieldErrors.fileInputRef && (
+                      <div style={{ fontSize: "13px" }} className="text-danger">
+                        {fieldErrors.fileInputRef}
+                      </div>
+                    )}
+                    <div>{fileName}</div>
                   </Form.Group>
-                </Col> */}
-              </Row>
-              <Row>
-              <Col className='py-2' md={4}>
-  <Form.Group controlId="UploadFile">
-    <Form.Label style={{ fontWeight: "bold" }}>Upload Image</Form.Label>
-    <Form.Control
-      type="file"
-      accept="application/image/*"  
-      onChange={handleFileChange}  
-      ref={fileInputRef}  // Generic reference name
-      style={!fieldErrors.fileInputRef ? inputStyle : inputStyles}
-    />
-    {fieldErrors.fileInputRef && (
-      <div style={{ fontSize: "13px" }} className="text-danger">
-        {fieldErrors.fileInputRef}
-      </div>
-    )}
-    <div>{fileName}</div>
-  </Form.Group>
-</Col>
+                </Col>
 
               </Row>
 
-             
+
             </div>
 
             <Row>
