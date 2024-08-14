@@ -310,41 +310,83 @@ const MachineMaintenance = () => {
   };
 
   const handleMachineNameChange = (selectedMachine) => {
-    console.log("Machine Name....................?", selectedMachine);
-    setMachineName(selectedMachine);
-    if (selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-2'||
-      selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-1'||
-      selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-3'||
-      selectedMachine && selectedMachine.label === 'Stringer(MS40K)-1'||
-      selectedMachine && selectedMachine.label === 'Stringer(MS40K)-2'
-    ) {
-      setShowLineModal(true); 
-    } else if (selectedMachine && selectedMachine.label === 'Laminator (Jinchen)'||
-      selectedMachine && selectedMachine.label === 'Laminator (GMEE)') {
-      setShowChamberModal(true); 
-    } else {
-      setSelectedLine(null); 
-      setSelectedChambers([]); 
+    console.log("Machine Name:", selectedMachine);
+
+    if (selectedMachine) {
+        setMachineName(selectedMachine);
+
+        // Check for specific machine labels to control modals
+        if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2'].includes(selectedMachine.label)) {
+            setShowLineModal(true);
+            setShowChamberModal(false);  // Close other modals if needed
+        } else if (['Laminator (Jinchen)', 'Laminator (GMEE)'].includes(selectedMachine.label)) {
+            setShowChamberModal(true);
+            setShowLineModal(false);  // Close other modals if needed
+        } else {
+            setShowLineModal(false);
+            setShowChamberModal(false);
+            setSelectedLine(null);
+            setSelectedChambers([]);
+        }
+
+        handleFieldChange("MachineName", selectedMachine.label);
+
+        const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
+
+        if (selectedMachineData) {
+            setMachineNumber(selectedMachineData.MachineNumber);
+            setFieldErrors(prevErrors => {
+                const newErrors = { ...prevErrors };
+                delete newErrors.MachineNumber;
+                return newErrors;
+            });
+        }
+
+        getSparePartModelListData(selectedMachine.label);
+
+        console.log(selectedMachine.label);
     }
-    handleFieldChange("MachineName", MachineName)
-
-    console.log(selectedMachine.label);
-
-    const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
-
-    if (selectedMachineData) {
-      setMachineNumber(selectedMachineData.MachineNumber);
-      setFieldErrors(prevErrors => {
-        const newErrors = { ...prevErrors };
-        delete newErrors.MachineNumber;
-
-        return newErrors;
-      });
-    }
+};
+// const handleMachineNameChange = (selectedMachine) => {
+//   console.log("Machine Name....................?", selectedMachine);
+//   setMachineName(selectedMachine);
+//   if (selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-2'||
+//     selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-1'||
+//     selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-3'||
+//     selectedMachine && selectedMachine.label === 'Stringer(MS40K)-1'||
+//     selectedMachine && selectedMachine.label === 'Stringer(MS40K)-2'
+//   ) {
+//     setShowLineModal(true); 
+//   } else if (selectedMachine && selectedMachine.label === 'Laminator (Jinchen)'||
+//     selectedMachine && selectedMachine.label === 'Laminator (GMEE)') {
+//     setShowChamberModal(true); 
+//   } else {
+//     setSelectedLine(null); 
+//     setSelectedChambers([]); 
+//   }
+//   handleFieldChange("MachineName", MachineName)
  
-    getSparePartModelListData(selectedMachine.label)
-   
-  };
+
+//   console.log(selectedMachine.label);
+
+//   const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
+
+//   if (selectedMachineData) {
+//     setMachineNumber(selectedMachineData.MachineNumber);
+    
+//     setFieldErrors(prevErrors => {
+//       const newErrors = { ...prevErrors };
+//       delete newErrors.MachineNumber;
+
+//       return newErrors;
+//     });
+//   }
+ 
+
+//   getSparePartModelListData(selectedMachine.label)
+ 
+// };
+
   const handleLineChange = (selectedOption) => {
     setSelectedLine(selectedOption ? selectedOption.value : null);
   };
@@ -999,12 +1041,12 @@ const MachineMaintenance = () => {
                         setRemarks(e.target.value)
                         // handleFieldChange('PCS', e.target.value);
                       }}
-                      placeholder="Remarkss"
+                      placeholder="Remarks"
                       
                       //     required
-                      style={!fieldErrors.Process ? inputStyle : inputStyles}
+                      style={!fieldErrors.remarks ? inputStyle : inputStyles}
                     />
-                    {fieldErrors.Process && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Process}</div>}
+                    {/* {fieldErrors.Process && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Process}</div>} */}
                   </Form.Group>
                 </Col>
                 
