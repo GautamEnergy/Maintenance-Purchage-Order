@@ -23,7 +23,7 @@ const AvailableStock= () => {
                 
                 <Image src={img1} alt="" className="text-center" rounded style={{ width: '25%', marginLeft: "35%" }} />
                 <h2 className="text-center" style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', marginTop: "12px", marginBottom: '12px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
-                    Stock Availability
+                    Available Stock By Machine
                 </h2>
                 <div className="App">
                     <div className="card" style={{width:"100%"}}>

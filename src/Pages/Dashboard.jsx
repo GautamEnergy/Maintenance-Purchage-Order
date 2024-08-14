@@ -15,6 +15,7 @@ import "../Components/Table/table.css"
 import StockLess from '../Components/PurchageOrder/StockLess';
 import SparePartInListing from '../Components/SparePartIn/SparePartInListing';
 import MaintenanceStock from '../MachineMaintenance/MaintenanceStock';
+import MaintenaceList from '../MachineMaintenance/MaintenanceList';
 
 const Dashboard = () => {
     const [designation , setDesignation] = useState('');
@@ -31,20 +32,42 @@ const Dashboard = () => {
     return (
         <>
             <div className="container py-1" style={{ display: "flex" }}>
+            <div style={{ width: "50%" }}>
+                    <AvailableStock />
+                </div>
                
-                <div style={{ width: "auto" }}>
+                <div style={{ width: "50%" }}>
                     <MaintenanceStock />
                 </div>
+
             </div>
 
             <div className="container" style={{ display: "flex" }}>
                 <div style={{ width: "100%", marginTop: '-210px' }}>
-                    {designation === "Super Admin"?<PurchaseOrderList />:<SparePartInListing/>}
+                { designation === "Maintenance Head"?"" : (designation === "Super Admin" ? <PurchaseOrderList /> : <SparePartInListing />)}
+                    
 
 
                 </div>
 
             </div>
+            {designation === "Super Admin"|| designation === "Maintenance Head"?<div className="container " style={{ display: "flex",marginTop:"-140px" }}>
+                <div style={{ width: "50%"}}>
+                    <SparePartInListing />
+
+
+                </div>
+                <div style={{ width: "50%" }}>
+                    <MaintenaceList />
+
+
+                </div>
+
+            </div>:""}
+            
+
+           
+
 
 
         </>
@@ -52,4 +75,5 @@ const Dashboard = () => {
     );
 }
 export default Dashboard
+
 

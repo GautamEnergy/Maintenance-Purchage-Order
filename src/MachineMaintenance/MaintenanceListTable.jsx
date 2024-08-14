@@ -6,6 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Skeleton } from 'primereact/skeleton';
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import img1 from "../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
@@ -22,30 +23,31 @@ const MaintenaceListTable = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
-    const [designation,setDesignation] = useState('');
+    const [designation, setDesignation] = useState('');
     const [showDialog, setShowDialog] = useState(false);
     const [personID, setPersonID] = useState('');
-    const [machineID,setMachineID] = useState('')
-    const [name ,setName] = useState('')
+    const [machineID, setMachineID] = useState('')
+    const [name, setName] = useState('')
 
     useEffect(() => {
         const url = localStorage.getItem('url');
         setUrl(url)
         const personID = localStorage.getItem("CurrentUser");
-    setPersonID(personID)
-    const Name = localStorage.getItem("Name");
-    setName(Name)
+        setPersonID(personID)
+        const Name = localStorage.getItem("Name");
+        setName(Name)
         const Designation = localStorage.getItem("Designation");
-    
+
         if (Designation) {
-          setDesignation(Designation);
+            setDesignation(Designation);
         }
-      
+
 
         fetchData();
     }, []);
+    const notifySuccess = () => toast.success("You Are Added Successfully!", { autoClose: 5000 });
     const fetchData = async () => {
-          const url = localStorage.getItem('url');
+        const url = localStorage.getItem('url');
         try {
             const { data } = await axios.get(`${url}/Maintenance/GetMachineMaintenanceList`);
             setData(data.data);
@@ -60,60 +62,22 @@ const MaintenaceListTable = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
     const handleButtonClick = (MachineId1) => {
-        console.log("MachineIdqqqq",MachineId1);
+        console.log("MachineIdqqqq", MachineId1);
         setMachineID(MachineId1)
         setShowDialog(true);
     };
-    
 
-    // const handleConfirm = async (MachineId) => {
-    //     console.log("MachineId",MachineId);
-        
-    //     try {
-    //         console.log("data",data)
-    //         console.log(data[0].Machine_Maintenance_Id)
-    //         // Replace with your API endpoint
-    //         const response = await axios.post(`${url}/Maintenance/SparePartOut`, {
-    //             MachineMaintenanceId:data[0].Machine_Maintenance_Id,
-    //             CreatedBy:personID,
-               
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             // Replace with your data
-    //         });
-
-    //         if (response.status === 200) {
-    //             console.log("responsebhanusaif", response)
-    //             const responseData = response.data[0];
-    //             fetchData();
-        
-    //             return responseData;
-        
-    //           } else {
-    //             // setLoading(false);
-    //             const errorData = await response.json();
-    //             console.log(errorData)
-        
-    //           }
-    //         } catch (error) {
-    //           // setLoading(false);
-    //           return error
-    //         } finally {
-    //         setShowDialog(false);
-    //     }
-    // };
     const handleYes = async () => {
         console.log("MachineIdqqqq");
-        
+
         try {
-            console.log("data",data)
-          
+            console.log("data", data)
+
             // Replace with your API endpoint
             const response = await axios.post(`${url}/Maintenance/SparePartOut`, {
-                MachineMaintenanceId:machineID,
-                CreatedBy:personID,
-               
+                MachineMaintenanceId: machineID,
+                CreatedBy: personID,
+
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -122,21 +86,23 @@ const MaintenaceListTable = () => {
 
             if (response.status === 200) {
                 console.log("responsebhanusaif", response)
+
                 const responseData = response.data[0];
-                 fetchData();
-        
+                notifySuccess();
+                fetchData();
+
                 return responseData;
-        
-              } else {
+
+            } else {
                 // setLoading(false);
                 const errorData = await response.json();
                 console.log(errorData)
-        
-              }
-            } catch (error) {
-              // setLoading(false);
-              return error
-            } finally {
+
+            }
+        } catch (error) {
+            // setLoading(false);
+            return error
+        } finally {
             setShowDialog(false);
         }
     };
@@ -145,7 +111,7 @@ const MaintenaceListTable = () => {
         // Handle the "No" action here
         setShowDialog(false);
     };
- 
+
 
     const handlePdfClick = (pdfUrl, Machine_Names) => {
         const link = document.createElement('a');
@@ -154,45 +120,45 @@ const MaintenaceListTable = () => {
         link.click();
     };
     const actionBodyTemplate = (rowData) => {
-        const isNameInMaintenancedBy = Array.isArray(rowData["Maintenanced by"]) 
-        ? rowData["Maintenanced by"].includes(name) 
-        : false;
-        console.log("rowDataaaa",rowData)
+        const isNameInMaintenancedBy = Array.isArray(rowData["Maintenanced by"])
+            ? rowData["Maintenanced by"].includes(name)
+            : false;
+        console.log("rowDataaaa", rowData)
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
-                    
-                   { designation === "Super Admin" && !isNameInMaintenancedBy  ?<Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleButtonClick(rowData.Machine_Maintenance_Id)}  />:""}
-                   <Dialog
-                header="Machine Maintenence"
-                visible={showDialog}
-                style={{ width: '300px' }}
-                modal
-                footer={
-                    <div>
-                        <Button label="No" icon="pi pi-times" onClick={handleCancel} className="p-button-text" style={{backgroundColor:"red",color:"black"}} />
-                        <Button label="Yes" icon="pi pi-times"  onClick={() => handleYes()} className="p-button-text"  />
-                        {/* <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleYes(rowData.Issue)} /> */}
-                        {/* <Button label="Yes" icon="pi pi-check" onClick={handleConfirm(rowData.Machine_Maintenance_Id)}   /> */}
-                    </div>
-                }
-                onHide={() => setShowDialog(false)}
 
-            >   
-            
-                <p>Are You Involved In This Machine Maintenace.. ?</p>
-            </Dialog>
-		   {rowData.Image_URL != null && rowData.Image_URL != "" ?
-                    <Button 
-		    
-                    icon="pi pi-download" 
-                    className="p-button-rounded" 
-                    data-pr-tooltip="Download Invoice" 
-                    style={{ marginRight: '5px' }} 
-                    onClick={() => handlePdfClick(rowData.Image_URL, rowData.Machine_Names)} 
-                />:""}
-                {/* <Tooltip target=".p-button-rounded" /> */}
-                   
+                    {designation != "Spare Part Store Manager" && designation != "Super Admin" && !isNameInMaintenancedBy ? <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add Yourself For this Maintenence" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleButtonClick(rowData.Machine_Maintenance_Id)} /> : ""}
+                    <Dialog
+                        header="Machine Maintenence"
+                        visible={showDialog}
+                        style={{ width: '300px' }}
+                        modal
+                        footer={
+                            <div>
+                                <Button label="No" icon="pi pi-times" onClick={handleCancel} className="p-button-text" style={{ backgroundColor: "red", color: "black",marginRight:"5px" }} />
+                                <Button label="Yes" icon="pi pi-check-square" onClick={() => handleYes()} className="p-button-text" style={{ backgroundColor: "blue", color: "white" }} />
+                                {/* <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleYes(rowData.Issue)} /> */}
+                                {/* <Button label="Yes" icon="pi pi-check" onClick={handleConfirm(rowData.Machine_Maintenance_Id)}   /> */}
+                            </div>
+                        }
+                        onHide={() => setShowDialog(false)}
+
+                    >
+
+                        <p>Are You Involved In This Machine Maintenace.. ?</p>
+                    </Dialog>
+                    {rowData.Image_URL != null && rowData.Image_URL != "" ?
+                        <Button
+
+                            icon="pi pi-download"
+                            className="p-button-rounded"
+                            data-pr-tooltip="Download Image"
+                            style={{ marginRight: '5px' }}
+                            onClick={() => handlePdfClick(rowData.Image_URL, rowData.Machine_Names)}
+                        /> : ""}
+                    {/* <Tooltip target=".p-button-rounded" /> */}
+
                 </div>
                 <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>
@@ -200,10 +166,15 @@ const MaintenaceListTable = () => {
         );
     };
     const machineNamesTemplate = (rowData) => {
-        return Array.isArray(rowData["Maintenanced by"]) 
-            ? rowData["Maintenanced by"].join(", ") 
+        return Array.isArray(rowData["Maintenanced by"])
+            ? rowData["Maintenanced by"].join(", ")
             : "";
     };
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('en-GB', options).replace(/\//g, '-');
+    };
+
     const renderHeader = () => {
         return (
             <div className="container">
@@ -217,17 +188,17 @@ const MaintenaceListTable = () => {
                         </div>
                     </div>
                     <div className="col-md-5 d-flex justify-content-end align-items-center">
-                        {designation === "Super Admin" ||designation === "Spare Part Store Manager"?<Link to="/machinemaintenace" className="plus mr-1" data-pr-tooltip="Machine Maintainace">
+                        {designation != "Spare Part Store Manager" ? <Link to="/machinemaintenace" className="plus mr-1" data-pr-tooltip="Machine Maintainace">
                             <Image src={img1} alt="plus" rounded />
-                        </Link>:""}
-                        <Tooltip target=".plus" content="Spare Part In" position="top" className="custom-tooltip" />
-                        {designation === "Super Admin"?<Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />:""}
+                        </Link> : ""}
+                        <Tooltip target=".plus" content="Machine Maintaince" position="top" className="custom-tooltip" />
+                        {designation === "Super Admin" ? <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} /> : ""}
                     </div>
                 </div>
             </div>
         );
     };
-   
+
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
@@ -268,24 +239,34 @@ const MaintenaceListTable = () => {
                     globalFilter={globalFilter}
                     emptyMessage={loading ? null : "No items found."}
                 >
+                     <Column style={{ border: "0.5px dotted black" }} field="Machine Name" header="Machine Name" filter filterPlaceholder="Search by Spare Part Name" sortable />
+                     <Column style={{ border: "0.5px dotted black" }} field="Machine Model Number" header="Model Number" filter filterPlaceholder="Search by Model Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Spare Part Name" header="Spare Part Name" filter filterPlaceholder="Search by Spare Part Name" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Spare Part Model Number" header="Spare Part Model Number" filter filterPlaceholder="Search by Spare Part Model Number" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Machine Name" header="Machine Name" filter filterPlaceholder="Search by Spare Part Name" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Machine Model Number" header="Model Number" filter filterPlaceholder="Search by Model Number" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Quantity" header="Quantity" filter filterPlaceholder="Search by Quantity" sortable />
                     {/* <Column style={{ border: "0.5px dotted black" }} field="Spare_Part_Brand_Name" header="Brand Name" filter filterPlaceholder="Search by Brant Name" sortable /> */}
                     <Column style={{ border: "0.5px dotted black" }} field="Issue" header="Issue" filter filterPlaceholder="Search by Issue" sortable />
                     {/* <Column style={{ border: "0.5px dotted black" }} field="Machine_Names" header="Machine Name" body={machineNamesTemplate} filter filterPlaceholder="Search by Machine Name" sortable /> */}
-                    <Column style={{ border: "0.5px dotted black" }} field="BreakDown Start Time" header="BreakDown Start Time" filter filterPlaceholder="Search by Quantity In PO" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="BreakDown End Time" header="BreakDown End Time" filter filterPlaceholder="Search by Quantity Recieved" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="BreakDown Total Time" header="BreakDown Total Time" filter filterPlaceholder="Search by Price" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Quantity" header="Quantity" filter filterPlaceholder="Search by Quantity" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="BreakDown Start Time" header="BreakDown Start Time" filter filterPlaceholder="Search by Start Time" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="BreakDown End Time" header="BreakDown End Time" filter filterPlaceholder="Search by End Time" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="BreakDown Total Time" header="BreakDown Total Time" filter filterPlaceholder="Search by Total Time" sortable />
+                    
                     <Column style={{ border: "0.5px dotted black" }} field="Solution Process" header="Solution Process" filter filterPlaceholder="Search by Solution Process" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Line" header="Line" filter filterPlaceholder="Search by Invoice Number" sortable />
-                    {/* <Column style={{ border: "0.5px dotted black" }} field="Chamber" header="Chamber" filter filterPlaceholder="Search by Received Date" sortable /> */}
-                    <Column style={{ border: "0.5px dotted black" }} field="Stock After Usage" header="Stock After Usage" filter filterPlaceholder="Search by Received Date" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Line" header="Line" filter filterPlaceholder="Search by Line" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Remark" header="Remark" filter filterPlaceholder="Search by Remark" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Stock After Usage" header="Stock After Usage" filter filterPlaceholder="Search by Stock After Usage" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Maintenanced by" header="Maintenanced by" body={machineNamesTemplate} filter filterPlaceholder="Search by Received Date" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Maintenance Date" header="Maintenance Date" filter filterPlaceholder="Search by Name" sortable />
-                    {designation === "Super Admin" || designation === "Spare Part Store Manager" ?<Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} />: ""}
+                    <Column
+                        style={{ border: "0.5px dotted black" }}
+                        field="Maintenance Date"
+                        header="Maintenance Date"
+                        filter
+                        filterPlaceholder="Search by Date"
+                        sortable
+                        body={(rowData) => formatDate(rowData["Maintenance Date"])}
+                    />
+
+                    { designation != "Spare Part Store Manager" ? <Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} /> : ""}
                 </DataTable>
                 {loading && (
                     <div className="p-p-3">
@@ -297,6 +278,7 @@ const MaintenaceListTable = () => {
                     </div>
                 )}
             </div>
+            <ToastContainer position='top-center' />
         </div>
     );
 };

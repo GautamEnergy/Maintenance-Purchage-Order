@@ -43,7 +43,7 @@ const MachineMaintenance = () => {
   const [EndTime, setEndTime] = useState('');
   const [TimeTaken, setTimeTaken] = useState('');
   const [SparePartModelNo, setSparePartModelNo] = useState(null);
-  const [ModelNo, setModelNo] = useState('');
+  const [ModelNo, setModelNo] = useState([]);
   const [Quantity, setQuantity] = useState('');
   const [Process, setProcess] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -174,7 +174,7 @@ const MachineMaintenance = () => {
   };
  
 
-  const notifySuccess = () => toast.success("Spare Part In Added Successfully!", { autoClose: 5000 });
+  const notifySuccess = () => toast.success("Machine Maintainace Added Successfully!", { autoClose: 5000 });
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
 
@@ -229,6 +229,9 @@ const MachineMaintenance = () => {
     if (!EndTime.length) newFieldErrors.EndTime = 'End Time is required';
     if (!TimeTaken) newFieldErrors.TimeTaken = 'Time Taken is required';
     if (!Process) newFieldErrors.Process = 'Process is required';
+    if (SparePartModelNo && !Quantity) {
+      newFieldErrors.Quantity = 'Quantity is required';
+  }
     setFieldErrors(newFieldErrors);
 
 
@@ -251,6 +254,7 @@ const MachineMaintenance = () => {
         SparePartModelNumber: SparePartModelNo?.value??"", 
 
         Quantity: Quantity,
+        Remarks:remarks,
         SolutionProcess: Process,
 
         Status: "Active"
@@ -302,7 +306,7 @@ const MachineMaintenance = () => {
 
  
   const handleBack = (e) => {
-    navigate('/');
+    navigate('/maintenaceList');
   };
 
   const handleMachineNameChange = (selectedMachine) => {
@@ -431,6 +435,7 @@ const MachineMaintenance = () => {
     // Update state and clear relevant fields
     setSparePartModelNo(selectedOption);
     const selectedSparePart = ModelNo.find(part => part.value === selectedOption.value);
+    
     if (selectedSparePart) {
       setSparePartName(selectedSparePart.SparePartName);
       setStock(selectedSparePart.Available_Stock)
@@ -465,7 +470,7 @@ const MachineMaintenance = () => {
             notifySuccess();
             setTimeout(() => {
               setLoading(false);
-              navigate('/spareinList');
+              navigate('/maintenaceList');
             }, 1000);
             return response.data;
           } else {

@@ -141,18 +141,18 @@ const MaintenanceStockTable = () => {
                 <DataTable
                     value={loading ? [] : data}
                     paginator
-                    rows={5}
-                    rowsPerPageOptions={[5, 10, 20]}
+                    rows={2}
+                    rowsPerPageOptions={[2,5, 10, 20]}
                     header={header}
                     globalFilter={globalFilter}
                     emptyMessage={loading ? null : "No items found."}
                 >
                     <Column style={{ border: "0.5px dotted black" }} field="SparePartName" header="Spare Part Name" filter filterPlaceholder="Search by PO Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Spare_Model_Number" header="Spare Model Number" filter filterPlaceholder="Search by Party Name" sortable />
-                    
+                    <Column style={{ border: "0.5px dotted black" }} field="Available_Stock" header="Available Stock" filter filterPlaceholder="Search by Spare Part Name" sortable />
                    
                     <Column style={{ border: "0.5px dotted black" }} field="Machine_Names" header="Machine Name" body={machineNamesTemplate} filter filterPlaceholder="Search by Machine Name" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Available_Stock" header="Available Stock" filter filterPlaceholder="Search by Spare Part Name" sortable />
+                   
                    
                    
                     {/* <Column style={{ border: "0.5px dotted black" }} header="Actions" body={actionBodyTemplate} /> */}

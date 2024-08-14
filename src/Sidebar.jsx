@@ -31,6 +31,8 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import PrecisionManufacturing from '@mui/icons-material/PrecisionManufacturing';
 import BuildCircle from '@mui/icons-material/BuildCircle';
+import MiscellaneousServices from '@mui/icons-material/MiscellaneousServices';
+
 
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -234,7 +236,7 @@ export default function Sidebar() {
     },
     {
       text: 'Machine Maintenance',
-      icon: <PrecisionManufacturing />,
+      icon: <MiscellaneousServices />,
       children: [
         { text: 'Maintenance', path: '/machinemaintenace', icon: <BlurLinearIcon /> },
         { text: 'Maintenance List', path: '/maintenaceList', icon: <FitbitIcon /> },
