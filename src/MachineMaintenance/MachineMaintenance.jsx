@@ -275,7 +275,11 @@ const MachineMaintenance = () => {
           let upload = await uploadPDF(formData);
           console.log("Upload response", upload);
         } else {
-          notifyError('Error,Please Enter Valid Invoice PDF ')
+          notifySuccess();
+            setTimeout(() => {
+              setLoading(false);
+              navigate('/maintenaceList');
+            }, 1000);
 
           // notifySuccess();
 
