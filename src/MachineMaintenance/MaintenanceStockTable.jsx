@@ -110,8 +110,8 @@ const MaintenanceStockTable = () => {
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
-        XLSX.writeFile(workbook, "SparePartIn.xlsx");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Available Stock");
+        XLSX.writeFile(workbook, "AvailableStock.xlsx");
     };
 
     const header = renderHeader();

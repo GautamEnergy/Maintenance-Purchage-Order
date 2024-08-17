@@ -1,35 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto'; // This will automatically register all components
+import axios from 'axios'; // Make sure axios is imported
 
-const StockChart = () => {
-  const data = [
-    { StockName: "Stringer", AvailableStock: 3000 },
-    { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 2000 },
-    { StockName: "Stringer3", AvailableStock: 700 },
-    { StockName: "Stringer4", AvailableStock: 310 },
-    { StockName: "Stringer5", AvailableStock: 205 },
-    { StockName: "Stringer", AvailableStock: 2200 },
-    { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 900 },
-    { StockName: "Stringer3", AvailableStock: 700 },
-    { StockName: "Stringer4", AvailableStock: 310 },
-    { StockName: "Stringer5", AvailableStock: 205 },
-    { StockName: "Stringer", AvailableStock: 2800 },
-    { StockName: "Stringer1", AvailableStock: 500 },
-    { StockName: "Stringer2", AvailableStock: 900 },
-    { StockName: "Stringer3", AvailableStock: 700 },
-    { StockName: "Stringer4", AvailableStock: 310 },
- 
-  ];
-
-  const chartData = {
-    labels: data.map(item => item.StockName),
+const StockChart = ({ machineName }) => {
+  const [chartData, setChartData] = useState({
+    labels: [],
     datasets: [
       {
         label: 'Available Spare Part Stock',
-        data: data.map(item => item.AvailableStock),
+        data: [],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -49,7 +28,55 @@ const StockChart = () => {
         borderWidth: 1,
       },
     ],
-  };
+  });
+
+  useEffect(() => {
+    const getSparePartModelListData = async () => {
+      const token = localStorage.getItem("token");
+      const url = localStorage.getItem('url');
+      console.log("Fetching spare part model list...");
+      console.log(url);
+      console.log(token);
+
+      try {
+        const response = await axios.post(`${url}/Maintenance/GetStockByMachine`, { MachineName: machineName.label }, {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        });
+
+        if (response.status === 200 && Array.isArray(response.data)) {
+          const sparePartModels = response.data.map(part => ({
+            value: part.Spare_Part_Id,
+            label: part.SpareNumber,
+            SparePartName: part.SparePartName,
+            Available_Stock: part.Available_Stock
+          }));
+
+          // Update chart data
+          setChartData({
+            labels: sparePartModels.map(part => part.SparePartName),
+            datasets: [
+              {
+                ...chartData.datasets[0],
+                data: sparePartModels.map(part => part.Available_Stock),
+              },
+            ],
+          });
+        } else {
+          console.error('Unexpected response:', response);
+        }
+      } catch (error) {
+        console.error('Error fetching spare part model list:', error.message);
+        console.error(error); // Log the full error object
+      }
+    };
+    getSparePartModelListData();
+
+    // if (machineName) {
+    //   getSparePartModelListData(machineName.label); // Assuming machineName is an object with a `label` property
+    // }
+  }, [machineName]); // Re-run effect when machineName changes
 
   const options = {
     scales: {
@@ -96,5 +123,3 @@ const StockChart = () => {
 };
 
 export default StockChart;
-
-

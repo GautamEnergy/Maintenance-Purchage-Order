@@ -6,11 +6,18 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Skeleton } from 'primereact/skeleton';
 import axios from 'axios';
+import Select from 'react-select';
 import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import "../Table/table.css";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import {  Row, Col, Form,   Modal } from 'react-bootstrap';
 
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
@@ -21,6 +28,12 @@ const SparePartInTable = () => {
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
     const [designation,setDesignation] = useState('');
+    const [Machine, SetMachine] = useState([])
+    const [MachineName, setMachineName] = useState(null);
+    const [FromDate, setFromDate] = useState('');
+    const [ToDate, setToDate] = useState('');
+    const [errors,setErrors] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({});
 
     useEffect(() => {
         const url = localStorage.getItem('url');
@@ -42,11 +55,88 @@ const SparePartInTable = () => {
         };
 
         fetchData();
+        getMachineListData();
     }, []);
 
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
+    const handleMachineNameChange = (selectedMachine) => {
+        console.log("Machine Name:", selectedMachine);
+    
+        if (selectedMachine) {
+            setMachineName(selectedMachine);
+    
+            
+         
+         
+    
+            console.log(selectedMachine.label);
+        }
+    };
+    const handleDateChange = (e) => {
+        const { name, value } = e.target;
+    
+        if (name === 'FromDate') {
+          setFromDate(value);
+    
+          // Ensure ToDate is filled and greater than FromDate
+          if (ToDate && value > ToDate) {
+            setFieldErrors(prevState => ({ ...prevState, ToDate: 'To Date must be greater than From Date' }));
+          } else {
+            setFieldErrors(prevState => ({ ...prevState, ToDate: '' }));
+          }
+        }
+    
+        if (name === 'ToDate') {
+          setToDate(value);
+    
+          // Ensure FromDate is filled and less than ToDate
+          if (FromDate && value < FromDate) {
+            setFieldErrors(prevState => ({ ...prevState, ToDate: 'To Date must be greater than From Date' }));
+          } else {
+            setFieldErrors(prevState => ({ ...prevState, ToDate: '' }));
+          }
+        }
+      };
+    
+    const getMachineListData = async () => {
+        const url = localStorage.getItem('url');
+        console.log("hmmmmmmmmmmm");
+        console.log(url);
+       // console.log(token);
+        // const url = `${url}/Maintenance/MachineDetailById`;
+        try {
+          const response = await axios.get(`${url}/Maintenance/MachineList`, {
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+          });
+    
+          if (response.status === 200 && Array.isArray(response.data.data)) {
+            const machineBody = response.data.data;
+    
+            const machineData = machineBody.map(machine => ({
+              MachineId: machine.MachineId,
+              MachineName: machine.MachineName,
+              MachineNumber: machine.MachineNumber
+            }));
+    
+            SetMachine(machineData)
+    
+    
+          } else {
+            console.error('Unexpected response:', response);
+           // setError('Failed to fetch machine list. Unexpected response from server.');
+          }
+        } catch (error) {
+          console.error('Error fetching machine list:', error.message);
+          console.error(error); // Log the full error object
+         // setError('Failed to fetch machine list. Please check the server configuration.');
+        }
+      };
+    
+
  
 
     const handlePdfClick = (pdfUrl, voucherNumber) => {
@@ -55,6 +145,39 @@ const SparePartInTable = () => {
         link.download = `Invoice-${voucherNumber}.pdf`;
         link.click();
     };
+    const handleSearch = () => {
+        const newFieldErrors = {};
+    
+        if (FromDate || ToDate) {
+            if (!FromDate) {
+              newFieldErrors.FromDate = 'From Date is required';
+            }
+            if (!ToDate) {
+              newFieldErrors.ToDate = 'To Date is required';
+            }
+            if (FromDate && ToDate && new Date(ToDate) < new Date(FromDate)) {
+              newFieldErrors.ToDate = 'To Date must be greater than From Date';
+            }
+          }
+        // if (!MachineName) newFieldErrors.MachineName = 'Machine Name is required';
+    
+        if (Object.keys(newFieldErrors).length > 0) {
+          setFieldErrors(newFieldErrors);
+          return;
+        }
+    
+        // Clear errors
+        setFieldErrors({});
+    
+        // Send data to backend
+        const requestData = {
+          FromDate,
+          ToDate,
+          MachineName: MachineName?MachineName.label: " "
+        };
+    
+        console.log("requestData",requestData); // Replace this with actual backend call
+      };
     const actionBodyTemplate = (rowData) => {
         console.log(rowData)
         return (
@@ -102,17 +225,133 @@ const SparePartInTable = () => {
                         <Tooltip target=".plus" content="Spare Part In" position="top" className="custom-tooltip" />
                         {designation === "Super Admin"?<Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} />:""}
                     </div>
+                    <div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ArrowDownwardIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography>Search Filter</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+    <Row>
+    <Col md={4}>
+    <Form.Group controlId="FromDate">
+      <Form.Label style={{ fontWeight: "bold" }}>From Date</Form.Label>
+      <Form.Control
+        type="date"
+        name="FromDate"
+        value={FromDate} // Bind the value to your state
+        onChange={handleDateChange} // Handle the change
+        placeholder="From Date"
+        max={new Date().toISOString().split("T")[0]} // Disable future dates
+        // required // Add if required
+        // style={!fieldErrors.FromDate ? inputStyle : inputStyles} // Handle styles
+      />
+      {fieldErrors.FromDate && (
+                  <div style={{ fontSize: "13px" }} className="text-danger">
+                    {fieldErrors.FromDate}
+                  </div>
+                )}
+    </Form.Group>
+  </Col>
+  
+  <Col md={4}>
+    <Form.Group controlId="ToDate">
+      <Form.Label style={{ fontWeight: "bold" }}>To Date</Form.Label>
+      <Form.Control
+        type="date"
+        name="ToDate"
+        value={ToDate} 
+        onChange={handleDateChange} 
+        placeholder="To Date"
+        max={new Date().toISOString().split("T")[0]} // Disable future dates
+        // required // Add if required
+        // style={!fieldErrors.ToDate ? inputStyle : inputStyles} // Handle styles
+      />
+        {fieldErrors.ToDate && (
+                  <div style={{ fontSize: "13px" }} className="text-danger">
+                    {fieldErrors.ToDate}
+                  </div>
+                )}
+    </Form.Group>
+  </Col>
+  <Col className='py-2' md={4}>
+                  <Form.Group controlId="MachineName">
+                    <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
+                    <Select
+
+                      value={MachineName}
+
+                      onChange={handleMachineNameChange}
+                      placeholder="Select Machine Name"
+                      options={Machine.map(machine => ({
+                        value: machine.MachineId,
+                        label: machine.MachineName
+                      }))}
+                    //   styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
+                    //   required
+
+                    />
+                     {fieldErrors.MachineName && (
+                  <div style={{ fontSize: "13px" }} className="text-danger">
+                    {fieldErrors.MachineName}
+                  </div>
+                )}
+                  </Form.Group>
+                </Col>
+
+
+    </Row>
+    <Row>
+              <Col md={12} style={{ display: 'flex' }}>
+                <Button type="button" className="register" onClick={handleSearch} style={{ width: '83px', height: '43px', background: '#0066ff', margin: '10px' }}>Search</Button>
+               
+              </Col>
+            </Row>
+        </AccordionDetails>
+      </Accordion>
+      
+    </div>
                 </div>
             </div>
         );
     };
    
+    // const exportExcel = () => {
+    //     const worksheet = XLSX.utils.json_to_sheet(data);
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
+    //     XLSX.writeFile(workbook, "SparePartIn.xlsx");
+    // };
     const exportExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(data);
+        // Process the data before exporting to Excel
+        const processedData = data.map(item => ({
+            Voucher_Number: item.Voucher_Number,
+            PartyName: item.PartyName,
+            SparePartName: item.SparePartName,
+            SparePartModelNumber: item.SparePartModelNumber,
+            Spare_Part_Brand_Name: item.Spare_Part_Brand_Name,
+            Spare_Part_Specification: item.Spare_Part_Specification,
+            Machine_Names: item.Machine_Names.join(', '), // Join machine names into a string
+            Quantity_Purchase_Order: item.Quantity_Purchase_Order,
+            Quantity_Recieved: item.Quantity_Recieved,
+            Price: item.Price,
+            Total_Cost: item.Total_Cost,
+            Available_Stock: item.Available_Stock,
+            Invoice_Number: item.Invoice_Number,
+            Date: item.Date,
+            Name: item.Name
+        }));
+    
+        const worksheet = XLSX.utils.json_to_sheet(processedData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
+    
         XLSX.writeFile(workbook, "SparePartIn.xlsx");
     };
+    
 
     const header = renderHeader();
 

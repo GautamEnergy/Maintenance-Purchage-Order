@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +13,15 @@ import img1 from "../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
+import Select from 'react-select';
 import "../Components/Table/table.css";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import {  Row, Col, Form,   Modal } from 'react-bootstrap';
+// import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
@@ -28,6 +37,11 @@ const MaintenaceListTable = () => {
     const [personID, setPersonID] = useState('');
     const [machineID, setMachineID] = useState('')
     const [name, setName] = useState('')
+    const [Machine, SetMachine] = useState([])
+    const [MachineName, setMachineName] = useState(null);
+    const [FromDate, setFromDate] = useState('');
+    const [ToDate, setToDate] = useState('');
+    console.log("PersomId",personID)
 
     useEffect(() => {
         const url = localStorage.getItem('url');
@@ -44,12 +58,14 @@ const MaintenaceListTable = () => {
 
 
         fetchData();
+        getMachineListData()
     }, []);
     const notifySuccess = () => toast.success("You Are Added Successfully!", { autoClose: 5000 });
     const fetchData = async () => {
         const url = localStorage.getItem('url');
+        const personID = localStorage.getItem("CurrentUser");
         try {
-            const { data } = await axios.get(`${url}/Maintenance/GetMachineMaintenanceList`);
+            const { data } = await axios.post(`${url}/Maintenance/GetMachineMaintenanceList`,{PersonId:personID});
             setData(data.data);
             setLoading(false);
         } catch (error) {
@@ -57,6 +73,42 @@ const MaintenaceListTable = () => {
             console.error("Error fetching data: ", error);
         }
     };
+    const getMachineListData = async () => {
+        const url = localStorage.getItem('url');
+        console.log("hmmmmmmmmmmm");
+        console.log(url);
+       // console.log(token);
+        // const url = `${url}/Maintenance/MachineDetailById`;
+        try {
+          const response = await axios.get(`${url}/Maintenance/MachineList`, {
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+          });
+    
+          if (response.status === 200 && Array.isArray(response.data.data)) {
+            const machineBody = response.data.data;
+    
+            const machineData = machineBody.map(machine => ({
+              MachineId: machine.MachineId,
+              MachineName: machine.MachineName,
+              MachineNumber: machine.MachineNumber
+            }));
+    
+            SetMachine(machineData)
+    
+    
+          } else {
+            console.error('Unexpected response:', response);
+           // setError('Failed to fetch machine list. Unexpected response from server.');
+          }
+        } catch (error) {
+          console.error('Error fetching machine list:', error.message);
+          console.error(error); // Log the full error object
+         // setError('Failed to fetch machine list. Please check the server configuration.');
+        }
+      };
+    
 
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
@@ -111,6 +163,28 @@ const MaintenaceListTable = () => {
         // Handle the "No" action here
         setShowDialog(false);
     };
+    const handleMachineNameChange = (selectedMachine) => {
+        console.log("Machine Name:", selectedMachine);
+    
+        if (selectedMachine) {
+            setMachineName(selectedMachine);
+    
+            
+         
+         
+    
+            console.log(selectedMachine.label);
+        }
+    };
+    const handleDateChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'FromDate') {
+            setFromDate(value);
+        } else if (name === 'ToDate') {
+            setToDate(value);
+        }
+    };
 
 
     const handlePdfClick = (pdfUrl, Machine_Names) => {
@@ -118,6 +192,10 @@ const MaintenaceListTable = () => {
         link.href = pdfUrl;
         link.download = `Image-${Machine_Names}.jpg`;
         link.click();
+    };
+    const handleEditClick = (MachineId, Type) => {
+        console.log("MachineId",MachineId)
+        navigate("/machinemaintenace", { state: { MachineId, Type: Type } });
     };
     const actionBodyTemplate = (rowData) => {
         const isNameInMaintenancedBy = Array.isArray(rowData["Maintenanced by"])
@@ -136,6 +214,7 @@ const MaintenaceListTable = () => {
                         modal
                         footer={
                             <div>
+                                
                                 <Button label="No" icon="pi pi-times" onClick={handleCancel} className="p-button-text" style={{ backgroundColor: "red", color: "black",marginRight:"5px" }} />
                                 <Button label="Yes" icon="pi pi-check-square" onClick={() => handleYes()} className="p-button-text" style={{ backgroundColor: "blue", color: "white" }} />
                                 {/* <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleYes(rowData.Issue)} /> */}
@@ -148,6 +227,7 @@ const MaintenaceListTable = () => {
 
                         <p>Are You Involved In This Machine Maintenace.. ?</p>
                     </Dialog>
+                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Purchase Order" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Machine_Maintenance_Id, "")} />
                     {rowData.Image_URL != null && rowData.Image_URL != "" ?
                         <Button
 
@@ -187,6 +267,7 @@ const MaintenaceListTable = () => {
                             </span>
                         </div>
                     </div>
+                   
                     <div className="col-md-5 d-flex justify-content-end align-items-center">
                         {designation != "Spare Part Store Manager" ? <Link to="/machinemaintenace" className="plus mr-1" data-pr-tooltip="Machine Maintainace">
                             <Image src={img1} alt="plus" rounded />
@@ -195,6 +276,89 @@ const MaintenaceListTable = () => {
                         {designation === "Super Admin" ? <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} /> : ""}
                     </div>
                 </div>
+                <div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ArrowDownwardIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography>Search Filter</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+    <Row>
+    <Col md={4}>
+    <Form.Group controlId="FromDate">
+      <Form.Label style={{ fontWeight: "bold" }}>From Date</Form.Label>
+      <Form.Control
+        type="date"
+        name="FromDate"
+        value={FromDate} // Bind the value to your state
+        onChange={handleDateChange} // Handle the change
+        placeholder="From Date"
+        // required // Add if required
+        // style={!fieldErrors.FromDate ? inputStyle : inputStyles} // Handle styles
+      />
+      {/* {fieldErrors.FromDate && (
+        <div style={{ fontSize: "13px" }} className="text-danger">
+          {fieldErrors.FromDate}
+        </div>
+      )} */}
+    </Form.Group>
+  </Col>
+  
+  <Col md={4}>
+    <Form.Group controlId="ToDate">
+      <Form.Label style={{ fontWeight: "bold" }}>To Date</Form.Label>
+      <Form.Control
+        type="date"
+        name="ToDate"
+        value={ToDate} // Bind the value to your state
+        onChange={handleDateChange} // Handle the change
+        placeholder="To Date"
+        // required // Add if required
+        // style={!fieldErrors.ToDate ? inputStyle : inputStyles} // Handle styles
+      />
+      {/* {fieldErrors.ToDate && (
+        <div style={{ fontSize: "13px" }} className="text-danger">
+          {fieldErrors.ToDate}
+        </div>
+      )} */}
+    </Form.Group>
+  </Col>
+  <Col className='py-2' md={4}>
+                  <Form.Group controlId="MachineName">
+                    <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
+                    <Select
+
+                      value={MachineName}
+
+                      onChange={handleMachineNameChange}
+                      placeholder="Select Machine Name"
+                      options={Machine.map(machine => ({
+                        value: machine.MachineId,
+                        label: machine.MachineName
+                      }))}
+                    //   styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
+                    //   required
+
+                    />
+                    {/* {fieldErrors.MachineName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineName}</div>} */}
+                  </Form.Group>
+                </Col>
+
+
+    </Row>
+    <Row>
+              <Col md={12} style={{ display: 'flex' }}>
+                <Button type="button" className="register" onClick={"handleSearch"} style={{ width: '83px', height: '43px', background: '#0066ff', margin: '10px' }}>Search</Button>
+               
+              </Col>
+            </Row>
+        </AccordionDetails>
+      </Accordion>
+      
+    </div>
             </div>
         );
     };
@@ -202,8 +366,8 @@ const MaintenaceListTable = () => {
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, " MAchine Maintainance");
-        XLSX.writeFile(workbook, "SparePartIn.xlsx");
+        XLSX.utils.book_append_sheet(workbook, worksheet, " Machine Maintainance");
+        XLSX.writeFile(workbook, "MachineMaintainance.xlsx");
     };
 
     const header = renderHeader();
@@ -284,3 +448,4 @@ const MaintenaceListTable = () => {
 };
 
 export default MaintenaceListTable;
+

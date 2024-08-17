@@ -116,8 +116,8 @@ const MachineTable = () => {
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase Orders");
-        XLSX.writeFile(workbook, "PurchaseOrders.xlsx");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Machine List");
+        XLSX.writeFile(workbook, "MachineList.xlsx");
     };
 
     const header = renderHeader();

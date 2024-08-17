@@ -55,6 +55,10 @@ const MachineMaintenance = () => {
   const [selectedChambers, setSelectedChambers] = useState([]);
   const [showChamberModal, setShowChamberModal] = useState(false);
   const [remarks , setRemarks] = useState("");
+  const location = useLocation();
+  const { MachineId, Type } = location.state || {};
+  const [FormData, setFormData] = useState([]);
+
 
 
 
@@ -71,6 +75,69 @@ const MachineMaintenance = () => {
     { value: 'Chamber3', label: 'Chamber 3' },
     { value: 'Chamber4', label: 'Chamber 4' }
   ];
+  useEffect(() => {
+    console.log("hahahhahahmmmm")
+
+    console.log(MachineId)
+
+    if (MachineId) {
+
+
+
+        const fetchData = async () => {
+            const url = localStorage.getItem('url');
+            try {
+                const response = await axios.post(
+                    `${url}/Maintenance/GetMachineMaintenanceList`,
+                    { MachineMaintenanceId: MachineId,personID }
+                );
+                const maintenanceData = response.data.data[0];
+                // setFormData(maintenanceData);
+                setFormData(maintenanceData);
+                // const selectedMachine = Machine.find(
+                //   (machine) => machine.MachineName === maintenanceData["Machine Name"]
+                // );
+            
+                // // Set the machine name in the state with both value and label
+                // if (selectedMachine) {
+                //   setMachineName({
+                //     value: selectedMachine.MachineId,
+                //     label: selectedMachine.MachineName
+                //   });
+                // }
+                setMachineName(maintenanceData['Machine Name'] ? 
+                  { value: maintenanceData['Machine Name'], label: maintenanceData['Machine Name'] } : null);
+                setStartTime(maintenanceData["BreakDown Start Time"] || '');
+                setEndTime(maintenanceData["BreakDown End Time"] || '');
+                setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
+                setSparePartName(maintenanceData['Spare Part Name'] || '');
+                setSparePartModelNo(maintenanceData['Spare Part Model Number'] ? 
+                    { value: maintenanceData['Spare Part Model Number'], label: maintenanceData['Spare Part Model Number'] } : null);
+                setMachineNumber(maintenanceData["Machine Number"] || '');
+                setIssue(maintenanceData.Issue || '');
+                setQuantity(maintenanceData.Quantity || '');
+                setProcess(maintenanceData['Solution Process'] || '');
+                setStock(maintenanceData['Stock After Usage'] || '');
+                setRemarks(maintenanceData.Remark || '');
+                setSelectedChambers(maintenanceData.Chamber || []);
+                setImage(maintenanceData.Image_URL || ''); 
+                
+                // If Line is present in the data, set it
+                if (maintenanceData.Line) {
+                    setSelectedLine(maintenanceData.Line);
+                }
+                if (maintenanceData['Machine Name']) {
+                  await getSparePartModelListData(maintenanceData['Machine Name']);
+                }
+                console.log(response)
+                console.log(FormData)
+            } catch (error) {
+                console.error('Error fetching purchase order data:', error);
+            }
+        };
+        fetchData();
+    }
+}, [MachineId]);
 
   useEffect(() => {
 
@@ -240,6 +307,7 @@ const MachineMaintenance = () => {
 
       const data = {
         CreatedBy: personID,
+        MachineMaintenanceId:MachineId?MachineId:" ",
         MachineName: MachineName.value?MachineName.value:"",
         Line: selectedLine?selectedLine:"", 
         Chamber: selectedChambers.map(chamber => ({
@@ -460,7 +528,7 @@ const MachineMaintenance = () => {
     if (incompleteDetails) {
         setFieldErrors(prevErrors => ({
             ...prevErrors,
-            selectedChambers: 'Please fill out all details for the selected chambers.',
+            selectedChambers: 'Please fill out Quantity for the selected chambers.',
         }));
     } else {
         setSelectedChambers(updatedChambers);
@@ -773,8 +841,8 @@ const MachineMaintenance = () => {
                           {selectedChambers.some(selected => selected.chamberId === chamber.value) && (
                             <Form.Group controlId={`${chamber.value}Field`}>
                               <Form.Control
-                                type="text"
-                                placeholder={`Enter details for ${chamber.label}`}
+                                type="number"
+                                placeholder={`Enter Quantity for ${chamber.label}`}
                                 value={selectedChambers.find(selected => selected.chamberId === chamber.value)?.chamberDetails || ''}
                                 onChange={(e) => {
                                   const details = e.target.value;

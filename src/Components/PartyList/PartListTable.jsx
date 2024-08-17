@@ -113,8 +113,8 @@ const PartyListTable = () => {
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase Orders");
-        XLSX.writeFile(workbook, "PurchaseOrders.xlsx");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Part List");
+        XLSX.writeFile(workbook, "PartList.xlsx");
     };
 
     const header = renderHeader();
