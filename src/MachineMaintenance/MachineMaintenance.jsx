@@ -774,7 +774,7 @@ const MachineMaintenance = () => {
 
   return (
 
-    <Container style={{ marginTop: "12%", maxWidth: "750px" }} className="fullPage ">
+    <Container style={{ marginTop: "4%", width: "90%",paddingBottom:"4%",marginLeft:"auto",marginRight:"auto",boxSizing:"border-box" }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         {loading && (
           <div className="loader-overlay">
@@ -803,6 +803,7 @@ const MachineMaintenance = () => {
                         label: machine.MachineName
                       }))}
                       styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
+                      isDisabled={MachineId}
                     //   required
 
                     />
@@ -995,6 +996,7 @@ const MachineMaintenance = () => {
                       placeholder="Select Spare Part Model Number"
                       //options={SparePart}
                       styles={!fieldErrors.SparePartModelNo ? customSelectStyles : customSelectStyles1}
+                      isDisabled={MachineId}
                     //   required
 
                     />

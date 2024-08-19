@@ -95,7 +95,7 @@ const AvailableStock= () => {
    
    
     return (
-        <Container style={{ marginTop: "12%", width: "100%" }} className="fullPage py-5">
+        <Container style={{ width: "100%" }} className="fullPage py-5">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Link to="/dashboard">
           
@@ -106,7 +106,7 @@ const AvailableStock= () => {
       <h2 style={{ color: '#2c3e50', fontWeight: 'bold', fontSize: '24px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' }}>
         Available Stock By Machine
       </h2>
-      <div style={{ marginTop: '10px', marginBottom: '10px',width:"50%",marginLeft:"250px" }}>
+      <div style={{ marginTop: '10px', marginBottom: '10px',width:"50%",marginLeft:"225px" }}>
         <Select
           value={MachineName}
           onChange={handleMachineNameChange}

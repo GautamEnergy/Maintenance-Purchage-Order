@@ -730,7 +730,7 @@ const SparePartIn = () => {
 
   return (
 
-    <Container style={{ marginTop: "12%", maxWidth: "750px" }} className="fullPage ">
+    <Container style={{ marginTop: "3%", Width: "100%",paddingBottom:"3%" }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         {loading && (
           <div className="loader-overlay">

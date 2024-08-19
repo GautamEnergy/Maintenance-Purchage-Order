@@ -403,7 +403,7 @@ const NewParty = () => {
 
     return (
 
-        <Container style={{ marginTop: "12%" }} className="fullPage ">
+        <Container style={{ marginTop: "2%",paddingBottom:"22px",width:"auto" }} className="fullPage ">
             <div className="form-detail" style={{ backgroundColor: '#f8f8ff', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 {loading && (
                     <div className="loader-overlay">

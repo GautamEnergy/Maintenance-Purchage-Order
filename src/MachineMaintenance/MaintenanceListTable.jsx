@@ -41,6 +41,7 @@ const MaintenaceListTable = () => {
     const [MachineName, setMachineName] = useState(null);
     const [FromDate, setFromDate] = useState('');
     const [ToDate, setToDate] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
     console.log("PersomId",personID)
 
     useEffect(() => {
@@ -176,6 +177,39 @@ const MaintenaceListTable = () => {
             console.log(selectedMachine.label);
         }
     };
+    const handleSearch = () => {
+        const newFieldErrors = {};
+    
+        if (FromDate || ToDate) {
+            if (!FromDate) {
+              newFieldErrors.FromDate = 'From Date is required';
+            }
+            if (!ToDate) {
+              newFieldErrors.ToDate = 'To Date is required';
+            }
+            if (FromDate && ToDate && new Date(ToDate) < new Date(FromDate)) {
+              newFieldErrors.ToDate = 'To Date must be greater than From Date';
+            }
+          }
+        // if (!MachineName) newFieldErrors.MachineName = 'Machine Name is required';
+    
+        if (Object.keys(newFieldErrors).length > 0) {
+          setFieldErrors(newFieldErrors);
+          return;
+        }
+    
+        // Clear errors
+        setFieldErrors({});
+    
+        // Send data to backend
+        const requestData = {
+          FromDate,
+          ToDate,
+          MachineName: MachineName?MachineName.label: " "
+        };
+    
+        console.log("requestData",requestData); // Replace this with actual backend call
+      };
     const handleDateChange = (e) => {
         const { name, value } = e.target;
 
@@ -296,14 +330,15 @@ const MaintenaceListTable = () => {
         value={FromDate} // Bind the value to your state
         onChange={handleDateChange} // Handle the change
         placeholder="From Date"
+        max={new Date().toISOString().split("T")[0]}
         // required // Add if required
         // style={!fieldErrors.FromDate ? inputStyle : inputStyles} // Handle styles
       />
-      {/* {fieldErrors.FromDate && (
-        <div style={{ fontSize: "13px" }} className="text-danger">
-          {fieldErrors.FromDate}
-        </div>
-      )} */}
+        {fieldErrors.FromDate && (
+                  <div style={{ fontSize: "13px" }} className="text-danger">
+                    {fieldErrors.FromDate}
+                  </div>
+                )}
     </Form.Group>
   </Col>
   
@@ -316,14 +351,15 @@ const MaintenaceListTable = () => {
         value={ToDate} // Bind the value to your state
         onChange={handleDateChange} // Handle the change
         placeholder="To Date"
+        max={new Date().toISOString().split("T")[0]}
         // required // Add if required
         // style={!fieldErrors.ToDate ? inputStyle : inputStyles} // Handle styles
       />
-      {/* {fieldErrors.ToDate && (
-        <div style={{ fontSize: "13px" }} className="text-danger">
-          {fieldErrors.ToDate}
-        </div>
-      )} */}
+        {fieldErrors.ToDate && (
+                  <div style={{ fontSize: "13px" }} className="text-danger">
+                    {fieldErrors.ToDate}
+                  </div>
+                )}
     </Form.Group>
   </Col>
   <Col className='py-2' md={4}>
@@ -351,7 +387,7 @@ const MaintenaceListTable = () => {
     </Row>
     <Row>
               <Col md={12} style={{ display: 'flex' }}>
-                <Button type="button" className="register" onClick={"handleSearch"} style={{ width: '83px', height: '43px', background: '#0066ff', margin: '10px' }}>Search</Button>
+                <Button type="button" className="register" onClick={()=>handleSearch()} style={{ width: '83px', height: '43px', background: '#0066ff', margin: '10px' }}>Search</Button>
                
               </Col>
             </Row>

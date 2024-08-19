@@ -31,19 +31,20 @@ const Dashboard = () => {
     
     return (
         <>
-            <div className="container py-1" style={{ display: "flex" }}>
-            <div style={{ width: "50%" }}>
+           <div style={{ marginBottom: '82%', marginLeft: '125px' }}>
+           <div className="container py-1" style={{ display: "flex" }}>
+            <div style={{ width: "45%" }}>
                     <AvailableStock />
                 </div>
                
-                <div style={{ width: "50%" }}>
+                <div style={{ width: "45%" }}>
                     <MaintenanceStock />
                 </div>
 
             </div>
 
-            <div className="container" style={{ display: "flex" }}>
-                <div style={{ width: "100%", marginTop: '-210px' }}>
+            <div className="container" style={{ display: "flex",marginTop: "-8%" }}>
+                <div style={{ width: "90%" }}>
                 { designation === "Maintenance Head"?"" : (designation === "Super Admin" ? <PurchaseOrderList /> : <SparePartInListing />)}
                     
 
@@ -66,6 +67,7 @@ const Dashboard = () => {
             </div>:""}
             
 
+           </div>
            
 
 

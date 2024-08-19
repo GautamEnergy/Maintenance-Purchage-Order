@@ -171,7 +171,7 @@ const AddMachine = () => {
     };
 
     return (
-        <Container style={{ marginTop: "12%", width: "90%" }} className="fullPage">
+        <Container  style={{ marginTop: "3%", width: "100%", maxWidth: "1200px", padding: "0 20px", boxSizing: "border-box" }} className="fullPage">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', position: 'relative' }}>
                 {loading && (
                     <div className="loader-overlay">
