@@ -212,7 +212,7 @@ const NewParty = () => {
                 PANNumber: 'PAN number is required',
                 State: 'State is required'
             }),
-            ...(state.countrtrySelect === 'China' && { PinCode: 'Zip code is required' }),
+            // ...(state.countrtrySelect === 'China' && { PinCode: 'Zip code is required' }),
         };
 
         Object.keys(requiredFields).forEach(field => {
@@ -222,10 +222,11 @@ const NewParty = () => {
             }
         });
 
-        if (state.countrtrySelect === 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
-            newErrors.PinCode = 'Zip Code is required';
-            isValid = false;
-        } else if (state.countrtrySelect !== 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
+        // if (state.countrtrySelect === 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
+        //     newErrors.PinCode = 'Zip Code is required';
+        //     isValid = false;
+        // } else 
+        if (state.countrtrySelect !== 'China' && (!state.PinCode || state.PinCode.length !== 6)) {
             newErrors.PinCode = 'Pin Code is invalid';
             isValid = false;
         }
@@ -581,6 +582,7 @@ const NewParty = () => {
                                     {errors.Address}
                                 </Form.Control.Feedback>
                             </Col>
+
                             <Col md={4} className="py-2 form-group">
                                 <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
                                 <Form.Control
@@ -603,7 +605,7 @@ const NewParty = () => {
                                                 setPinCode(value);
                                                 setErrors((prevErrors) => ({
                                                     ...prevErrors,
-                                                    PinCode: value ? '' : 'Zip Code is required',
+                                                    PinCode: value,
                                                     InvalidZip: value.length === 6 || value.length === 0 ? '' : 'Zip Code is invalid',
                                                 }));
                                             } else {
@@ -621,6 +623,9 @@ const NewParty = () => {
                                     {!hideFields ? errors.State : errors.PinCode || errors.InvalidZip}
                                 </Form.Control.Feedback>
                             </Col>
+
+
+
 
 
                         </Row>

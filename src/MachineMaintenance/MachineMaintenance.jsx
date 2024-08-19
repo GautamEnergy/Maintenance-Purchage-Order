@@ -94,6 +94,19 @@ const MachineMaintenance = () => {
                 const maintenanceData = response.data.data[0];
                 // setFormData(maintenanceData);
                 setFormData(maintenanceData);
+
+                if (maintenanceData.Image_URL) {
+                  try {
+                      const imageResponse = await axios.get(maintenanceData.Image_URL, {
+                          responseType: 'blob',
+                      });
+                      const imageBlob = new Blob([imageResponse.data], { type: imageResponse.data.type });
+                      const imageObjectUrl = URL.createObjectURL(imageBlob);
+                      setImage(imageObjectUrl);
+                  } catch (imageError) {
+                      console.error('Error fetching image:', imageError);
+                  }
+              }
                 // const selectedMachine = Machine.find(
                 //   (machine) => machine.MachineName === maintenanceData["Machine Name"]
                 // );
@@ -106,13 +119,13 @@ const MachineMaintenance = () => {
                 //   });
                 // }
                 setMachineName(maintenanceData['Machine Name'] ? 
-                  { value: maintenanceData['Machine Name'], label: maintenanceData['Machine Name'] } : null);
+                  { value: maintenanceData['MachineId'], label: maintenanceData['Machine Name'] } : null);
                 setStartTime(maintenanceData["BreakDown Start Time"] || '');
                 setEndTime(maintenanceData["BreakDown End Time"] || '');
                 setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
                 setSparePartName(maintenanceData['Spare Part Name'] || '');
                 setSparePartModelNo(maintenanceData['Spare Part Model Number'] ? 
-                    { value: maintenanceData['Spare Part Model Number'], label: maintenanceData['Spare Part Model Number'] } : null);
+                    { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
                 setMachineNumber(maintenanceData["Machine Number"] || '');
                 setIssue(maintenanceData.Issue || '');
                 setQuantity(maintenanceData.Quantity || '');
@@ -307,7 +320,7 @@ const MachineMaintenance = () => {
 
       const data = {
         CreatedBy: personID,
-        MachineMaintenanceId:MachineId?MachineId:" ",
+        MachineMaintenanceId:MachineId?MachineId:"",
         MachineName: MachineName.value?MachineName.value:"",
         Line: selectedLine?selectedLine:"", 
         Chamber: selectedChambers.map(chamber => ({
@@ -334,14 +347,14 @@ const MachineMaintenance = () => {
       try {
         let UUID = await addSparePartIn(data);
          console.log("uuid",UUID)
-        let formData = new FormData()
+        // let formData = new FormData()
 
-        formData.append('MachineMaintenancePdf',image);
-        formData.append('SparePartId', UUID.stockCheck)
+        // formData.append('MachineMaintenancePdf',image);
+        // formData.append('SparePartId', UUID.stockCheck)
 
         if ( (image && image.size > 0)) {
-          let upload = await uploadPDF(formData);
-          console.log("Upload response", upload);
+          // let upload = await uploadPDF(formData);
+          // console.log("Upload response", upload);
         } else {
           notifySuccess();
             setTimeout(() => {
@@ -1142,6 +1155,13 @@ const MachineMaintenance = () => {
                       </div>
                     )}
                     <div>{fileName}</div>
+                    <div>
+            {image ? (
+                <img src={image} alt="Maintenance Image" style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+            ) : (
+                <p>No image available</p>
+            )}
+        </div>
                   </Form.Group>
                 </Col>
 
