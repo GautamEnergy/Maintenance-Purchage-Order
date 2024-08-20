@@ -11,7 +11,7 @@
 // import OptionalField from './Components/OptionalField/OptionalField';
 // import PurchageForm from './Components/PurchageOrder/PurchageOrderAddEdit';
 // import ItemTable from './Components/Table/table';
-// import Dashboard from './Pages/Dashboard';
+// import Dashboard from './Pages/Dashboard'; 
 // import PurchaseOrderList from './Components/PurchageOrder/PurchaseOrderList';
 // import Sidebar from './Sidebar';
 // import AvailableStock from './Components/PurchageOrder/AvailableStock';
@@ -123,7 +123,10 @@ const TempDash = () => {
   return (
     <>
       <Sidebar />
-      <Dashboard />
+      {/* <Dashboard /> */}
+      <div style={{ marginLeft: '220px' }}>
+        <Dashboard />
+      </div>
     </>
   );
 };

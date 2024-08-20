@@ -331,7 +331,7 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
 
-          <Link >
+          <Link to='/dashboard'>
             <img src={logo} alt="Mini variant drawer" style={{ width: '20%', height: 'auto', background: "transparent" }} />
           </Link>
 

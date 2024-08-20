@@ -97,7 +97,7 @@ canvas:hover {
   .container-md,
   .container-sm,
   .container-xl {
-    max-width: 1250px;
+    max-width: 880px !important;
   }
 }
 

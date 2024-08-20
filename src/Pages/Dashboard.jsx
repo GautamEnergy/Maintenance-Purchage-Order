@@ -31,31 +31,42 @@ const Dashboard = () => {
 
     return (
         <>
-            <div style={{ marginBottom: '82%', marginLeft: '125px' }}>
-                <div className="container py-1" style={{ display: "flex" }}>
-                    <div style={{ width: "45%" }}>
+            <div style={{ marginBottom: '82%' }}>
+
+                <div className="container py-1" style={{ width: "auto", marginTop: '-2%' }}>
+
+                    <div style={{ width: "auto" }}>
                         <AvailableStock />
                     </div>
 
-                    <div style={{ width: "45%" }}>
+
+                    <div style={{ width: "auto", marginTop: '-8%' }}>
                         <MaintenanceStock />
                     </div>
 
                 </div>
 
-                <div className="container" style={{ display: "flex", marginTop: "-8%", }}>
-                    <div style={{ width: "90%", marginLeft: '-6px' }}>
+
+                {/* Purchase Order List in Dashboard */}
+                <div className="container" style={{ width: "auto", display: "flex", marginTop: "-8%", }}>
+                    <div style={{ width: "auto" }}>
                         {designation === "Maintenance Head" ? "" : (designation === "Super Admin" ? <PurchaseOrderList /> : <SparePartInListing />)}
                     </div>
 
                 </div>
-                {designation === "Super Admin" || designation === "Maintenance Head" ? <div className="container " style={{ display: "flex", marginTop: "-110px", marginLeft: '-30px' }}>
-                    <div style={{ width: "50%", marginRight: '-34px' }}>
+
+
+
+                {designation === "Super Admin" || designation === "Maintenance Head" ? <div className="container " style={{ marginTop: "-11%", }}>
+
+
+                    <div style={{ width: "auto" }}>
                         <SparePartInListing />
-
-
                     </div>
-                    <div style={{ width: "50%", marginTop: '29px', marginLeft: '-20px' }}>
+
+
+
+                    <div style={{ width: "auto", marginTop: '-4%' }}>
                         <MaintenaceList />
 
 
