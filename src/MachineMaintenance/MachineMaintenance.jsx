@@ -43,6 +43,7 @@ const MachineMaintenance = () => {
   const [EndTime, setEndTime] = useState('');
   const [TimeTaken, setTimeTaken] = useState('');
   const [SparePartModelNo, setSparePartModelNo] = useState(null);
+  const [SparePartModel, setSparePartModel] = useState(null);
   const [ModelNo, setModelNo] = useState([]);
   const [Quantity, setQuantity] = useState('');
   const [Process, setProcess] = useState('');
@@ -54,10 +55,12 @@ const MachineMaintenance = () => {
   const [Stock, setStock] = useState('')
   const [selectedChambers, setSelectedChambers] = useState([]);
   const [showChamberModal, setShowChamberModal] = useState(false);
-  const [remarks , setRemarks] = useState("");
+  const [remarks, setRemarks] = useState("");
   const location = useLocation();
   const { MachineId, Type } = location.state || {};
   const [FormData, setFormData] = useState([]);
+  const [showLineField, setShowLineField] = useState(false);
+  const [showChamberField, setShowChamberField] = useState(false);
 
 
 
@@ -84,73 +87,90 @@ const MachineMaintenance = () => {
 
 
 
-        const fetchData = async () => {
-            const url = localStorage.getItem('url');
-            try {
-                const response = await axios.post(
-                    `${url}/Maintenance/GetMachineMaintenanceList`,
-                    { MachineMaintenanceId: MachineId,personID }
-                );
-                const maintenanceData = response.data.data[0];
-                // setFormData(maintenanceData);
-                setFormData(maintenanceData);
+      const fetchData = async () => {
+        const url = localStorage.getItem('url');
+        try {
+          const response = await axios.post(
+            `${url}/Maintenance/GetMachineMaintenanceList`,
+            { MachineMaintenanceId: MachineId, personID }
+          );
+          const maintenanceData = response.data.data[0];
+          // setFormData(maintenanceData);
+          setFormData(maintenanceData);
 
-                if (maintenanceData.Image_URL) {
-                  try {
-                      const imageResponse = await axios.get(maintenanceData.Image_URL, {
-                          responseType: 'blob',
-                      });
-                      const imageBlob = new Blob([imageResponse.data], { type: imageResponse.data.type });
-                      const imageObjectUrl = URL.createObjectURL(imageBlob);
-                      setImage(imageObjectUrl);
-                  } catch (imageError) {
-                      console.error('Error fetching image:', imageError);
-                  }
-              }
-                // const selectedMachine = Machine.find(
-                //   (machine) => machine.MachineName === maintenanceData["Machine Name"]
-                // );
-            
-                // // Set the machine name in the state with both value and label
-                // if (selectedMachine) {
-                //   setMachineName({
-                //     value: selectedMachine.MachineId,
-                //     label: selectedMachine.MachineName
-                //   });
-                // }
-                setMachineName(maintenanceData['Machine Name'] ? 
-                  { value: maintenanceData['MachineId'], label: maintenanceData['Machine Name'] } : null);
-                setStartTime(maintenanceData["BreakDown Start Time"] || '');
-                setEndTime(maintenanceData["BreakDown End Time"] || '');
-                setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
-                setSparePartName(maintenanceData['Spare Part Name'] || '');
-                setSparePartModelNo(maintenanceData['Spare Part Model Number'] ? 
-                    { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
-                setMachineNumber(maintenanceData["Machine Number"] || '');
-                setIssue(maintenanceData.Issue || '');
-                setQuantity(maintenanceData.Quantity || '');
-                setProcess(maintenanceData['Solution Process'] || '');
-                setStock(maintenanceData['Stock After Usage'] || '');
-                setRemarks(maintenanceData.Remark || '');
-                setSelectedChambers(maintenanceData.Chamber || []);
-                setImage(maintenanceData.Image_URL || ''); 
-                
-                // If Line is present in the data, set it
-                if (maintenanceData.Line) {
-                    setSelectedLine(maintenanceData.Line);
-                }
-                if (maintenanceData['Machine Name']) {
-                  await getSparePartModelListData(maintenanceData['Machine Name']);
-                }
-                console.log(response)
-                console.log(FormData)
-            } catch (error) {
-                console.error('Error fetching purchase order data:', error);
+          if (maintenanceData.Image_URL) {
+            try {
+              const imageResponse = await axios.get(maintenanceData.Image_URL, {
+                responseType: 'blob',
+              });
+              const imageBlob = new Blob([imageResponse.data], { type: imageResponse.data.type });
+              const imageObjectUrl = URL.createObjectURL(imageBlob);
+              setImage(imageObjectUrl);
+            } catch (imageError) {
+              console.error('Error fetching image:', imageError);
             }
-        };
-        fetchData();
+          }
+          // const selectedMachine = Machine.find(
+          //   (machine) => machine.MachineName === maintenanceData["Machine Name"]
+          // );
+
+          // // Set the machine name in the state with both value and label
+          // if (selectedMachine) {
+          //   setMachineName({
+          //     value: selectedMachine.MachineId,
+          //     label: selectedMachine.MachineName
+          //   });
+          // }
+          setMachineName(maintenanceData['Machine Name'] ?
+            { value: maintenanceData['MachineId'], label: maintenanceData['Machine Name'] } : null);
+          setStartTime(maintenanceData["BreakDown Start Time"] || '');
+          setEndTime(maintenanceData["BreakDown End Time"] || '');
+          setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
+          setSparePartName(maintenanceData['Spare Part Name'] || '');
+          setSparePartModelNo(maintenanceData['Spare Part Model Number'] ?
+            { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
+            setSparePartModel(maintenanceData['Spare Part Model Number'] ?
+              { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
+          setMachineNumber(maintenanceData["Machine Number"] || '');
+          setIssue(maintenanceData.Issue || '');
+          setQuantity(maintenanceData.Quantity || '');
+          setProcess(maintenanceData['Solution Process'] || '');
+          setStock(maintenanceData['Stock After Usage'] || '');
+          setRemarks(maintenanceData.Remark || '');
+          // setSelectedChambers(maintenanceData.Chamber || []);
+          setImage(maintenanceData.Image_URL || '');
+
+          // If Line is present in the data, set it
+          if (maintenanceData.Line) {
+            const lineOption = LineOptions.find(option => option.value === maintenanceData.Line);
+            setSelectedLine(lineOption ? lineOption.value : null);
+            setShowLineField(!!lineOption);
+          }
+  
+          if (maintenanceData.Chamber && Array.isArray(maintenanceData.Chamber)) {
+            const chambers = maintenanceData.Chamber.map(chamberData => {
+              // Extract chamber details
+              const chamberLabel = Object.keys(chamberData)[0]; // Chamber1, Chamber2, etc.
+              const chamberName = chamberData[chamberLabel]; // Chamber1, Chamber2, etc.
+              const chamberQuantity = chamberData['ChamberQuantity']; // Quantity
+              
+              return { chamberId: chamberLabel, chamberName, chamberDetails: Number(chamberQuantity) || '' };
+            });
+            setSelectedChambers(chambers);
+            setShowChamberField(chambers.length > 0);
+          }
+          if (maintenanceData['Machine Name']) {
+            await getSparePartModelListData(maintenanceData['Machine Name']);
+          }
+          console.log(response)
+          console.log(FormData)
+        } catch (error) {
+          console.error('Error fetching purchase order data:', error);
+        }
+      };
+      fetchData();
     }
-}, [MachineId]);
+  }, [MachineId]);
 
   useEffect(() => {
 
@@ -221,7 +241,7 @@ const MachineMaintenance = () => {
 
   }, []);
 
-  
+
   const getSparePartModelListData = async (Machinename) => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
@@ -252,13 +272,13 @@ const MachineMaintenance = () => {
       console.error(error); // Log the full error object
     }
   };
- 
+
 
   const notifySuccess = () => toast.success("Machine Maintainace Added Successfully!", { autoClose: 5000 });
   const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
 
- 
+
   const addSparePartIn = async (data) => {
     const token = localStorage.getItem("token");
     const url = localStorage.getItem('url');
@@ -311,6 +331,22 @@ const MachineMaintenance = () => {
     if (!Process) newFieldErrors.Process = 'Process is required';
     if (SparePartModelNo && !Quantity) {
       newFieldErrors.Quantity = 'Quantity is required';
+    }
+    if (showLineField && !selectedLine) {
+      newFieldErrors.selectedLine = 'Line selection is required';
+  }
+
+  // Validate Chamber fields if applicable
+  if (showChamberField) {
+      if (selectedChambers.length === 0) {
+          newFieldErrors.selectedChambers = 'At least one Chamber selection is required';
+      } else {
+          selectedChambers.forEach(chamber => {
+              if (!chamber.chamberDetails) {
+                  newFieldErrors.selectedChambers = 'Quantity for all selected Chambers is required';
+              }
+          });
+      }
   }
     setFieldErrors(newFieldErrors);
 
@@ -320,22 +356,22 @@ const MachineMaintenance = () => {
 
       const data = {
         CreatedBy: personID,
-        MachineMaintenanceId:MachineId?MachineId:"",
-        MachineName: MachineName.value?MachineName.value:"",
-        Line: selectedLine?selectedLine:"", 
+        MachineMaintenanceId: MachineId ? MachineId : "",
+        MachineName: MachineName.value ? MachineName.value : "",
+        Line: selectedLine ? selectedLine : "",
         Chamber: selectedChambers.map(chamber => ({
           Chamber1: chamber.chamberId,
-          ChamberQuantity: chamber.chamberDetails 
+          ChamberQuantity: chamber.chamberDetails
         })),
 
         Issue: Issue,
         BreakDownStartTime: StartTime,
         BreakDownEndTime: EndTime,
         BreakDownTotalTime: TimeTaken,
-        SparePartModelNumber: SparePartModelNo?.value??"", 
+        SparePartModelNumber: SparePartModelNo?.value ?? "",
 
         Quantity: Quantity,
-        Remarks:remarks,
+        Remarks: remarks,
         SolutionProcess: Process,
 
         Status: "Active"
@@ -343,24 +379,24 @@ const MachineMaintenance = () => {
 
       console.log("Inserting", data)
       console.log()
-   
+
       try {
         let UUID = await addSparePartIn(data);
-         console.log("uuid",UUID)
+        console.log("uuid", UUID)
         // let formData = new FormData()
 
         // formData.append('MachineMaintenancePdf',image);
         // formData.append('SparePartId', UUID.stockCheck)
 
-        if ( (image && image.size > 0)) {
+        if ((image && image.size > 0)) {
           // let upload = await uploadPDF(formData);
           // console.log("Upload response", upload);
         } else {
           notifySuccess();
-            setTimeout(() => {
-              setLoading(false);
-              navigate('/maintenaceList');
-            }, 1000);
+          setTimeout(() => {
+            setLoading(false);
+            navigate('/maintenaceList');
+          }, 1000);
 
           // notifySuccess();
 
@@ -389,27 +425,67 @@ const MachineMaintenance = () => {
     setError('');
   };
 
- 
+
   const handleBack = (e) => {
     navigate('/maintenaceList');
   };
 
+  // const handleMachineNameChange = (selectedMachine) => {
+  //   console.log("Machine Name:", selectedMachine);
+
+  //   if (selectedMachine) {
+  //     setMachineName(selectedMachine);
+
+  //     // Check for specific machine labels to control modals
+  //     if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2'].includes(selectedMachine.label)) {
+  //       setShowLineModal(true);
+  //       setShowChamberModal(false);  // Close other modals if needed
+  //     } else if (['Laminator (Jinchen)', 'Laminator (GMEE)'].includes(selectedMachine.label)) {
+  //       setShowChamberModal(true);
+  //       setShowLineModal(false);  // Close other modals if needed
+  //     } else {
+  //       setShowLineModal(false);
+  //       setShowChamberModal(false);
+  //       setSelectedLine(null);
+  //       setSelectedChambers([]);
+  //     }
+
+  //     handleFieldChange("MachineName", selectedMachine.label);
+
+  //     const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
+
+  //     if (selectedMachineData) {
+  //       setMachineNumber(selectedMachineData.MachineNumber);
+  //       setFieldErrors(prevErrors => {
+  //         const newErrors = { ...prevErrors };
+  //         delete newErrors.MachineNumber;
+  //         return newErrors;
+  //       });
+  //     }
+
+  //     getSparePartModelListData(selectedMachine.label);
+
+  //     console.log(selectedMachine.label);
+  //   }
+  // };
   const handleMachineNameChange = (selectedMachine) => {
     console.log("Machine Name:", selectedMachine);
 
     if (selectedMachine) {
         setMachineName(selectedMachine);
+        setSelectedLine(null);
+        setSelectedChambers([]);
 
-        // Check for specific machine labels to control modals
-        if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2'].includes(selectedMachine.label)) {
-            setShowLineModal(true);
-            setShowChamberModal(false);  // Close other modals if needed
-        } else if (['Laminator (Jinchen)', 'Laminator (GMEE)'].includes(selectedMachine.label)) {
-            setShowChamberModal(true);
-            setShowLineModal(false);  // Close other modals if needed
+        // Determine field visibility based on machine selection
+        if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2', 'gear5'].includes(selectedMachine.label)) {
+            setShowLineField(true);
+            setShowChamberField(false);
+        } else if (['Laminator (Jinchen)', 'Laminator (GMEE)','gearj'].includes(selectedMachine.label)) {
+            setShowChamberField(true);
+            setShowLineField(false);
         } else {
-            setShowLineModal(false);
-            setShowChamberModal(false);
+            setShowLineField(false);
+            setShowChamberField(false);
             setSelectedLine(null);
             setSelectedChambers([]);
         }
@@ -432,128 +508,95 @@ const MachineMaintenance = () => {
         console.log(selectedMachine.label);
     }
 };
-// const handleMachineNameChange = (selectedMachine) => {
-//   console.log("Machine Name....................?", selectedMachine);
-//   setMachineName(selectedMachine);
-//   if (selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-2'||
-//     selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-1'||
-//     selectedMachine && selectedMachine.label === 'Stringer(AMO50FS)-3'||
-//     selectedMachine && selectedMachine.label === 'Stringer(MS40K)-1'||
-//     selectedMachine && selectedMachine.label === 'Stringer(MS40K)-2'
-//   ) {
-//     setShowLineModal(true); 
-//   } else if (selectedMachine && selectedMachine.label === 'Laminator (Jinchen)'||
-//     selectedMachine && selectedMachine.label === 'Laminator (GMEE)') {
-//     setShowChamberModal(true); 
-//   } else {
-//     setSelectedLine(null); 
-//     setSelectedChambers([]); 
-//   }
-//   handleFieldChange("MachineName", MachineName)
- 
 
-//   console.log(selectedMachine.label);
-
-//   const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
-
-//   if (selectedMachineData) {
-//     setMachineNumber(selectedMachineData.MachineNumber);
-    
-//     setFieldErrors(prevErrors => {
-//       const newErrors = { ...prevErrors };
-//       delete newErrors.MachineNumber;
-
-//       return newErrors;
-//     });
-//   }
- 
-
-//   getSparePartModelListData(selectedMachine.label)
- 
-// };
 
   const handleLineChange = (selectedOption) => {
     setSelectedLine(selectedOption ? selectedOption.value : null);
+    setFieldErrors(prevErrors => {
+      const newErrors = { ...prevErrors };
+      delete newErrors.selectedLine;
+      return newErrors;
+    });
   };
   const handleChamberChange = (e) => {
     const { value, checked } = e.target;
     setSelectedChambers(prev => {
-        if (checked) {
-            // Add selected chamber with empty details
-            return [...prev, { chamberId: value, chamberDetails: '' }];
-        } else {
-            // Remove deselected chamber
-            return prev.filter(chamber => chamber.chamberId !== value);
-        }
+      if (checked) {
+        // Add selected chamber with empty details
+        return [...prev, { chamberId: value, chamberDetails: '' }];
+      } else {
+        // Remove deselected chamber
+        return prev.filter(chamber => chamber.chamberId !== value);
+      }
     });
-};
-
-
-
-
-
-  const handleModalClose = () => {
-    setShowLineModal(false);
-    setShowChamberModal(false) // Close the modal without selecting a line
-  };
-  const handleOkClick = () => {
-    if (!selectedLine) {
-      setFieldErrors(prevErrors => ({
-        ...prevErrors,
-        selectedLine: 'Please select a line before proceeding.',
-      }));
-    } else {
-      setFieldErrors(prevErrors => {
-        const newErrors = { ...prevErrors };
-        delete newErrors.selectedLine;
-        return newErrors;
-      });
-      setShowLineModal(false); // Close the modal if validation passes
-      console.log('Selected Line:', selectedLine);
-    }
   };
 
-  const handleChamberOkClick = () => {
-    if (selectedChambers.length === 0) {
-        setFieldErrors(prevErrors => ({
-            ...prevErrors,
-            selectedChambers: 'Please select at least one chamber before proceeding.',
-        }));
-        return;
-    }
 
-    let incompleteDetails = false;
 
-    const updatedChambers = selectedChambers.map(chamber => {
-        const chamberDetailElement = document.getElementById(`${chamber.chamberId}Field`);
-        const chamberDetails = chamberDetailElement ? chamberDetailElement.value.trim() : '';
 
-        if (!chamberDetails) {
-            incompleteDetails = true;
-        }
 
-        return {
-            chamberId: chamber.chamberId,
-            chamberDetails: chamberDetails,
-        };
-    });
+  // const handleModalClose = () => {
+  //   setShowLineModal(false);
+  //   setShowChamberModal(false) // Close the modal without selecting a line
+  // };
+  // const handleOkClick = () => {
+  //   if (!selectedLine) {
+  //     setFieldErrors(prevErrors => ({
+  //       ...prevErrors,
+  //       selectedLine: 'Please select a line before proceeding.',
+  //     }));
+  //   } else {
+  //     setFieldErrors(prevErrors => {
+  //       const newErrors = { ...prevErrors };
+  //       delete newErrors.selectedLine;
+  //       return newErrors;
+  //     });
+  //     setShowLineModal(false); // Close the modal if validation passes
+  //     console.log('Selected Line:', selectedLine);
+  //   }
+  // };
 
-    if (incompleteDetails) {
-        setFieldErrors(prevErrors => ({
-            ...prevErrors,
-            selectedChambers: 'Please fill out Quantity for the selected chambers.',
-        }));
-    } else {
-        setSelectedChambers(updatedChambers);
-        setFieldErrors(prevErrors => {
-            const newErrors = { ...prevErrors };
-            delete newErrors.selectedChambers;
-            return newErrors;
-        });
-        setShowChamberModal(false);
-        console.log('Selected Chambers with details:', updatedChambers);
-    }
-};
+  // const handleChamberOkClick = () => {
+  //   if (selectedChambers.length === 0) {
+  //     setFieldErrors(prevErrors => ({
+  //       ...prevErrors,
+  //       selectedChambers: 'Please select at least one chamber before proceeding.',
+  //     }));
+  //     return;
+  //   }
+
+  //   let incompleteDetails = false;
+
+  //   const updatedChambers = selectedChambers.map(chamber => {
+  //     const chamberDetailElement = document.getElementById(`${chamber.chamberId}Field`);
+  //     const chamberDetails = chamberDetailElement ? chamberDetailElement.value.trim() : '';
+
+  //     if (!chamberDetails) {
+  //       incompleteDetails = true;
+  //     }
+
+  //     return {
+  //       chamberId: chamber.chamberId,
+  //       chamberDetails: chamberDetails,
+  //     };
+  //   });
+
+  //   if (incompleteDetails) {
+  //     setFieldErrors(prevErrors => ({
+  //       ...prevErrors,
+  //       selectedChambers: 'Please fill out Quantity for the selected chambers.',
+  //     }));
+  //   } else {
+  //     setSelectedChambers(updatedChambers);
+  //     setFieldErrors(prevErrors => {
+  //       const newErrors = { ...prevErrors };
+  //       delete newErrors.selectedChambers;
+  //       return newErrors;
+  //     });
+  //     setShowChamberModal(false);
+  //     console.log('Selected Chambers with details:', updatedChambers);
+  //   }
+  // };
 
 
   const handleSparePartModelChange = (selectedOption) => {
@@ -562,7 +605,7 @@ const MachineMaintenance = () => {
     // Update state and clear relevant fields
     setSparePartModelNo(selectedOption);
     const selectedSparePart = ModelNo.find(part => part.value === selectedOption.value);
-    
+
     if (selectedSparePart) {
       setSparePartName(selectedSparePart.SparePartName);
       setStock(selectedSparePart.Available_Stock)
@@ -578,45 +621,45 @@ const MachineMaintenance = () => {
     }
   }
 
-      const uploadPDF = async (formData) => {
-        console.log("oyeyeyeyyeyeyey")
-        console.log(formData);
+  const uploadPDF = async (formData) => {
+    console.log("oyeyeyeyyeyeyey")
+    console.log(formData);
 
 
 
-        try {
-          const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
+    try {
+      const response = await axios.post(`${url}/Maintenance/SparePartsImage`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-          if (response.status === 200) {
-           // setIsLoading(false);
+      if (response.status === 200) {
+        // setIsLoading(false);
 
-            notifySuccess();
-            setTimeout(() => {
-              setLoading(false);
-              navigate('/maintenaceList');
-            }, 1000);
-            return response.data;
-          } else {
-            notifyError('Error, Error On Server')
-
-
-            return response.data
-          }
-
-        } catch (err) {
-          setIsLoading(false);
-           notifyError('Error, While Sending File')
-          console.error('Error', err);
-          return err;
-        }
+        notifySuccess();
+        setTimeout(() => {
+          setLoading(false);
+          navigate('/maintenaceList');
+        }, 1000);
+        return response.data;
+      } else {
+        notifyError('Error, Error On Server')
 
 
+        return response.data
+      }
 
-      };
+    } catch (err) {
+      setIsLoading(false);
+      notifyError('Error, While Sending File')
+      console.error('Error', err);
+      return err;
+    }
+
+
+
+  };
   const inputStyle = {
     borderColor: 'black',
     borderWidth: '1px',
@@ -774,7 +817,7 @@ const MachineMaintenance = () => {
 
   return (
 
-    <Container style={{ marginTop: "4%", width: "90%",paddingBottom:"4%",marginLeft:"auto",marginRight:"auto",boxSizing:"border-box" }} className="fullPage ">
+    <Container style={{ marginTop: "4%", width: "90%", paddingBottom: "4%", marginLeft: "auto", marginRight: "auto", boxSizing: "border-box" }} className="fullPage ">
       <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         {loading && (
           <div className="loader-overlay">
@@ -789,7 +832,7 @@ const MachineMaintenance = () => {
           <Form onSubmit={handleSubmit}>
             <div className="subCard2">
               <Row>
-                <Col className='py-2' md={4}>
+                {/* <Col className='py-2' md={4}>
                   <Form.Group controlId="MachineName">
                     <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
                     <Select
@@ -804,7 +847,7 @@ const MachineMaintenance = () => {
                       }))}
                       styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
                       isDisabled={MachineId}
-                    //   required
+                  
 
                     />
                     {fieldErrors.MachineName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineName}</div>}
@@ -833,7 +876,7 @@ const MachineMaintenance = () => {
                   </Modal.Footer>
                 </Modal>
 
-                {/* Modal For Chamber */}
+              
                 <Modal show={showChamberModal} onHide={handleModalClose} centered>
                   <Modal.Header closeButton>
                     <Modal.Title>Select Chambers</Modal.Title>
@@ -884,7 +927,87 @@ const MachineMaintenance = () => {
                       OK
                     </Button>
                   </Modal.Footer>
-                </Modal>
+                </Modal> */}
+                <Col className='py-2' md={4}>
+                  <Form.Group controlId="MachineName">
+                    <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
+                    <Select
+                      value={MachineName}
+                      onChange={handleMachineNameChange}
+                      placeholder="Select Machine Name"
+                      options={Machine.map(machine => ({
+                        value: machine.MachineId,
+                        label: machine.MachineName
+                      }))}
+                      styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
+                      isDisabled={MachineId}
+                    />
+                    {fieldErrors.MachineName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineName}</div>}
+                  </Form.Group>
+                </Col>
+
+                {showLineField && (
+                  <Col className='py-2' md={4}>
+                    <Form.Group controlId="LineField">
+                      <Form.Label style={{ fontWeight: "bold" }}>Select Line</Form.Label>
+                      <Select
+                        value={LineOptions.find(option => option.value === selectedLine)}
+                        onChange={handleLineChange}
+                        options={LineOptions}
+                        placeholder="Select Line"
+                        styles={!fieldErrors.selectedLine ? customSelectStyles : customSelectStyles1}
+                        
+                      />
+                      {fieldErrors.selectedLine && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedLine}</div>}
+                    </Form.Group>
+                  </Col>
+                )}
+
+                {showChamberField && (
+                  <Col className='py-2' md={4}>
+                    <Form.Label style={{ fontWeight: "bold" }}>Select Chambers</Form.Label>
+                    {ChamberOptions.map(chamber => (
+                      <Row key={chamber.value} className="mb-2 align-items-center">
+                        <Col xs={5}>
+                          <Form.Check
+                            type="checkbox"
+                            id={chamber.value}
+                            label={chamber.label}
+                            value={chamber.value}
+                            checked={selectedChambers.some(selected => selected.chamberId === chamber.value)}
+                            onChange={handleChamberChange}
+                           
+                          />
+                        </Col>
+                        <Col xs={7}>
+                          {selectedChambers.some(selected => selected.chamberId === chamber.value) && (
+                            <Form.Group controlId={`${chamber.value}Field`}>
+                              <Form.Control
+                                type="number"
+                                placeholder={`Enter Quantity for ${chamber.label}`}
+                                value={selectedChambers.find(selected => selected.chamberId === chamber.value)?.chamberDetails || ''}
+                                onChange={(e) => {
+                                  const details = e.target.value;
+                                  setSelectedChambers(prev => prev.map(ch =>
+                                    ch.chamberId === chamber.value
+                                      ? { ...ch, chamberDetails: details }
+                                      : ch
+                                  ));
+                                  setFieldErrors(prevErrors => {
+                                    const newErrors = { ...prevErrors };
+                                    delete newErrors[chamber.value];
+                                    return newErrors;
+                                  });
+                                }}
+                              />
+                            </Form.Group>
+                          )}
+                        </Col>
+                      </Row>
+                    ))}
+                    {fieldErrors.selectedChambers && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedChambers}</div>}
+                  </Col>
+                )}
 
                 <Col md={4}>
                   <Form.Group controlId="MachineNumber">
@@ -996,7 +1119,7 @@ const MachineMaintenance = () => {
                       placeholder="Select Spare Part Model Number"
                       //options={SparePart}
                       styles={!fieldErrors.SparePartModelNo ? customSelectStyles : customSelectStyles1}
-                      isDisabled={MachineId}
+                      isDisabled={MachineId && SparePartModel != null}
                     //   required
 
                     />
@@ -1060,7 +1183,7 @@ const MachineMaintenance = () => {
                       onChange={(e) => {
                         const value = parseInt(e.target.value, 10);
                         setQuantity(value);
-                
+
                         // Check if stock is available
                         if (SparePartModelNo) {
                           // Validate Quantity
@@ -1107,10 +1230,10 @@ const MachineMaintenance = () => {
                       value={Process}
                       onChange={(e) => {
                         setProcess(e.target.value)
-                         handleFieldChange('Process', e.target.value);
+                        handleFieldChange('Process', e.target.value);
                       }}
                       placeholder="Solution Process"
-                      
+
                       //     required
                       style={!fieldErrors.Process ? inputStyle : inputStyles}
                     />
@@ -1129,19 +1252,19 @@ const MachineMaintenance = () => {
                         // handleFieldChange('PCS', e.target.value);
                       }}
                       placeholder="Remarks"
-                      
+
                       //     required
                       style={!fieldErrors.remarks ? inputStyle : inputStyles}
                     />
                     {/* {fieldErrors.Process && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Process}</div>} */}
                   </Form.Group>
                 </Col>
-                
-                
+
+
 
               </Row>
               <Row>
-              <Col className='py-2' md={4}>
+                <Col className='py-2' md={4}>
                   <Form.Group controlId="UploadFile">
                     <Form.Label style={{ fontWeight: "bold" }}>Upload Image</Form.Label>
                     <Form.Control
@@ -1158,12 +1281,12 @@ const MachineMaintenance = () => {
                     )}
                     <div>{fileName}</div>
                     <div>
-            {image ? (
-                <img src={image} alt="Maintenance Image" style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
-            ) : (
-                <p>No image available</p>
-            )}
-        </div>
+                      {image ? (
+                        <img src={image} alt="Maintenance Image" style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+                      ) : (
+                        <p>No image available</p>
+                      )}
+                    </div>
                   </Form.Group>
                 </Col>
 

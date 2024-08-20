@@ -17,7 +17,7 @@ const MaintenaceList = () => {
    
    
     return (
-        <Container style={{ marginTop: "2%", width: "90%",boxSizing:"border-box",maxWidth:"1100px",marginLeft:"auto",marginRight:"auto" }} className="fullPage py-1">
+        <Container style={{ marginTop: "2%", width: "100%",boxSizing:"border-box",maxWidth:"1100px",marginLeft:"auto",marginRight:"auto" }} className="fullPage py-1">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Link to="/dashboard">
           <Image src={img2} alt="" rounded style={{ width: '3%' }} />

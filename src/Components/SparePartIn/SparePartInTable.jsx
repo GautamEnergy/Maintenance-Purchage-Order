@@ -325,6 +325,20 @@ const SparePartInTable = () => {
     //     XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
     //     XLSX.writeFile(workbook, "SparePartIn.xlsx");
     // };
+    const currencyBodyTemplate = (rowData) => {
+      return (
+        <span>
+          <strong>{rowData.Currency}</strong> {rowData.Total_Cost}
+        </span>
+      );
+    };
+  const currencyBodyTemplate1 = (rowData) => {
+    return (
+      <span>
+        <strong>{rowData.Currency}</strong> {rowData.Price}
+      </span>
+    );
+  };
     const exportExcel = () => {
         // Process the data before exporting to Excel
         const processedData = data.map(item => ({
@@ -394,10 +408,10 @@ const SparePartInTable = () => {
                     <Column style={{ border: "0.5px dotted black" }} field="Spare_Part_Specification" header="Specification" filter filterPlaceholder="Search by Specification" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Machine_Names" header="Machine Name" body={machineNamesTemplate} filter filterPlaceholder="Search by Machine Name" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Quantity_Purchase_Order" header="Quantity In PO" filter filterPlaceholder="Search by Quantity In PO" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Quantity_Recieved" header="Quantity Recieved" filter filterPlaceholder="Search by Quantity Recieved" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Price" header="Price" filter filterPlaceholder="Search by Price" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Total_Cost" header="Total Cost" filter filterPlaceholder="Search by Total Cost" sortable />
-                    <Column style={{ border: "0.5px dotted black" }} field="Available_Stock" header="Available Stock" filter filterPlaceholder="Search by Available Stock" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Quantity_Recieved" header="Quantity Recieved"  filter filterPlaceholder="Search by Quantity Recieved" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Price" header="Price"  body={currencyBodyTemplate1} filter filterPlaceholder="Search by Price" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Total_Cost" header="Total Cost" body={currencyBodyTemplate} filter filterPlaceholder="Search by Total Cost" sortable />
+                    <Column style={{ border: "0.5px dotted black" }} field="Available_Stock" header="Available Stock"   filter filterPlaceholder="Search by Available Stock" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Invoice_Number" header="Invoice Number" filter filterPlaceholder="Search by Invoice Number" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Date" header="Received Date" filter filterPlaceholder="Search by Received Date" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Name" header="Received By" filter filterPlaceholder="Search by Name" sortable />

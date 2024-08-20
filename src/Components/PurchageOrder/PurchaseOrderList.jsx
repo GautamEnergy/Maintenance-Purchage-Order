@@ -15,7 +15,7 @@ const PurchaseOrderList = () => {
 
 
     return (
-        <Container style={{ marginTop: "1%", width: "100%px", marginBottom: "5%" }} className="fullPage py-5">
+        <Container style={{ marginTop: "1%", width: "100%", marginBottom: "5%" }} className="fullPage py-5">
             <div className="form-detail" style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <Link to="/dashboard">
                     <Image src={img2} alt="" rounded style={{ width: '3%' }} />
