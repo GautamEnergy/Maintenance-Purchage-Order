@@ -4,7 +4,9 @@ import { AppContext } from '../../ContextAPI'
 import '../Style.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import logo from "../../Assets/Images/LOGO.png"
+import logo from "../../Assets/Images/LOGO.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
     const { setToken } = useContext(AppContext);
@@ -13,6 +15,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [url, setUrl] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
 
@@ -25,8 +28,6 @@ const Login = () => {
 
         // console.log('asddasda')
         // console.log(localStorage.getItem("CurrentUser"))
-
-
         const ProfileImg = localStorage.getItem("ProfileImg");
         const Name = localStorage.getItem("Name");
         const Designation = localStorage.getItem("Designation");
@@ -38,7 +39,7 @@ const Login = () => {
             setLoginOpen(true);
         }
     }, []);
-   
+
 
     const notifySuccess = (message) => toast.success(message, { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
@@ -53,9 +54,9 @@ const Login = () => {
 
     const userlogin = async () => {
         if (!validateInput()) return;
-        console.log("Texxxxxxxxxt")
+        console.log("Login Id")
         console.log(email);
-        console.log("Passs");
+        console.log("Login Password");
         console.log(password);
 
         const url = localStorage.getItem('url');
@@ -98,7 +99,7 @@ const Login = () => {
                     console.log("ProfileImg:", ProfileImg);
                     console.log("CurrentUser:", PersonID);
                     console.log("Name:", Name);
-                    console.log("Designation",Designation)
+                    console.log("Designation", Designation)
 
                     console.log("Admin logged in successfully!");
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -132,7 +133,7 @@ const Login = () => {
 
     return (
         <div className="neumorphic-card">
-            <img src={logo} style={{ width: "40%", marginLeft: "110px" }} />
+            <img src={logo} />
             <form onSubmit={(event) => event.preventDefault()} className="neumorphic-form">
                 <div className="neumorphic-input-wrapper">
                     <label htmlFor="email">Login Id</label>
@@ -145,18 +146,27 @@ const Login = () => {
                         placeholder="Please enter login ID"
                     />
                 </div>
-                <div className="neumorphic-input-wrapper">
+
+                <div className="neumorphic-input-wrapper password-wrapper">
                     <label htmlFor="neumorphic-password">Password</label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         name="neumorphic-password"
                         id="neumorphic-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        placeholder='Please enter password'
+                        placeholder="Please enter password"
                     />
+                    {password && (
+                        <FontAwesomeIcon
+                            icon={showPassword ? faEyeSlash : faEye}
+                            className="password-icon"
+                            onClick={() => setShowPassword(!showPassword)}
+                        />
+                    )}
                 </div>
+
                 {error && <div className="error">{error}</div>}
                 <button type="submit" onClick={userlogin}>Sign in</button>
             </form>

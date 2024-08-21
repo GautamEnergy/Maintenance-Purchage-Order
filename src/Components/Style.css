@@ -6,7 +6,7 @@
 
 body {
     margin: 0px;
-    height: 100vh;
+    height: auto;
     background-color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -15,28 +15,28 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+
+
 .neumorphic-card {
     background-color: #e0e0e0;
     width: 400px;
     height: auto;
-    margin: 4.5rem;
-    padding: 1rem;
+    margin: 23px;
+    padding: 22px;
     border-radius: 10px;
-    box-shadow:
-        10px 10px 22px rgba(0, 0, 0, 0.2),
-        -10px -10px 22px rgba(255, 255, 255, 0.75);
 }
 
-.logo-designed {
-    width: 200px;
-    height: 50px;
-    margin: auto;
+.neumorphic-card img {
+    width: 180px;
+    height: auto;
+    margin: 0 auto;
     display: block;
+    padding: 10px;
 }
 
-.neumorphic-form {
+/* .neumorphic-form {
     margin: 2rem 0;
-}
+} */
 
 .neumorphic-input-wrapper {
     width: 100%;
@@ -58,7 +58,7 @@ body {
     background-color: #e0e0e0;
     padding: 0.8rem 1.1rem;
     border-radius: 20px;
-    margin: 0.5rem 0 1rem 0;
+    margin: 8px 0 8px 0;
     font-size: 1.2rem;
     color: #0dafeb;
     box-shadow:
@@ -75,7 +75,8 @@ body {
     outline: none;
     background: none;
     width: 100%;
-    margin: 0.6rem 0 1rem 0;
+    margin: 6px 0 1px 0;
+    margin-bottom: 16px;
     cursor: pointer;
     font-size: 1.2rem;
     color: #fff;
@@ -83,9 +84,7 @@ body {
     padding: 0.9rem;
     border-radius: 20px;
     background-color: #0dafeb;
-    box-shadow:
-        10px 10px 22px rgba(0, 0, 0, 0.2),
-        -10px -10px 22px rgba(255, 255, 255, 0.75);
+
 }
 
 .neumorphic-form button:active {
@@ -93,6 +92,53 @@ body {
         inset 5px 5px 11px rgba(0, 0, 0, 0.2),
         inset -5px -5px 11px rgba(255, 255, 255, 0.75);
 }
+
+
+
+
+
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.password-wrapper input {
+    padding-left: 2.5rem;
+
+
+    padding-left: 1.1rem;
+    border-radius: 20px;
+    margin: 8px 0 8px 0;
+    font-size: 1.2rem;
+
+
+}
+
+.password-icon {
+    position: absolute;
+    right: 14px;
+    top: 63%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #0dafeb;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Additional styles for smaller screens */
 @media only screen and (max-width: 600px) {
