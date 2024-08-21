@@ -16,6 +16,7 @@ import StockLess from '../Components/PurchageOrder/StockLess';
 import SparePartInListing from '../Components/SparePartIn/SparePartInListing';
 import MaintenanceStock from '../MachineMaintenance/MaintenanceStock';
 import MaintenaceList from '../MachineMaintenance/MaintenanceList';
+import MachineList from '../Components/MachineList/MachineList';
 
 const Dashboard = () => {
     const [designation, setDesignation] = useState('');
@@ -33,19 +34,19 @@ const Dashboard = () => {
         <>
             <div style={{ marginBottom: '82%' }}>
 
-                <div className="container py-1" style={{ width: "auto", marginTop: '-2%' }}>
+           { designation === "Maintenance Engineer" ? <MaintenaceList/>:<div className="container py-1" style={{ width: "auto", marginTop: '-2%' }}>
 
-                    <div style={{ width: "auto" }}>
-                        <AvailableStock />
-                    </div>
-
-
-                    <div style={{ width: "auto", marginTop: '-8%' }}>
-                        <MaintenanceStock />
-                    </div>
-
+                <div style={{ width: "auto" }}>
+                    <AvailableStock />
                 </div>
 
+
+                <div style={{ width: "auto", marginTop: '-8%' }}>
+                    <MaintenanceStock />
+                </div>
+
+            </div>
+}
 
                 {/* Purchase Order List in Dashboard */}
                 <div className="container" style={{ width: "auto", display: "flex", marginTop: "-8%", }}>
