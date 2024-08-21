@@ -15,7 +15,7 @@ import StockChart from './StockChart';
 import { AppContext } from '../../ContextAPI'
 
 const AvailableStock = () => {
-  const [MachineName, setMachineName] = useState({ value: '143cd0ea-fa88-4164-9a04-eb1cf1b8d782', label: 'gear5' });
+  const [MachineName, setMachineName] = useState({value: '1b5eb3c4-d04f-4769-836d-46bf58ace7f5', label: 'Automatic Dispenser (JB fixing)'});
   const [fieldErrors, setFieldErrors] = useState({});
   const [url, setUrl] = useState("");
   const [personID, setPersonID] = useState('');

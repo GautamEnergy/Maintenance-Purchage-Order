@@ -279,32 +279,24 @@ export default function MiniDrawer() {
 
   /*** Spare Part Store Manager ||  Maintenance Head  ||  Maintenance Engineer  */
   const getVisibleMenuItems = (designation) => {
-    const clonedMenuItems = [...menuItems];
-    const dashboardItem = clonedMenuItems.find(item => item.parent && item.parent.some(subItem => subItem.text === 'Dashboard'));
     switch (designation) {
       case 'Super Admin':
-        return clonedMenuItems;
+        return menuItems;
       case 'Maintenance Head':
-        return [
-          ...(dashboardItem ? [dashboardItem] : []),
-          ...clonedMenuItems.filter(item =>
-            item.text === 'Spare Part In' || item.text === 'Machine Maintenance'
-          ),
-        ];
+        return menuItems.filter(item =>
+          item.text === 'Dashboard' || item.text === 'Spare Part In' || item.text === 'Machine Maintenance'
+        );
       case 'Spare Part Store Manager':
-        return [
-          ...(dashboardItem ? [dashboardItem] : []),
-          ...clonedMenuItems.filter(item => item.text === 'Spare Part In'),
-        ];
+        return menuItems.filter(item => item.text === 'Dashboard' || item.text === 'Spare Part In');
       case 'Maintenance Engineer':
-        return [
-          ...(dashboardItem ? [dashboardItem] : []),
-          ...clonedMenuItems.filter(item => item.text === 'Machine Maintenance'),
-        ];
+        return menuItems.filter(item => item.text === 'Dashboard' || item.text === 'Machine Maintenance');
       default:
-        return [];
+        return []; // No menu items visible for unknown designations
     }
   };
+  
+  console.log("Visible Menu Items:", getVisibleMenuItems(designation));
+  
 
 
   const visibleMenuItems = getVisibleMenuItems(designation);
@@ -395,7 +387,7 @@ export default function MiniDrawer() {
         <Divider />
         {/* 1. Final Updated List in Drawer */}
         <List>
-          {menuItems.map((item, index) =>
+          {visibleMenuItems.map((item, index) =>
             item.children ? (
               <React.Fragment key={index}>
                 <ListItemButton onClick={() => handleExpandClick(item.text)}>

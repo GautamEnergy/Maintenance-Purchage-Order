@@ -50,7 +50,7 @@ const Dashboard = () => {
                 {/* Purchase Order List in Dashboard */}
                 <div className="container" style={{ width: "auto", display: "flex", marginTop: "-8%", }}>
                     <div style={{ width: "auto" }}>
-                        {designation === "Maintenance Head" ? "" : (designation === "Super Admin" ? <PurchaseOrderList /> : <SparePartInListing />)}
+                        {designation === "Maintenance Engineer" ? "" : (designation === "Super Admin" ? <PurchaseOrderList /> : <SparePartInListing />)}
                     </div>
 
                 </div>

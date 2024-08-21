@@ -261,7 +261,7 @@ const MaintenaceListTable = () => {
 
                         <p>Are You Involved In This Machine Maintenace.. ?</p>
                     </Dialog>
-                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Purchase Order" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Machine_Maintenance_Id, "")} />
+                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Machine Maintenence" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Machine_Maintenance_Id, "")} />
                     {rowData.Image_URL != null && rowData.Image_URL != "" ?
                         <Button
 
