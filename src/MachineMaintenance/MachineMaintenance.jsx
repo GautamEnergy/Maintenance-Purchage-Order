@@ -58,7 +58,7 @@ const MachineMaintenance = () => {
   const [remarks, setRemarks] = useState("");
   const location = useLocation();
   const { MachineId, Type } = location.state || {};
-  const [FormData, setFormData] = useState([]);
+  const [formData, setFormData] = useState([]);
   const [showLineField, setShowLineField] = useState(false);
   const [showChamberField, setShowChamberField] = useState(false);
 
@@ -163,7 +163,7 @@ const MachineMaintenance = () => {
             await getSparePartModelListData(maintenanceData['Machine Name']);
           }
           console.log(response)
-          console.log(FormData)
+          console.log(formData)
         } catch (error) {
           console.error('Error fetching purchase order data:', error);
         }
@@ -383,13 +383,13 @@ const MachineMaintenance = () => {
       try {
         let UUID = await addSparePartIn(data);
         console.log("uuid", UUID)
-        // let formData = new FormData()
+        let formData = new FormData()
 
-        // formData.append('MachineMaintenancePdf',image);
-        // formData.append('SparePartId', UUID.stockCheck)
+        formData.append('MachineMaintenancePdf',image);
+        formData.append('SparePartId', UUID.stockCheck)
 
         if ((image && image.size > 0)) {
-          // let upload = await uploadPDF(formData);
+          let upload = await uploadPDF(formData);
           // console.log("Upload response", upload);
         } else {
           notifySuccess();
@@ -1212,6 +1212,7 @@ const MachineMaintenance = () => {
                         }
                       }}
                       placeholder="Quantity"
+                      disabled={!SparePartModelNo} 
 
                       //  required
                       style={!fieldErrors.Quantity ? inputStyle : inputStyles}

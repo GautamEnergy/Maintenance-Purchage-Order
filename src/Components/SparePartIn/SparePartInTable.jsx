@@ -43,20 +43,21 @@ const SparePartInTable = () => {
         if (Designation) {
           setDesignation(Designation);
         }
-        const fetchData = async () => {
-            try {
-                const { data } = await axios.post(`${url}/Maintenance/GetStockList`);
-                setData(data.data);
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-                console.error("Error fetching data: ", error);
-            }
-        };
+        
 
-        fetchData();
+        fetchData(" ");
         getMachineListData();
     }, []);
+    const fetchData = async (reqData) => {
+      try {
+          const { data } = await axios.post(`${url}/Maintenance/GetStockList`,{reqData});
+          setData(data.data);
+          setLoading(false);
+      } catch (error) {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+      }
+  };
 
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
@@ -173,10 +174,13 @@ const SparePartInTable = () => {
         const requestData = {
           FromDate,
           ToDate,
-          MachineName: MachineName?MachineName.label: " "
+          MachineId: MachineName?MachineName.value: " "
         };
+        fetchData(requestData);
+
     
-        console.log("requestData",requestData); // Replace this with actual backend call
+        console.log("requestData",requestData); 
+        // Replace this with actual backend call
       };
     const actionBodyTemplate = (rowData) => {
         console.log(rowData)

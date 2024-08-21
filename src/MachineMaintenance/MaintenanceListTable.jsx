@@ -58,15 +58,15 @@ const MaintenaceListTable = () => {
         }
 
 
-        fetchData();
+        fetchData(" ");
         getMachineListData()
     }, []);
     const notifySuccess = () => toast.success("You Are Added Successfully!", { autoClose: 5000 });
-    const fetchData = async () => {
+    const fetchData = async (reqData) => {
         const url = localStorage.getItem('url');
         const personID = localStorage.getItem("CurrentUser");
         try {
-            const { data } = await axios.post(`${url}/Maintenance/GetMachineMaintenanceList`,{PersonId:personID});
+            const { data } = await axios.post(`${url}/Maintenance/GetMachineMaintenanceList`,{PersonId:personID,reqData});
             setData(data.data);
             setLoading(false);
         } catch (error) {
@@ -130,6 +130,7 @@ const MaintenaceListTable = () => {
             const response = await axios.post(`${url}/Maintenance/SparePartOut`, {
                 MachineMaintenanceId: machineID,
                 CreatedBy: personID,
+                "Required" : "Bahan ki shadi",
 
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,8 +206,9 @@ const MaintenaceListTable = () => {
         const requestData = {
           FromDate,
           ToDate,
-          MachineName: MachineName?MachineName.label: " "
+          MachineId: MachineName?MachineName.value: " "
         };
+        fetchData(requestData);
     
         console.log("requestData",requestData); // Replace this with actual backend call
       };
