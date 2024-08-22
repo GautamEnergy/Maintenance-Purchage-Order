@@ -224,8 +224,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
 
                                 <td style={{ width: '222px' }} >
                                     <OverlayTrigger
-                                        placement="bottom"
-                                        overlay={<Tooltip>{item.modelNumber || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                        placement="top"
+                                        overlay={<Tooltip>{item.modelNumber || 'Empty Spare Part Model Number'}</Tooltip>}
                                     >
                                         <Select
                                             className="form"
@@ -241,8 +241,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
 
                                 <td style={{ width: '150px' }}>
                                     <OverlayTrigger
-                                        placement="bottom"
-                                        overlay={<Tooltip>{item.spareName || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                        placement="top"
+                                        overlay={<Tooltip>{item.spareName || 'Empty Spare Part Name	'}</Tooltip>}
                                     >
                                         <input
                                             type="text"
@@ -261,8 +261,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
 
                                 <td style={{ width: '100px' }}>
                                     <OverlayTrigger
-                                        placement="bottom"
-                                        overlay={<Tooltip>{item.qty || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                        placement="top"
+                                        overlay={<Tooltip>{item.qty || 'Empty Qty'}</Tooltip>}
                                     >
                                         <Form.Control
                                             type="number"
@@ -279,8 +279,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
 
                                 <td style={{ width: '80px' }}>
                                     <OverlayTrigger
-                                        placement="bottom"
-                                        overlay={<Tooltip>{item.unit || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                        placement="top"
+                                        overlay={<Tooltip>{item.unit || 'Empty Unit'}</Tooltip>}
                                     >
                                         <Form.Control
                                             type="text"
@@ -297,8 +297,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
 
                                 <td style={{ width: '150px' }}>
                                     <OverlayTrigger
-                                        placement="bottom"
-                                        overlay={<Tooltip>{item.price || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                        placement="top"
+                                        overlay={<Tooltip>{item.price || 'Empty Price Rs'}</Tooltip>}
                                     >
                                         <Form.Control
                                             type="number"
