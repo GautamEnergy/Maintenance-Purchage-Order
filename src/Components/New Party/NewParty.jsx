@@ -36,7 +36,9 @@ const NewParty = () => {
     const location = useLocation();
     const { PartyNameId } = location.state || {};
     const [FormData, setFormData] = useState([]);
-    console.log("Country", Country)
+    console.log("Country", Country);
+
+
 
 
     useEffect(() => {
@@ -203,17 +205,23 @@ const NewParty = () => {
         const requiredFields = {
             PartyName: 'Party name is required',
             MobileNumber: 'Mobile number is required',
-            Email: 'Email is required',
+
+
+
+
             Address: 'Address is required',
             countrtrySelect: 'Country is required',
             ...(state.countrtrySelect !== 'China' && {
                 PinCode: 'Pin code is required',
                 GSTNumber: 'GST number is required',
                 PANNumber: 'PAN number is required',
-                State: 'State is required'
+                State: 'State is required',
+                Email: 'Email is Required',
             }),
+
             // ...(state.countrtrySelect === 'China' && { PinCode: 'Zip code is required' }),
         };
+
 
         Object.keys(requiredFields).forEach(field => {
             if (!state[field] || (field === 'Email' && !isEmailValids(state.Email))) {
@@ -244,11 +252,6 @@ const NewParty = () => {
         //     }));
         //     return;
         // }
-
-
-
-
-        // if (PartyName && GSTNumber && PANNumber && MobileNumber && Email && Address && countrtrySelect && State && CountryCode && PinCode && Status) {
         if (validateForm()) {
             const partyData = {
                 PartyNameId: PartyNameId ? PartyNameId : "",
@@ -269,21 +272,10 @@ const NewParty = () => {
 
             addNewParty(partyData);
 
+            console.log('Total Data', partyData)
+
         }
-        // else if (PartyName && MobileNumber && Email && Address && countrtrySelect && CountryCode && PinCode && Status) {
-        //     const partyData = {
-        //         PartyName,
-        //         MobileNumber,
-        //         Email,
-        //         Address,
-        //         countrtrySelect,
-        //         CountryCode,
-        //         PinCode,
-        //         Status,
-        //         CurrentUser: personID,
-        //     };
-        //     addNewParty(partyData);
-        // }
+
         else {
             console.log('Else')
             // notifyError('Please fill in all required fields.');
@@ -292,6 +284,43 @@ const NewParty = () => {
 
 
     };
+
+
+
+    const stateOptions = [
+        { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+        { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+        { value: 'Assam', label: 'Assam' },
+        { value: 'Bihar', label: 'Bihar' },
+        { value: 'Chhattisgarh', label: 'Chhattisgarh' },
+        { value: 'Goa', label: 'Goa' },
+        { value: 'Gujarat', label: 'Gujarat' },
+        { value: 'Haryana', label: 'Haryana' },
+        { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
+        { value: 'Jharkhand', label: 'Jharkhand' },
+        { value: 'Karnataka', label: 'Karnataka' },
+        { value: 'Kerala', label: 'Kerala' },
+        { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
+        { value: 'Maharashtra', label: 'Maharashtra' },
+        { value: 'Manipur', label: 'Manipur' },
+        { value: 'Meghalaya', label: 'Meghalaya' },
+        { value: 'Mizoram', label: 'Mizoram' },
+        { value: 'Nagaland', label: 'Nagaland' },
+        { value: 'Odisha', label: 'Odisha' },
+        { value: 'Punjab', label: 'Punjab' },
+        { value: 'Rajasthan', label: 'Rajasthan' },
+        { value: 'Sikkim', label: 'Sikkim' },
+        { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+        { value: 'Telangana', label: 'Telangana' },
+        { value: 'Tripura', label: 'Tripura' },
+        { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+        { value: 'Uttarakhand', label: 'Uttarakhand' },
+        { value: 'West Bengal', label: 'West Bengal' },
+    ];
+
+
+    console.log('state', stateOptions);
+
 
     const handleback = () => {
         navigate('/partylist');
@@ -373,10 +402,13 @@ const NewParty = () => {
         setIsEmailValid(isValid);
 
         // Set error based on email validity
+
+
+
         if (emailValue.trim() === '') {
             setErrors((prevErrors) => ({
                 ...prevErrors,
-                Email: 'Email is required'
+                // Email: 'Email is required'
             }));
         } else {
             setErrors((prevErrors) => ({
@@ -403,7 +435,7 @@ const NewParty = () => {
 
     return (
 
-        <Container style={{ marginTop: "2%",paddingBottom:"22px",width:"auto" }} className="fullPage ">
+        <Container style={{ marginTop: "2%", paddingBottom: "22px", width: "auto" }} className="fullPage ">
             <div className="form-detail" style={{ backgroundColor: '#f8f8ff', padding: '10px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 {loading && (
                     <div className="loader-overlay">
@@ -583,7 +615,7 @@ const NewParty = () => {
                                 </Form.Control.Feedback>
                             </Col>
 
-                            <Col md={4} className="py-2 form-group">
+                            {/* <Col md={4} className="py-2 form-group">
                                 <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -619,6 +651,64 @@ const NewParty = () => {
                                     isInvalid={!hideFields ? !!errors.State : !!errors.PinCode || !!errors.InvalidZip}
                                     style={!hideFields ? (!errors.State ? inputStyle : inputStyles) : (!errors.PinCode && !errors.InvalidZip ? inputStyle : inputStyles)}
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {!hideFields ? errors.State : errors.PinCode || errors.InvalidZip}
+                                </Form.Control.Feedback>
+                            </Col> */}
+
+                            <Col md={4} className="py-2 form-group">
+                                <Form.Label>{!hideFields ? 'State' : 'Zip Code'}</Form.Label>
+                                {!hideFields ? (
+                                    <Select
+                                        className="input-text"
+                                        name="state"
+                                        options={stateOptions}
+                                        placeholder="Select State"
+                                        value={stateOptions.find(option => option.value === State)}
+                                        onChange={(selectedOption) => {
+                                            const value = selectedOption ? selectedOption.value : '';
+                                            setState(value);
+                                            setErrors((prevErrors) => ({
+                                                ...prevErrors,
+                                                State: value ? '' : 'State is required',
+                                            }));
+                                        }}
+                                        isInvalid={!!errors.State}
+                                        styles={{
+                                            control: (provided) => ({
+                                                ...provided,
+                                                borderColor: errors.State ? 'red' : provided.borderColor,
+                                            }),
+                                        }}
+                                    />
+                                ) : (
+                                    <Form.Control
+                                        type="text"
+                                        className="input-text"
+                                        name='Zip Code'
+                                        placeholder='Enter Zip Code'
+                                        value={PinCode}
+                                        maxLength={6}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                                setPinCode(value);
+                                                setErrors((prevErrors) => ({
+                                                    ...prevErrors,
+                                                    PinCode: value,
+                                                    InvalidZip: value.length === 6 || value.length === 0 ? '' : 'Zip Code is invalid',
+                                                }));
+                                            } else {
+                                                setErrors((prevErrors) => ({
+                                                    ...prevErrors,
+                                                    InvalidZip: 'Zip Code is invalid',
+                                                }));
+                                            }
+                                        }}
+                                        isInvalid={!!errors.PinCode || !!errors.InvalidZip}
+                                        style={!errors.PinCode && !errors.InvalidZip ? inputStyle : inputStyles}
+                                    />
+                                )}
                                 <Form.Control.Feedback type="invalid">
                                     {!hideFields ? errors.State : errors.PinCode || errors.InvalidZip}
                                 </Form.Control.Feedback>

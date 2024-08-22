@@ -3,9 +3,9 @@ import { Container, Table, Form, Col } from 'react-bootstrap';
 import ItemMaster from '../Add Item Master/ItemMaster';
 import axios from 'axios';
 import './table.css';
-
 import Select from 'react-select';
 
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 
 const ItemTable = ({ setAmount, totalAmount, showItemMaster,
@@ -71,9 +71,6 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
             setErrors('Failed to fetch Model No. list. Please check the server configuration.');
         }
     };
-
-
-
 
     const getPartyName = async (selectedOption, id) => {
         const url = localStorage.getItem('url');
@@ -226,86 +223,102 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                 <td>{index + 1}</td>
 
                                 <td style={{ width: '222px' }} >
-                                    <Select
-                                        className="form"
-                                        value={modelNoList.find(model => model.SparePartId === item.SparePartId) ? { value: item.SparePartId, label: item.modelNumber } : ''}
-                                        onChange={(selectedOption) => handleChangeModelNumber(selectedOption, item.id)}
-                                        options={modelNoList.map(model => ({ value: model.SparePartId, label: model.SparePartModelNumber }))}
-                                    />
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={<Tooltip>{item.modelNumber || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                    >
+                                        <Select
+                                            className="form"
+                                            value={modelNoList.find(model => model.SparePartId === item.SparePartId) ? { value: item.SparePartId, label: item.modelNumber } : ''}
+                                            onChange={(selectedOption) => handleChangeModelNumber(selectedOption, item.id)}
+                                            options={modelNoList.map(model => ({ value: model.SparePartId, label: model.SparePartModelNumber }))}
+                                        />
+                                    </OverlayTrigger>
                                     {errors?.[item.id]?.modelNumber && (
                                         <div className="invalid-feedback">{errors[item.id].modelNumber}</div>
                                     )}
                                 </td>
+
                                 <td style={{ width: '150px' }}>
-                                    <input
-                                        type="text"
-                                        className="form-control input-field"
-
-                                        name="spareName"
-
-                                        value={item.spareName}
-                                        onChange={(e) => handleItemChange(e, item.id)}
-                                        readOnly="true"
-                                    />
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={<Tooltip>{item.spareName || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                    >
+                                        <input
+                                            type="text"
+                                            className="form-control input-field"
+                                            name="spareName"
+                                            value={item.spareName}
+                                            onChange={(e) => handleItemChange(e, item.id)}
+                                            readOnly="true"
+                                        />
+                                    </OverlayTrigger>
                                     {errors[item.id]?.spareName && (
                                         <div className="invalid-feedback">{errors[item.id].spareName}</div>
                                     )}
 
                                 </td>
+
                                 <td style={{ width: '100px' }}>
-                                    <Form.Control
-                                        type="number"
-                                        name="qty"
-                                        value={item.qty}
-                                        onChange={(e) => handleItemChange(e, item.id)}
-                                        className="input-field"
-                                    />
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={<Tooltip>{item.qty || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                    >
+                                        <Form.Control
+                                            type="number"
+                                            name="qty"
+                                            value={item.qty}
+                                            onChange={(e) => handleItemChange(e, item.id)}
+                                            className="input-field"
+                                        />
+                                    </OverlayTrigger>
                                     {errors[item.id]?.qty && (
                                         <div className="invalid-feedback">{errors[item.id].qty}</div>
                                     )}
                                 </td>
+
                                 <td style={{ width: '80px' }}>
-                                    <Form.Control
-                                        type="text"
-                                        name="unit"
-                                        value={item.unit}
-                                        onChange={(e) => handleItemChange(e, item.id)}
-                                        className="input-field"
-                                    />
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={<Tooltip>{item.unit || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                    >
+                                        <Form.Control
+                                            type="text"
+                                            name="unit"
+                                            value={item.unit}
+                                            onChange={(e) => handleItemChange(e, item.id)}
+                                            className="input-field"
+                                        />
+                                    </OverlayTrigger>
                                     {errors[item.id]?.unit && (
                                         <div className="invalid-feedback">{errors[item.id].unit}</div>
                                     )}
                                 </td>
+
                                 <td style={{ width: '150px' }}>
-                                    <Form.Control
-                                        type="number"
-                                        name="price"
-                                        value={item.price}
-                                        maxLength="8"
-                                        onChange={(e) => handleItemChange(e, item.id)}
-                                        onInput={(e) => {
-                                            if (e.target.value.length > 8) {
-                                                e.target.value = e.target.value.slice(0, 8);
-                                            }
-                                        }}
-                                        className="input-field"
-                                    />
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={<Tooltip>{item.price || 'Phle Entry to Fill Karo'}</Tooltip>}
+                                    >
+                                        <Form.Control
+                                            type="number"
+                                            name="price"
+                                            value={item.price}
+                                            maxLength="8"
+                                            onChange={(e) => handleItemChange(e, item.id)}
+                                            onInput={(e) => {
+                                                if (e.target.value.length > 8) {
+                                                    e.target.value = e.target.value.slice(0, 8);
+                                                }
+                                            }}
+                                            className="input-field"
+                                        />
+                                    </OverlayTrigger>
                                     {errors[item.id]?.price && (
                                         <div className="invalid-feedback">{errors[item.id].price}</div>
                                     )}
                                 </td>
-                                {/* <td style={{ width: '80px' }}>
-                                    {purchType == 'I/GST-item wise' ? <Form.Control
-                                        type="number"
-                                        name="gst"
-                                        value={item.gst}
-                                        onChange={(e) => handleItemChange(e, item.id)}
-                                        className="input-field"
-                                    /> : ''}
-                                    {errors[item.id]?.gst && (
-                                        <div className="invalid-feedback">{errors[item.id].gst}</div>
-                                    )}
-                                </td> */}
+
                                 {purchType == 'I/GST-item wise' ? (
                                     <td style={{ width: '80px' }}>
                                         <Form.Control
@@ -326,10 +339,8 @@ const ItemTable = ({ setAmount, totalAmount, showItemMaster,
                                             <div className="invalid-feedback">{errors[item.id].gst}</div>
                                         )}
                                     </td>) : null}
-
-
-
                                 <td>{!item.gst ? item.qty * item.price : ((item.qty * item.price) * (item.gst / 100)) + (item.qty * item.price)}</td>
+
                                 <td>
                                     <button
                                         className="btn btn-danger"

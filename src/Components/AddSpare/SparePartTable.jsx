@@ -60,15 +60,24 @@ const SparePartTable = () => {
             console.error('Error downloading the PDF', error);
         }
     };
+
+
+
     const actionBodyTemplate = (rowData) => {
         console.log(rowData)
         return (
             <React.Fragment>
                 <div style={{ display: 'flex' }}>
                     <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Spare Part" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.SparPartId, "")} />
-                    {/* <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "Resend")} />
-                    <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download PO" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL, rowData.Voucher_Number)} />
-                    <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" style={{ backgroundColor: '#f27661' }} onClick={handleClick} /> */}
+
+                    {/* <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="Add PO With Same Data" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} onClick={() => handleEditClick(rowData.Purchase_Order_Id, "Resend")} /> */}
+
+                    {/* <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download PDF" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.PdfURL, rowData.Voucher_Number)} />
+
+                    <Button icon="pi pi-download" className="p-button-rounded" data-pr-tooltip="Download Image" style={{ marginRight: '5px' }} onClick={() => handlePdfClick(rowData.ImageURL, rowData.Voucher_Number)} /> */}
+
+                    {/* <Button icon="pi pi-envelope" className="p-button-rounded" data-pr-tooltip="Send PO" style={{ backgroundColor: '#f27661' }} onClick={handleClick} /> */}
+
                 </div>
                 <Tooltip target=".p-button-rounded" position="top" className="custom-tooltip" />
             </React.Fragment>
