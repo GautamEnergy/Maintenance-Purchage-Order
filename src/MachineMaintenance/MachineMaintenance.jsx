@@ -144,23 +144,55 @@ const MachineMaintenance = () => {
           setImage(maintenanceData.Image_URL || '');
 
           // If Line is present in the data, set it
-          if (maintenanceData.Line) {
-            const lineOption = LineOptions.find(option => option.value === maintenanceData.Line);
-            setSelectedLine(lineOption ? lineOption.value : null);
-            setShowLineField(!!lineOption);
-          }
+          const machineName = maintenanceData['Machine Name'];
+          const showLineMachines = [
+              'Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2',
+              'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1',
+              'Stringer Machine(MS40K)-2', 'gear5'
+          ];
+          const showChamberMachines = [
+              'Laminator (Jinchen)', 'Laminator (GMEE)', 'gearj'
+          ];
   
-          if (maintenanceData.Chamber && Array.isArray(maintenanceData.Chamber)) {
-            const chambers = maintenanceData.Chamber.map(chamberData => {
-              // Extract chamber details
-              const chamberLabel = Object.keys(chamberData)[0]; // Chamber1, Chamber2, etc.
-              const chamberName = chamberData[chamberLabel]; // Chamber1, Chamber2, etc.
-              const chamberQuantity = chamberData['ChamberQuantity']; // Quantity
-              
-              return { chamberId: chamberLabel, chamberName, chamberDetails: Number(chamberQuantity) || '' };
-            });
-            setSelectedChambers(chambers);
-            setShowChamberField(chambers.length > 0);
+          if (showLineMachines.includes(machineName)) {
+              // Show and bind the Line field if present
+              if (maintenanceData.Line ) {
+                const lineValue = maintenanceData.Line.toLowerCase().replace(' ', '');
+                const lineOption = LineOptions.find(option => option.value.toLowerCase() === lineValue);
+                setSelectedLine(lineOption ? lineOption.value : null);
+                setShowLineField(true);
+
+                  
+                  setShowLineField(true);
+              } else {
+                  setShowLineField(false);
+              }
+              setShowChamberField(false);
+          } else if (showChamberMachines.includes(machineName)) {
+              // Show and bind the Chamber field if present
+              if (maintenanceData.Chamber && Array.isArray(maintenanceData.Chamber)) {
+                  const chambers = maintenanceData.Chamber.filter(chamberData => {
+                      const chamberLabel = Object.keys(chamberData)[0];
+                      const chamberName = chamberData[chamberLabel];
+                      const chamberQuantity = chamberData['ChamberQuantity'];
+                      return chamberName.trim() !== '' || chamberQuantity.trim() !== '';
+                  }).map(chamberData => {
+                      const chamberLabel = Object.keys(chamberData)[0];
+                      const chamberName = chamberData[chamberLabel];
+                      const chamberQuantity = chamberData['ChamberQuantity'];
+                      return { chamberId: chamberLabel, chamberName, chamberDetails: Number(chamberQuantity) || '' };
+                  });
+  
+                  setSelectedChambers(chambers);
+                  setShowChamberField(chambers.length > 0);
+              } else {
+                  setShowChamberField(false);
+              }
+              setShowLineField(false);
+          } else {
+              // Hide both fields if the machine name doesn't match
+              setShowLineField(false);
+              setShowChamberField(false);
           }
           if (maintenanceData['Machine Name']) {
             await getSparePartModelListData(maintenanceData['Machine Name']);
@@ -335,6 +367,7 @@ const MachineMaintenance = () => {
     if (SparePartModelNo && !Quantity) {
       newFieldErrors.Quantity = 'Quantity is required';
     }
+    if(!fileInputRef) newFieldErrors.fileInputRef = 'Image is required';
     if (showLineField && !selectedLine) {
       newFieldErrors.selectedLine = 'Line selection is required';
   }
@@ -391,7 +424,8 @@ const MachineMaintenance = () => {
         formData.append('MachineMaintenancePdf',image);
         formData.append('SparePartId', UUID.stockCheck)
 
-        if ((image && image.size > 0)) {
+        if ((image)) {
+          console.log("imageeeeeee")
           let upload = await uploadPDF(formData);
           // console.log("Upload response", upload);
         } else {
@@ -495,74 +529,6 @@ const MachineMaintenance = () => {
       }
     });
   };
-
-
-
-
-
-  // const handleModalClose = () => {
-  //   setShowLineModal(false);
-  //   setShowChamberModal(false) // Close the modal without selecting a line
-  // };
-  // const handleOkClick = () => {
-  //   if (!selectedLine) {
-  //     setFieldErrors(prevErrors => ({
-  //       ...prevErrors,
-  //       selectedLine: 'Please select a line before proceeding.',
-  //     }));
-  //   } else {
-  //     setFieldErrors(prevErrors => {
-  //       const newErrors = { ...prevErrors };
-  //       delete newErrors.selectedLine;
-  //       return newErrors;
-  //     });
-  //     setShowLineModal(false); // Close the modal if validation passes
-  //     console.log('Selected Line:', selectedLine);
-  //   }
-  // };
-
-  // const handleChamberOkClick = () => {
-  //   if (selectedChambers.length === 0) {
-  //     setFieldErrors(prevErrors => ({
-  //       ...prevErrors,
-  //       selectedChambers: 'Please select at least one chamber before proceeding.',
-  //     }));
-  //     return;
-  //   }
-
-  //   let incompleteDetails = false;
-
-  //   const updatedChambers = selectedChambers.map(chamber => {
-  //     const chamberDetailElement = document.getElementById(`${chamber.chamberId}Field`);
-  //     const chamberDetails = chamberDetailElement ? chamberDetailElement.value.trim() : '';
-
-  //     if (!chamberDetails) {
-  //       incompleteDetails = true;
-  //     }
-
-  //     return {
-  //       chamberId: chamber.chamberId,
-  //       chamberDetails: chamberDetails,
-  //     };
-  //   });
-
-  //   if (incompleteDetails) {
-  //     setFieldErrors(prevErrors => ({
-  //       ...prevErrors,
-  //       selectedChambers: 'Please fill out Quantity for the selected chambers.',
-  //     }));
-  //   } else {
-  //     setSelectedChambers(updatedChambers);
-  //     setFieldErrors(prevErrors => {
-  //       const newErrors = { ...prevErrors };
-  //       delete newErrors.selectedChambers;
-  //       return newErrors;
-  //     });
-  //     setShowChamberModal(false);
-  //     console.log('Selected Chambers with details:', updatedChambers);
-  //   }
-  // };
-
 
   const handleSparePartModelChange = (selectedOption) => {
     console.log("Selected Spare Part Model:", selectedOption);

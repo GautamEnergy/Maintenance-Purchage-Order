@@ -263,7 +263,7 @@ const MaintenaceListTable = () => {
 
                         <p>Are You Involved In This Machine Maintenace.. ?</p>
                     </Dialog>
-                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Machine Maintenence" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Machine_Maintenance_Id, "")} />
+                    {designation ==="Super Admin"|| isNameInMaintenancedBy ?<Button icon="pi pi-pencil" className="p-button-rounded p-button-success" data-pr-tooltip="Edit Machine Maintenence" style={{ marginRight: '5px' }} onClick={() => handleEditClick(rowData.Machine_Maintenance_Id, "")} />:""}
                     {rowData.Image_URL != null && rowData.Image_URL != "" ?
                         <Button
 
@@ -320,14 +320,14 @@ const MaintenaceListTable = () => {
                         {designation === "Super Admin" ? <Button label="Export" icon="pi pi-file-excel" className="p-button-success export-button" onClick={exportExcel} /> : ""}
                     </div>
                 </div>
-                <div>
+                {designation === "Super Admin"?<div>
                     <Accordion>
                         <AccordionSummary
                             expandIcon={<ArrowDownwardIcon />}
                             aria-controls="panel1-content"
                             id="panel1-header"
                         >
-                            <Typography>Search Filter</Typography>
+                            <Typography>Master Search Filter</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Row>
@@ -404,7 +404,7 @@ const MaintenaceListTable = () => {
                         </AccordionDetails>
                     </Accordion>
 
-                </div>
+                </div>:""}
             </div>
         );
     };
