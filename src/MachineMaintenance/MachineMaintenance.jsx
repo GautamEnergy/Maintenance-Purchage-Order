@@ -825,11 +825,7 @@ const MachineMaintenance = () => {
                                       ? { ...ch, chamberDetails: details }
                                       : ch
                                   ));
-                                  setFieldErrors(prevErrors => {
-                                    const newErrors = { ...prevErrors };
-                                    delete newErrors[chamber.value];
-                                    return newErrors;
-                                  });
+                                 
                                 }}
                               />
                             </Form.Group>
