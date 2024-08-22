@@ -21,6 +21,7 @@ import {  Row, Col, Form,   Modal } from 'react-bootstrap';
 
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
+import { styled } from '@mui/material';
 const SparePartInTable = () => {
     const [data, setData] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -28,12 +29,13 @@ const SparePartInTable = () => {
     const navigate = useNavigate();
     const [url, setUrl] = useState("");
     const [designation,setDesignation] = useState('');
-    const [Machine, SetMachine] = useState([])
-    const [MachineName, setMachineName] = useState(null);
     const [FromDate, setFromDate] = useState('');
     const [ToDate, setToDate] = useState('');
     const [errors,setErrors] = useState('')
     const [fieldErrors, setFieldErrors] = useState({});
+    const [SparePartModelNo, setSparePartModelNo] = useState([]);
+    const [SparePartName, setSparePartName] = useState('');
+    const [SparePart, setSparePart] = useState([]);
 
     useEffect(() => {
         const url = localStorage.getItem('url');
@@ -45,12 +47,17 @@ const SparePartInTable = () => {
         }
         
 
-        fetchData(" ");
-        getMachineListData();
+        fetchData("","","")
+        getSparePartModelListData();
     }, []);
-    const fetchData = async (reqData) => {
+    const fetchData = async (FromDate,ToDate,Spare) => {
       try {
-          const { data } = await axios.post(`${url}/Maintenance/GetStockList`,{reqData});
+        const url = localStorage.getItem('url');
+          const { data } = await axios.post(`${url}/Maintenance/GetStockList`,{
+            FromDate,
+            ToDate,
+            SparePartId:Spare.value
+          });
           setData(data.data);
           setLoading(false);
       } catch (error) {
@@ -62,19 +69,34 @@ const SparePartInTable = () => {
     const handleClick = () => {
         window.location.href = 'http://webmail.gautamsolar.com/?_task=mail&_action=compose&_id=27827033466a2336411526';
     };
-    const handleMachineNameChange = (selectedMachine) => {
-        console.log("Machine Name:", selectedMachine);
-    
-        if (selectedMachine) {
-            setMachineName(selectedMachine);
-    
-            
-         
-         
-    
-            console.log(selectedMachine.label);
-        }
-    };
+    const handleSparePartModelChange = (selectedOption) => {
+    console.log("Selected Spare Part Model:", selectedOption);
+
+    // Update state and clear relevant fields
+    setSparePartModelNo(selectedOption);
+   
+    // Find the selected spare part name based on selected model number
+    const selectedSparePart = SparePart.find(part => part.value === selectedOption.value);
+    if (selectedSparePart) {
+      setSparePartName(selectedSparePart.SparePartName);
+      setFieldErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.SparePartName;
+
+        return newErrors;
+      });
+
+      
+    }
+
+    // Use a callback to ensure we get the latest state values
+    // setPONumber((prevPONumber) => {
+    //   if (prevPONumber && prevPONumber.value) {
+    //     bindInListData(selectedOption.value, prevPONumber.value);
+    //   }
+    //   return prevPONumber;
+    // });
+  };
     const handleDateChange = (e) => {
         const { name, value } = e.target;
     
@@ -101,39 +123,33 @@ const SparePartInTable = () => {
         }
       };
     
-    const getMachineListData = async () => {
+      const getSparePartModelListData = async () => {
+        const token = localStorage.getItem("token");
         const url = localStorage.getItem('url');
-        console.log("hmmmmmmmmmmm");
+        console.log("Fetching spare part model list...");
         console.log(url);
-       // console.log(token);
-        // const url = `${url}/Maintenance/MachineDetailById`;
+        console.log(token);
+    
         try {
-          const response = await axios.get(`${url}/Maintenance/MachineList`, {
+          const response = await axios.post(`${url}/Maintenance/GetAutoData`, { required: "Spare Part Model No" }, {
             headers: {
               'Content-Type': 'application/json; charset=UTF-8',
             },
           });
     
           if (response.status === 200 && Array.isArray(response.data.data)) {
-            const machineBody = response.data.data;
-    
-            const machineData = machineBody.map(machine => ({
-              MachineId: machine.MachineId,
-              MachineName: machine.MachineName,
-              MachineNumber: machine.MachineNumber
+            const sparePartModels = response.data.data.map(part => ({
+              label: part.SparePartModelNumber,
+              value: part.SparePartId,
+              SparePartName: part.SparePartName,
             }));
-    
-            SetMachine(machineData)
-    
-    
+            setSparePart(sparePartModels);
           } else {
             console.error('Unexpected response:', response);
-           // setError('Failed to fetch machine list. Unexpected response from server.');
           }
         } catch (error) {
-          console.error('Error fetching machine list:', error.message);
+          console.error('Error fetching spare part model list:', error.message);
           console.error(error); // Log the full error object
-         // setError('Failed to fetch machine list. Please check the server configuration.');
         }
       };
     
@@ -171,15 +187,17 @@ const SparePartInTable = () => {
         setFieldErrors({});
     
         // Send data to backend
-        const requestData = {
-          FromDate,
-          ToDate,
-          MachineId: MachineName?MachineName.value: " "
-        };
-        fetchData(requestData);
+       
+      
+         
+       
+        fetchData(FromDate,ToDate,SparePartModelNo);
+        setFromDate("");
+        setToDate("");
+        setSparePartModelNo("");
 
     
-        console.log("requestData",requestData); 
+       
         // Replace this with actual backend call
       };
     const actionBodyTemplate = (rowData) => {
@@ -282,34 +300,26 @@ const SparePartInTable = () => {
     </Form.Group>
   </Col>
   <Col className='py-2' md={4}>
-                  <Form.Group controlId="MachineName">
-                    <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
+                  <Form.Group controlId="partModelNo">
+                    <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
                     <Select
 
-                      value={MachineName}
+                      value={SparePartModelNo}
 
-                      onChange={handleMachineNameChange}
-                      placeholder="Select Machine Name"
-                      options={Machine.map(machine => ({
-                        value: machine.MachineId,
-                        label: machine.MachineName
-                      }))}
-                    //   styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
+                      onChange={handleSparePartModelChange}
+                      placeholder="Select Spare Part Model Number"
+                      options={SparePart}
+                      // styles={!fieldErrors.SparePartModelNo ? customSelectStyles : customSelectStyles1}
                     //   required
 
                     />
-                     {fieldErrors.MachineName && (
-                  <div style={{ fontSize: "13px" }} className="text-danger">
-                    {fieldErrors.MachineName}
-                  </div>
-                )}
+                    {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
                   </Form.Group>
                 </Col>
 
-
     </Row>
     <Row>
-              <Col md={12} style={{ display: 'flex' }}>
+              <Col md={12} style={{ display: 'flex' ,justifyContent:"end"}}>
                 <Button type="button" className="register" onClick={handleSearch} style={{ width: '83px', height: '43px', background: '#0066ff', margin: '10px' }}>Search</Button>
                
               </Col>
@@ -343,33 +353,89 @@ const SparePartInTable = () => {
       </span>
     );
   };
-    const exportExcel = () => {
-        // Process the data before exporting to Excel
-        const processedData = data.map(item => ({
-            Voucher_Number: item.Voucher_Number,
-            PartyName: item.PartyName,
-            SparePartName: item.SparePartName,
-            SparePartModelNumber: item.SparePartModelNumber,
-            Spare_Part_Brand_Name: item.Spare_Part_Brand_Name,
-            Spare_Part_Specification: item.Spare_Part_Specification,
-            Machine_Names: item.Machine_Names.join(', '), // Join machine names into a string
-            Quantity_Purchase_Order: item.Quantity_Purchase_Order,
-            Quantity_Recieved: item.Quantity_Recieved,
-            Price: item.Price,
-            Total_Cost: item.Total_Cost,
-            Available_Stock: item.Available_Stock,
-            Invoice_Number: item.Invoice_Number,
-            Date: item.Date,
-            Name: item.Name
-        }));
+  const exportExcel = () => {
+    // Process the data before exporting to Excel
+    const processedData = data.map(item => ({
+        Voucher_Number: item.Voucher_Number,
+        PartyName: item.PartyName,
+        SparePartName: item.SparePartName,
+        SparePartModelNumber: item.SparePartModelNumber,
+        Spare_Part_Brand_Name: item.Spare_Part_Brand_Name,
+        Spare_Part_Specification: item.Spare_Part_Specification,
+        Machine_Names: item.Machine_Names.join(', '), // Join machine names into a string
+        Quantity_Purchase_Order: item.Quantity_Purchase_Order,
+        Quantity_Recieved: item.Quantity_Recieved,
+        Price: item.Price,
+        Total_Cost: item.Total_Cost,
+        Available_Stock: item.Available_Stock,
+        Invoice_Number: item.Invoice_Number,
+        Date: item.Date,
+        Name: item.Name
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet([]);
+    const headers = [
+        ["Voucher Number", "Party Name", "Spare Part Name", "Spare Part Model Number", 
+        "Spare Part Brand Name", "Spare Part Specification", "Machine Names", 
+        "Quantity Purchase Order", "Quantity Received", "Price", "Total Cost", 
+        "Available Stock", "Invoice Number", "Date", "Name"]
+    ];
+    const headerCellStyle = {
+      font: { bold: true, color: { rgb: 'FFFFFF' } }, // White text
+      fill: { fgColor: { rgb: '4F81BD' } }, // Blue background
+      alignment: { horizontal: 'center', vertical: 'center' }, // Center alignment
+  };
+  headers.forEach(header => {
+    if (worksheet[header]) {
+        worksheet[header].s = headerCellStyle;
+    }
+});
+
+
+    // Add headers with custom styles
+    XLSX.utils.sheet_add_aoa(worksheet, headers, { origin: 'A1',color:"red" } );
     
-        const worksheet = XLSX.utils.json_to_sheet(processedData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
-    
-        XLSX.writeFile(workbook, "SparePartIn.xlsx");
-    };
-    
+    // Adding the data under the header
+    XLSX.utils.sheet_add_json(worksheet, processedData, { origin: 'A2', skipHeader: true });
+
+    // Set column widths
+    const colWidths = [
+        { wch: 20 },  // Voucher_Number
+        { wch: 20 },  // PartyName
+        { wch: 25 },  // SparePartName
+        { wch: 25 },  // SparePartModelNumber
+        { wch: 20 },  // Spare_Part_Brand_Name
+        { wch: 30 },  // Spare_Part_Specification
+        { wch: 40 },  // Machine_Names
+        { wch: 25 },  // Quantity_Purchase_Order
+        { wch: 25 },  // Quantity_Recieved
+        { wch: 15 },  // Price
+        { wch: 20 },  // Total_Cost
+        { wch: 15 },  // Available_Stock
+        { wch: 25 },  // Invoice_Number
+        { wch: 20 },  // Date
+        { wch: 20 }   // Name
+    ];
+    worksheet['!cols'] = colWidths;
+
+    // Apply heading style (like bold text and background color)
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let C = range.s.c; C <= range.e.c; C++) {
+        const cell = worksheet[XLSX.utils.encode_cell({ r: 0, c: C })];
+        if (cell) {
+          cell.s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },  // White text color
+            fill: { fgColor: { rgb: "4F81BD" } },  // Blue background color
+            alignment: { horizontal: "center", vertical: "center" }  // Center alignment
+        };
+        }
+    }
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
+
+    XLSX.writeFile(workbook, "SparePartIn.xlsx");
+};
 
     const header = renderHeader();
 

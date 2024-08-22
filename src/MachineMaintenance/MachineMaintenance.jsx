@@ -89,10 +89,11 @@ const MachineMaintenance = () => {
 
       const fetchData = async () => {
         const url = localStorage.getItem('url');
+        const personID = localStorage.getItem("CurrentUser");
         try {
           const response = await axios.post(
             `${url}/Maintenance/GetMachineMaintenanceList`,
-            { MachineMaintenanceId: MachineId, personID }
+            { MachineMaintenanceId: MachineId, PersonId:personID,reqData:"" }
           );
           const maintenanceData = response.data.data[0];
           // setFormData(maintenanceData);
@@ -108,6 +109,7 @@ const MachineMaintenance = () => {
               setImage(imageObjectUrl);
             } catch (imageError) {
               console.error('Error fetching image:', imageError);
+              
             }
           }
           // const selectedMachine = Machine.find(
@@ -123,6 +125,7 @@ const MachineMaintenance = () => {
           // }
           setMachineName(maintenanceData['Machine Name'] ?
             { value: maintenanceData['MachineId'], label: maintenanceData['Machine Name'] } : null);
+          setMachineNumber(maintenanceData["Machine Model Number"]|| '')
           setStartTime(maintenanceData["BreakDown Start Time"] || '');
           setEndTime(maintenanceData["BreakDown End Time"] || '');
           setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
@@ -131,7 +134,7 @@ const MachineMaintenance = () => {
             { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
             setSparePartModel(maintenanceData['Spare Part Model Number'] ?
               { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
-          setMachineNumber(maintenanceData["Machine Number"] || '');
+          // setMachineNumber(maintenanceData["Machine Number"] || '');
           setIssue(maintenanceData.Issue || '');
           setQuantity(maintenanceData.Quantity || '');
           setProcess(maintenanceData['Solution Process'] || '');
@@ -430,44 +433,6 @@ const MachineMaintenance = () => {
     navigate('/maintenaceList');
   };
 
-  // const handleMachineNameChange = (selectedMachine) => {
-  //   console.log("Machine Name:", selectedMachine);
-
-  //   if (selectedMachine) {
-  //     setMachineName(selectedMachine);
-
-  //     // Check for specific machine labels to control modals
-  //     if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2'].includes(selectedMachine.label)) {
-  //       setShowLineModal(true);
-  //       setShowChamberModal(false);  // Close other modals if needed
-  //     } else if (['Laminator (Jinchen)', 'Laminator (GMEE)'].includes(selectedMachine.label)) {
-  //       setShowChamberModal(true);
-  //       setShowLineModal(false);  // Close other modals if needed
-  //     } else {
-  //       setShowLineModal(false);
-  //       setShowChamberModal(false);
-  //       setSelectedLine(null);
-  //       setSelectedChambers([]);
-  //     }
-
-  //     handleFieldChange("MachineName", selectedMachine.label);
-
-  //     const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
-
-  //     if (selectedMachineData) {
-  //       setMachineNumber(selectedMachineData.MachineNumber);
-  //       setFieldErrors(prevErrors => {
-  //         const newErrors = { ...prevErrors };
-  //         delete newErrors.MachineNumber;
-  //         return newErrors;
-  //       });
-  //     }
-
-  //     getSparePartModelListData(selectedMachine.label);
-
-  //     console.log(selectedMachine.label);
-  //   }
-  // };
   const handleMachineNameChange = (selectedMachine) => {
     console.log("Machine Name:", selectedMachine);
 
@@ -795,7 +760,13 @@ const MachineMaintenance = () => {
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setImage(file)
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      setImage(fileURL);  // Update the image state with the file URL
+       // Update the fileName state if needed
+    }
+  
+
 
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -832,102 +803,7 @@ const MachineMaintenance = () => {
           <Form onSubmit={handleSubmit}>
             <div className="subCard2">
               <Row>
-                {/* <Col className='py-2' md={4}>
-                  <Form.Group controlId="MachineName">
-                    <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
-                    <Select
-
-                      value={MachineName}
-
-                      onChange={handleMachineNameChange}
-                      placeholder="Select Machine Name"
-                      options={Machine.map(machine => ({
-                        value: machine.MachineId,
-                        label: machine.MachineName
-                      }))}
-                      styles={!fieldErrors.MachineName ? customSelectStyles : customSelectStyles1}
-                      isDisabled={MachineId}
-                  
-
-                    />
-                    {fieldErrors.MachineName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineName}</div>}
-                  </Form.Group>
-                </Col>
-                <Modal show={showLineModal} onHide={handleModalClose} centered>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Select Line</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Select
-                      value={LineOptions.find(option => option.value === selectedLine)}
-                      onChange={handleLineChange}
-                      options={LineOptions}
-                      placeholder="Select Line"
-                    />
-                    {fieldErrors.selectedLine && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedLine}</div>}
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalClose}>
-                      Close
-                    </Button>
-                    <Button variant="primary" onClick={handleOkClick}>
-                      OK
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-
               
-                <Modal show={showChamberModal} onHide={handleModalClose} centered>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Select Chambers</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    {ChamberOptions.map(chamber => (
-                      <Row key={chamber.value} className="mb-2 align-items-center">
-                        <Col xs={5}>
-                          <Form.Check
-                            type="checkbox"
-                            id={chamber.value}
-                            label={chamber.label}
-                            value={chamber.value}
-                            checked={selectedChambers.some(selected => selected.chamberId === chamber.value)}
-                            onChange={handleChamberChange}
-                          />
-                        </Col>
-                        <Col xs={7}>
-                          {selectedChambers.some(selected => selected.chamberId === chamber.value) && (
-                            <Form.Group controlId={`${chamber.value}Field`}>
-                              <Form.Control
-                                type="number"
-                                placeholder={`Enter Quantity for ${chamber.label}`}
-                                value={selectedChambers.find(selected => selected.chamberId === chamber.value)?.chamberDetails || ''}
-                                onChange={(e) => {
-                                  const details = e.target.value;
-                                  setSelectedChambers(prev => prev.map(ch =>
-                                    ch.chamberId === chamber.value
-                                      ? { ...ch, chamberDetails: details }
-                                      : ch
-                                  ));
-                                }}
-                              />
-                            </Form.Group>
-                          )}
-                        </Col>
-                      </Row>
-                    ))}
-
-
-                    {fieldErrors.selectedChambers && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedChambers}</div>}
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalClose}>
-                      Close
-                    </Button>
-                    <Button variant="primary" onClick={handleChamberOkClick}>
-                      OK
-                    </Button>
-                  </Modal.Footer>
-                </Modal> */}
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="MachineName">
                     <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
@@ -1281,9 +1157,9 @@ const MachineMaintenance = () => {
                       </div>
                     )}
                     <div>{fileName}</div>
-                    <div>
+                    <div style={{display:"flex"}}>
                       {image ? (
-                        <img src={image} alt="Maintenance Image" style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+                        <img src={image} alt="Maintenance Image" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                       ) : (
                         <p>No image available</p>
                       )}
