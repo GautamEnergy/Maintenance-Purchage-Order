@@ -373,17 +373,7 @@ const MachineMaintenance = () => {
   }
 
   // Validate Chamber fields if applicable
-  if (showChamberField) {
-      if (selectedChambers.length === 0) {
-          newFieldErrors.selectedChambers = 'At least one Chamber selection is required';
-      } else {
-          selectedChambers.forEach(chamber => {
-              if (!chamber.chamberDetails) {
-                  newFieldErrors.selectedChambers = 'Quantity for all selected Chambers is required';
-              }
-          });
-      }
-  }
+  
     setFieldErrors(newFieldErrors);
 
 
