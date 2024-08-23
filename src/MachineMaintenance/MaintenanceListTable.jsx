@@ -514,11 +514,14 @@ const MaintenaceListTable = () => {
                 <DataTable
                     value={loading ? [] : data}
                     paginator
-                    rows={5}
-                    rowsPerPageOptions={[5, 10, 20]}
+                   
                     header={header}
                     globalFilter={globalFilter}
                     emptyMessage={loading ? null : "No items found."}
+                    rows={10}
+                    rowsPerPageOptions={[10, 20, 50]}
+                     scrollable
+                     scrollHeight="400px"
                 >
                     <Column style={{ border: "0.5px dotted black" }} field="Machine Name" header="Machine Name" filter filterPlaceholder="Search by Spare Part Name" sortable />
                     <Column style={{ border: "0.5px dotted black" }} field="Machine Model Number" header="Model Number" filter filterPlaceholder="Search by Model Number" sortable />

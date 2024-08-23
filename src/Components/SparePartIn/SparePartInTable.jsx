@@ -464,8 +464,10 @@ const SparePartInTable = () => {
         <DataTable
           value={loading ? [] : data}
           paginator
-          rows={5}
-          rowsPerPageOptions={[5, 10, 20]}
+          rows={10}
+                    rowsPerPageOptions={[10, 20, 50]}
+                     scrollable
+                     scrollHeight="400px"
           header={header}
           globalFilter={globalFilter}
           emptyMessage={loading ? null : "No items found."}
