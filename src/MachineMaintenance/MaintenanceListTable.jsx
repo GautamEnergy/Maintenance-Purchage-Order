@@ -501,21 +501,22 @@ const MaintenaceListTable = () => {
     
         // Define columns
         worksheet.columns = [
+            { header: 'Maintenance Date', key: 'maintenanceDate', width: 25 },
             { header: 'Machine Name', key: 'machineName', width: 35 },
             { header: 'Model Number', key: 'modelNumber', width: 35 },
             { header: 'Spare Part Name', key: 'sparePartName', width: 30 },
             { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
             { header: 'Quantity', key: 'quantity', width: 15 },
-            { header: 'Available Stock', key: 'availableStock', width: 15 },
+            { header: 'Available Stock', key: 'availableStock', width: 25 },
             { header: 'Issue', key: 'issue', width: 25 },
-            { header: 'BreakDown Start Time', key: 'breakDownStartTime', width: 20 },
-            { header: 'BreakDown End Time', key: 'breakDownEndTime', width: 20 },
-            { header: 'BreakDown Total Time', key: 'breakDownTotalTime', width: 20 },
+            { header: 'BreakDown Start Time', key: 'breakDownStartTime', width: 35 },
+            { header: 'BreakDown End Time', key: 'breakDownEndTime', width: 35 },
+            { header: 'BreakDown Total Time', key: 'breakDownTotalTime', width: 35 },
             { header: 'Solution Process', key: 'solutionProcess', width: 30 },
             { header: 'Line', key: 'line', width: 15 },
             { header: 'Remark', key: 'remark', width: 40 },
             { header: 'Maintenanced by', key: 'maintenancedBy', width: 35 },
-            { header: 'Maintenance Date', key: 'maintenanceDate', width: 25 },
+           
         ];
     
         // Style the header row
@@ -526,6 +527,7 @@ const MaintenaceListTable = () => {
     
         // Add data
         const processedData = data.map(item => ({
+            maintenanceDate: formatDate1(item["Maintenance Date"]),
             machineName: item["Machine Name"],
             modelNumber: item["Machine Model Number"],
             sparePartName: item["Spare Part Name"],
@@ -540,7 +542,7 @@ const MaintenaceListTable = () => {
             line: item.Line,
             remark: item.Remark,
             maintenancedBy: item["Maintenanced by"].join(', '),
-            maintenanceDate: formatDate1(item["Maintenance Date"]),
+           
         }));
     
         worksheet.addRows(processedData);
