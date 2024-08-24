@@ -508,7 +508,7 @@ const MaintenaceListTable = () => {
             { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
             { header: 'Quantity', key: 'quantity', width: 15 },
             { header: 'Available Stock', key: 'availableStock', width: 25 },
-            { header: 'Issue', key: 'issue', width: 35 },
+            { header: 'Issue', key: 'issue', width: 45 },
             { header: 'BreakDown Start Time', key: 'breakDownStartTime', width: 35 },
             { header: 'BreakDown End Time', key: 'breakDownEndTime', width: 35 },
             { header: 'BreakDown Total Time', key: 'breakDownTotalTime', width: 35 },
