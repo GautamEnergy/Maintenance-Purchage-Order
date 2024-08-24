@@ -508,11 +508,11 @@ const MaintenaceListTable = () => {
             { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
             { header: 'Quantity', key: 'quantity', width: 15 },
             { header: 'Available Stock', key: 'availableStock', width: 25 },
-            { header: 'Issue', key: 'issue', width: 25 },
+            { header: 'Issue', key: 'issue', width: 35 },
             { header: 'BreakDown Start Time', key: 'breakDownStartTime', width: 35 },
             { header: 'BreakDown End Time', key: 'breakDownEndTime', width: 35 },
             { header: 'BreakDown Total Time', key: 'breakDownTotalTime', width: 35 },
-            { header: 'Solution Process', key: 'solutionProcess', width: 30 },
+            { header: 'Solution Process', key: 'solutionProcess', width: 40 },
             { header: 'Line', key: 'line', width: 15 },
             { header: 'Remark', key: 'remark', width: 40 },
             { header: 'Maintenanced by', key: 'maintenancedBy', width: 35 },
@@ -587,7 +587,7 @@ const MaintenaceListTable = () => {
                 const cellLength = cell.value ? cell.value.toString().length : 10;
                 const colWidth = worksheet.getColumn(cell.col).width;
                 if (colWidth) {
-                    const basePadding = 4; // Adjust this value as needed
+                    const basePadding = 6; // Adjust this value as needed
                     const estimatedRowHeight = Math.ceil((cellLength / colWidth) * 15) + basePadding;
                     row.height = Math.max(row.height || 0, estimatedRowHeight);
                 }
