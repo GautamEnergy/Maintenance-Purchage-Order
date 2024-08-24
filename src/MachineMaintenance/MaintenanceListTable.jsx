@@ -20,6 +20,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Row, Col, Form, Modal } from 'react-bootstrap';
+import ExcelJS from 'exceljs';
 
 // import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Tooltip } from 'primereact/tooltip';
@@ -409,81 +410,196 @@ const MaintenaceListTable = () => {
         );
     };
 
-    const exportExcel = () => {
-        // Process the data before exporting to Excel
+    // const exportExcel = () => {
+    //     // Process the data before exporting to Excel
+    //     const processedData = data.map(item => ({
+    //         Machine_Name: item["Machine Name"],
+    //         Model_Number: item["Machine Model Number"],
+    //         Spare_Part_Name: item["Spare Part Name"],
+    //         Spare_Part_Model_Number: item["Spare Part Model Number"],
+    //         Quantity: item.Quantity,
+    //         Stock_After_Usage: item["Stock After Usage"],
+    //         Issue: item.Issue,
+    //         BreakDown_Start_Time: item["BreakDown Start Time"],
+    //         BreakDown_End_Time: item["BreakDown End Time"],
+    //         BreakDown_Total_Time: item["BreakDown Total Time"],
+    //         Solution_Process: item["Solution Process"],
+    //         Line: item.Line,
+    //         Remark: item.Remark,
+           
+    //         Maintenanced_by: item["Maintenanced by"].join(', '), // Join the array into a string
+    //         Maintenance_Date: formatDate1(item["Maintenance Date"]),
+    //     }));
+
+    //     const worksheet = XLSX.utils.json_to_sheet([]);
+    //     const headers = [
+    //         ["Machine Name", "Model Number", "Spare Part Name", "Spare Part Model Number",
+    //             "Quantity", "Available Stock", "Issue", "BreakDown Start Time", "BreakDown End Time",
+    //             "BreakDown Total Time", "Solution Process", "Line", "Remark",
+    //             "Maintenanced by", "Maintenance Date"]
+    //     ];
+        
+
+    //     // Add headers with custom styles
+    //     XLSX.utils.sheet_add_aoa(worksheet, headers, { origin: 'A1' });
+
+    //     // Adding the data under the header
+    //     XLSX.utils.sheet_add_json(worksheet, processedData, { origin: 'A2', skipHeader: true });
+
+    //     // Set column widths
+    //     const colWidths = [
+    //         { wch: 30 },  // Machine Name
+    //         { wch: 25 },  // Model Number
+    //         { wch: 25 },  // Spare Part Name
+    //         { wch: 35 },  // Spare Part Model Number
+    //         { wch: 10 },  // Quantity
+    //         { wch: 15 },  // Available Stock
+    //         { wch: 25 },  // Issue
+    //         { wch: 20 },  // BreakDown Start Time
+    //         { wch: 20 },  // BreakDown End Time
+    //         { wch: 20 },  // BreakDown Total Time
+    //         { wch: 20 },  // Solution Process
+    //         { wch: 10 },  // Line
+    //         { wch: 20 },  // Remark
+    //         { wch: 25 },  // Maintenanced by
+    //         { wch: 20 }   // Maintenance Date
+    //     ];
+    //     worksheet['!cols'] = colWidths;
+
+    //     // Set row height for the header row
+    //     worksheet['!rows'] = [{ hpx: 30 }]; // Adjust height in pixels (hpx)
+
+    //     // Apply heading style (like bold text, background color, and font size) specifically for the header row
+    //     const range = XLSX.utils.decode_range(worksheet['!ref']);
+    //     for (let C = range.s.c; C <= range.e.c; C++) {
+    //         const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
+    //         const cell = worksheet[cellAddress];
+    //         if (cell) {
+    //             cell.s = {
+    //                 font: { bold: true, sz: 16, color: { rgb: "FFFFFF" } },  // White text color, font size 16
+    //                 fill: { fgColor: { rgb: "4F81BD" } },  // Blue background color
+    //                 alignment: { horizontal: "center", vertical: "center" },  // Center alignment
+    //                 border: {
+    //                     top: { style: "thin", color: { rgb: "000000" } },
+    //                     bottom: { style: "thin", color: { rgb: "000000" } },
+    //                     left: { style: "thin", color: { rgb: "000000" } },
+    //                     right: { style: "thin", color: { rgb: "000000" } },
+    //                 }
+    //             };
+    //         }
+    //     }
+    
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Machine Maintenance");
+
+    //     XLSX.writeFile(workbook, "MachineMaintenance.xlsx");
+    // };
+    const exportExcel = async () => {
+        // Create a new workbook and worksheet
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Machine Maintenance');
+    
+        // Define columns
+        worksheet.columns = [
+            { header: 'Machine Name', key: 'machineName', width: 35 },
+            { header: 'Model Number', key: 'modelNumber', width: 35 },
+            { header: 'Spare Part Name', key: 'sparePartName', width: 30 },
+            { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
+            { header: 'Quantity', key: 'quantity', width: 15 },
+            { header: 'Available Stock', key: 'availableStock', width: 15 },
+            { header: 'Issue', key: 'issue', width: 25 },
+            { header: 'BreakDown Start Time', key: 'breakDownStartTime', width: 20 },
+            { header: 'BreakDown End Time', key: 'breakDownEndTime', width: 20 },
+            { header: 'BreakDown Total Time', key: 'breakDownTotalTime', width: 20 },
+            { header: 'Solution Process', key: 'solutionProcess', width: 30 },
+            { header: 'Line', key: 'line', width: 15 },
+            { header: 'Remark', key: 'remark', width: 40 },
+            { header: 'Maintenanced by', key: 'maintenancedBy', width: 35 },
+            { header: 'Maintenance Date', key: 'maintenanceDate', width: 25 },
+        ];
+    
+        // Style the header row
+        worksheet.getRow(1).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F81BD' } };
+        worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getRow(1).height = 25;
+    
+        // Add data
         const processedData = data.map(item => ({
-            Machine_Name: item["Machine Name"],
-            Model_Number: item["Machine Model Number"],
-            Spare_Part_Name: item["Spare Part Name"],
-            Spare_Part_Model_Number: item["Spare Part Model Number"],
-            Quantity: item.Quantity,
-            Issue: item.Issue,
-            BreakDown_Start_Time: item["BreakDown Start Time"],
-            BreakDown_End_Time: item["BreakDown End Time"],
-            BreakDown_Total_Time: item["BreakDown Total Time"],
-            Solution_Process: item["Solution Process"],
-            Line: item.Line,
-            Remark: item.Remark,
-            Stock_After_Usage: item["Stock After Usage"],
-            Maintenanced_by: item["Maintenanced by"].join(', '), // Join the array into a string
-            Maintenance_Date: formatDate1(item["Maintenance Date"]),
+            machineName: item["Machine Name"],
+            modelNumber: item["Machine Model Number"],
+            sparePartName: item["Spare Part Name"],
+            sparePartModelNumber: item["Spare Part Model Number"],
+            quantity: item.Quantity,
+            availableStock: item["Stock After Usage"],
+            issue: item.Issue,
+            breakDownStartTime: item["BreakDown Start Time"],
+            breakDownEndTime: item["BreakDown End Time"],
+            breakDownTotalTime: item["BreakDown Total Time"],
+            solutionProcess: item["Solution Process"],
+            line: item.Line,
+            remark: item.Remark,
+            maintenancedBy: item["Maintenanced by"].join(', '),
+            maintenanceDate: formatDate1(item["Maintenance Date"]),
         }));
-
-        const worksheet = XLSX.utils.json_to_sheet([]);
-        const headers = [
-            ["Machine Name", "Model Number", "Spare Part Name", "Spare Part Model Number",
-                "Quantity", "Available Stock", "Issue", "BreakDown Start Time", "BreakDown End Time",
-                "BreakDown Total Time", "Solution Process", "Line", "Remark",
-                "Maintenanced by", "Maintenance Date"]
-        ];
-
-        // Add headers with custom styles
-        XLSX.utils.sheet_add_aoa(worksheet, headers, { origin: 'A1' });
-
-        // Adding the data under the header
-        XLSX.utils.sheet_add_json(worksheet, processedData, { origin: 'A2', skipHeader: true });
-
-        // Set column widths
-        const colWidths = [
-            { wch: 30 },  // Machine Name
-            { wch: 25 },  // Model Number
-            { wch: 25 },  // Spare Part Name
-            { wch: 35 },  // Spare Part Model Number
-            { wch: 10 },  // Quantity
-            { wch: 15 },  // Available Stock
-            { wch: 25 },  // Issue
-            { wch: 20 },  // BreakDown Start Time
-            { wch: 20 },  // BreakDown End Time
-            { wch: 20 },  // BreakDown Total Time
-            { wch: 20 },  // Solution Process
-            { wch: 10 },  // Line
-            { wch: 20 },  // Remark
-            { wch: 25 },  // Maintenanced by
-            { wch: 20 }   // Maintenance Date
-        ];
-        worksheet['!cols'] = colWidths;
-
-        // Set row height for the header row
-        worksheet['!rows'] = [{ hpx: 30 }]; // Adjust height in pixels (hpx)
-
-        // Apply heading style (like bold text, background color, and font size) specifically for the header row
-        const range = XLSX.utils.decode_range(worksheet['!ref']);
-        for (let C = range.s.c; C <= range.e.c; C++) {
-            const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
-            const cell = worksheet[cellAddress];
-            if (cell) {
-                cell.s = {
-                    font: { bold: true, sz: 58, color: { rgb: "FFFFFF" } },  // White text color, font size 12
-                    fill: { fgColor: { rgb: "4F81BD" } },  // Blue background color
-                    alignment: { horizontal: "center", vertical: "center" }  // Center alignment
+    
+        worksheet.addRows(processedData);
+    
+        // Apply border to all cells
+        // worksheet.eachRow((row, rowNumber) => {
+        //     row.eachCell((cell) => {
+        //         cell.border = {
+        //             top: { style: 'thin' },
+        //             left: { style: 'thin' },
+        //             bottom: { style: 'thin' },
+        //             right: { style: 'thin' }
+        //         };
+        //     });
+        // });
+        const totalRows = worksheet.rowCount;
+        const totalCols = worksheet.columnCount;
+    
+        for (let row = 1; row <= totalRows; row++) {
+            for (let col = 1; col <= totalCols; col++) {
+                const cell = worksheet.getCell(row, col);
+    
+                // Apply border to all cells
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
                 };
+    
+                // Apply additional styles to data cells
+                if (row > 1) {
+                    cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                    cell.font = { size: 12 };
+                }
             }
         }
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Machine Maintenance");
-
-        XLSX.writeFile(workbook, "MachineMaintenance.xlsx");
+    
+        // Auto-fit row heights
+        worksheet.eachRow({ includeEmpty: true }, (row) => {
+            row.eachCell({ includeEmpty: true }, (cell) => {
+                const cellLength = cell.value ? cell.value.toString().length : 10;
+                const colWidth = worksheet.getColumn(cell.col).width;
+                if (colWidth) {
+                    const basePadding = 4; // Adjust this value as needed
+                    const estimatedRowHeight = Math.ceil((cellLength / colWidth) * 15) + basePadding;
+                    row.height = Math.max(row.height || 0, estimatedRowHeight);
+                }
+            });
+        });
+    
+        // Generate and save the file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'MachineMaintenance.xlsx';
+        link.click();
+        URL.revokeObjectURL(link.href);
     };
 
 

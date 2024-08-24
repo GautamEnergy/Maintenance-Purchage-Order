@@ -32,7 +32,7 @@ const Dashboard = () => {
 
     return (
         <>
-            <div style={{ marginBottom: '82%' }}>
+            <div style={{ marginBottom: '3%' }}>
 
            { designation === "Maintenance Engineer" ? <MaintenaceList/>:<div className="container py-1" style={{ width: "auto", marginTop: '-2%' }}>
 

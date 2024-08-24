@@ -21,7 +21,7 @@ body {
     background-color: #e0e0e0;
     width: 400px;
     height: auto;
-    margin: 23px;
+    margin: 68px;
     padding: 22px;
     border-radius: 10px;
 }
@@ -119,7 +119,7 @@ body {
 }
 
 .password-icon {
-    position: absolute;
+  position: absolute;
     right: 14px;
     top: 63%;
     transform: translateY(-50%);
@@ -127,18 +127,6 @@ body {
     color: #0dafeb;
     cursor: pointer;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Additional styles for smaller screens */
 @media only screen and (max-width: 600px) {

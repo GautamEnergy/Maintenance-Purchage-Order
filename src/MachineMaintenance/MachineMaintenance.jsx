@@ -61,7 +61,8 @@ const MachineMaintenance = () => {
   const [formData, setFormData] = useState([]);
   const [showLineField, setShowLineField] = useState(false);
   const [showChamberField, setShowChamberField] = useState(false);
-
+  const [images, setImages] = useState('')
+ 
 
 
 
@@ -106,7 +107,7 @@ const MachineMaintenance = () => {
               });
               const imageBlob = new Blob([imageResponse.data], { type: imageResponse.data.type });
               const imageObjectUrl = URL.createObjectURL(imageBlob);
-              setImage(imageObjectUrl);
+              setImages(imageObjectUrl);
             } catch (imageError) {
               console.error('Error fetching image:', imageError);
               
@@ -716,9 +717,10 @@ const MachineMaintenance = () => {
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setImage(file)
     if (file) {
       const fileURL = URL.createObjectURL(file);
-      setImage(fileURL);  // Update the image state with the file URL
+      setImages(fileURL);  // Update the image state with the file URL
        // Update the fileName state if needed
     }
   
@@ -778,65 +780,7 @@ const MachineMaintenance = () => {
                   </Form.Group>
                 </Col>
 
-                {showLineField && (
-                  <Col className='py-2' md={4}>
-                    <Form.Group controlId="LineField">
-                      <Form.Label style={{ fontWeight: "bold" }}>Select Line</Form.Label>
-                      <Select
-                        value={LineOptions.find(option => option.value === selectedLine)}
-                        onChange={handleLineChange}
-                        options={LineOptions}
-                        placeholder="Select Line"
-                        styles={!fieldErrors.selectedLine ? customSelectStyles : customSelectStyles1}
-                        
-                      />
-                      {fieldErrors.selectedLine && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedLine}</div>}
-                    </Form.Group>
-                  </Col>
-                )}
-
-                {showChamberField && (
-                  <Col className='py-2' md={4}>
-                    <Form.Label style={{ fontWeight: "bold" }}>Select Chambers</Form.Label>
-                    {ChamberOptions.map(chamber => (
-                      <Row key={chamber.value} className="mb-2 align-items-center">
-                        <Col xs={5}>
-                          <Form.Check
-                            type="checkbox"
-                            id={chamber.value}
-                            label={chamber.label}
-                            value={chamber.value}
-                            checked={selectedChambers.some(selected => selected.chamberId === chamber.value)}
-                            onChange={handleChamberChange}
-                           
-                          />
-                        </Col>
-                        <Col xs={7}>
-                          {selectedChambers.some(selected => selected.chamberId === chamber.value) && (
-                            <Form.Group controlId={`${chamber.value}Field`}>
-                              <Form.Control
-                                type="number"
-                                placeholder={`Enter Quantity for ${chamber.label}`}
-                                value={selectedChambers.find(selected => selected.chamberId === chamber.value)?.chamberDetails || ''}
-                                onChange={(e) => {
-                                  const details = e.target.value;
-                                  setSelectedChambers(prev => prev.map(ch =>
-                                    ch.chamberId === chamber.value
-                                      ? { ...ch, chamberDetails: details }
-                                      : ch
-                                  ));
-                                 
-                                }}
-                              />
-                            </Form.Group>
-                          )}
-                        </Col>
-                      </Row>
-                    ))}
-                    {fieldErrors.selectedChambers && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedChambers}</div>}
-                  </Col>
-                )}
-
+               
                 <Col md={4}>
                   <Form.Group controlId="MachineNumber">
                     <Form.Label style={{ fontWeight: "bold" }}>Machine Number</Form.Label>
@@ -875,6 +819,66 @@ const MachineMaintenance = () => {
                     {fieldErrors.Issue && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Issue}</div>}
                   </Form.Group>
                 </Col>
+
+              </Row>
+              <Row>
+              {showLineField && (
+                  <Col className='py-2' md={4}>
+                    <Form.Group controlId="LineField">
+                      <Form.Label style={{ fontWeight: "bold" }}>Select Line</Form.Label>
+                      <Select
+                        value={LineOptions.find(option => option.value === selectedLine)}
+                        onChange={handleLineChange}
+                        options={LineOptions}
+                        placeholder="Select Line"
+                        styles={!fieldErrors.selectedLine ? customSelectStyles : customSelectStyles1}
+                        
+                      />
+                      {fieldErrors.selectedLine && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedLine}</div>}
+                    </Form.Group>
+                  </Col>
+                )}
+
+                {showChamberField && (
+                  <Row >
+                    <Form.Label style={{ fontWeight: "bold" }}>Select Chambers</Form.Label>
+                    {ChamberOptions.map(chamber => (
+                      <Col key={chamber.value} className="mb-2 align-items-center">
+                        <Col xs={12}>
+                          <Form.Check
+                            type="checkbox"
+                            id={chamber.value}
+                            label={chamber.label}
+                            value={chamber.value}
+                            checked={selectedChambers.some(selected => selected.chamberId === chamber.value)}
+                            onChange={handleChamberChange}
+                           
+                          />
+                        </Col>
+                        <Col xs={12}>
+                          {selectedChambers.some(selected => selected.chamberId === chamber.value) && (
+                            <Form.Group controlId={`${chamber.value}Field`}>
+                              <Form.Control
+                                type="number"
+                                placeholder={`Enter Quantity for ${chamber.label}`}
+                                value={selectedChambers.find(selected => selected.chamberId === chamber.value)?.chamberDetails || ''}
+                                onChange={(e) => {
+                                  const details = e.target.value;
+                                  setSelectedChambers(prev => prev.map(ch =>
+                                    ch.chamberId === chamber.value
+                                      ? { ...ch, chamberDetails: details }
+                                      : ch
+                                  ));
+                                }}
+                              />
+                            </Form.Group>
+                          )}
+                        </Col>
+                      </Col>
+                    ))}
+                    {fieldErrors.selectedChambers && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedChambers}</div>}
+                  </Row>
+                )}
 
               </Row>
 
@@ -929,9 +933,6 @@ const MachineMaintenance = () => {
                     {fieldErrors.TimeTaken && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.TimeTaken}</div>}
                   </Form.Group>
                 </Col>
-
-
-
               </Row>
 
               <Row>
@@ -939,10 +940,8 @@ const MachineMaintenance = () => {
                   <Form.Group controlId="partModelNo">
                     <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
                     <Select
-
                       value={SparePartModelNo}
                       options={ModelNo}
-
                       onChange={handleSparePartModelChange}
                       placeholder="Select Spare Part Model Number"
                       //options={SparePart}
@@ -1048,8 +1047,6 @@ const MachineMaintenance = () => {
                     {fieldErrors.Quantity && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Quantity}</div>}
                   </Form.Group>
                 </Col>
-
-
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="pcs">
                     <Form.Label style={{ fontWeight: "bold" }}>Solution Process</Form.Label>
@@ -1110,8 +1107,8 @@ const MachineMaintenance = () => {
                     )}
                     <div>{fileName}</div>
                     <div style={{display:"flex"}}>
-                      {image ? (
-                        <img src={image} alt="Maintenance Image" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                      {images ? (
+                        <img src={images} alt="Maintenance Image" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                       ) : (
                         <p>No image available</p>
                       )}

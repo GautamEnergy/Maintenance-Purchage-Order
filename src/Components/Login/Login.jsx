@@ -132,7 +132,7 @@ const Login = () => {
 
 
     return (
-        <div className="neumorphic-card">
+        <div className="neumorphic-card py-3">
             <img src={logo} />
             <form onSubmit={(event) => event.preventDefault()} className="neumorphic-form">
                 <div className="neumorphic-input-wrapper">

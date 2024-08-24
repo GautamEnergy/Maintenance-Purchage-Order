@@ -10,8 +10,9 @@ import Select from 'react-select';
 import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
-import * as XLSX from 'xlsx';
+
 import "../Table/table.css";
+import ExcelJS from 'exceljs';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -353,89 +354,185 @@ const SparePartInTable = () => {
       </span>
     );
   };
-  const exportExcel = () => {
-    // Process the data before exporting to Excel
+  // const exportExcel = () => {
+  //   // Process the data before exporting to Excel
+  //   const processedData = data.map(item => ({
+  //     Voucher_Number: item.Voucher_Number,
+  //     PartyName: item.PartyName,
+  //     SparePartName: item.SparePartName,
+  //     SparePartModelNumber: item.SparePartModelNumber,
+  //     Spare_Part_Brand_Name: item.Spare_Part_Brand_Name,
+  //     Spare_Part_Specification: item.Spare_Part_Specification,
+  //     Machine_Names: item.Machine_Names.join(', '), // Join machine names into a string
+  //     Quantity_Purchase_Order: item.Quantity_Purchase_Order,
+  //     Quantity_Recieved: item.Quantity_Recieved,
+  //     Price: item.Price,
+  //     Total_Cost: item.Total_Cost,
+  //     Available_Stock: item.Available_Stock,
+  //     Invoice_Number: item.Invoice_Number,
+  //     Date: item.Date,
+  //     Name: item.Name
+  //   }));
+
+  //   const worksheet = XLSX.utils.json_to_sheet([]);
+  //   const headers = [
+  //     ["Voucher Number", "Party Name", "Spare Part Name", "Spare Part Model Number",
+  //       "Spare Part Brand Name", "Spare Part Specification", "Machine Names",
+  //       "Quantity Purchase Order", "Quantity Received", "Price", "Total Cost",
+  //       "Available Stock", "Invoice Number", "Date", "Name"]
+  //   ];
+  //   const headerCellStyle = {
+  //     font: { bold: true, color: { rgb: 'FFFFFF' } }, // White text
+  //     fill: { fgColor: { rgb: '4F81BD' } }, // Blue background
+  //     alignment: { horizontal: 'center', vertical: 'center' }, // Center alignment
+  //   };
+  //   headers.forEach(header => {
+  //     if (worksheet[header]) {
+  //       worksheet[header].s = headerCellStyle;
+  //     }
+  //   });
+
+
+  //   // Add headers with custom styles
+  //   XLSX.utils.sheet_add_aoa(worksheet, headers, { origin: 'A1', color: "red" });
+
+  //   // Adding the data under the header
+  //   XLSX.utils.sheet_add_json(worksheet, processedData, { origin: 'A2', skipHeader: true });
+
+  //   // Set column widths
+  //   const colWidths = [
+  //     { wch: 20 },  // Voucher_Number
+  //     { wch: 20 },  // PartyName
+  //     { wch: 25 },  // SparePartName
+  //     { wch: 25 },  // SparePartModelNumber
+  //     { wch: 20 },  // Spare_Part_Brand_Name
+  //     { wch: 30 },  // Spare_Part_Specification
+  //     { wch: 40 },  // Machine_Names
+  //     { wch: 25 },  // Quantity_Purchase_Order
+  //     { wch: 25 },  // Quantity_Recieved
+  //     { wch: 15 },  // Price
+  //     { wch: 20 },  // Total_Cost
+  //     { wch: 15 },  // Available_Stock
+  //     { wch: 25 },  // Invoice_Number
+  //     { wch: 20 },  // Date
+  //     { wch: 20 }   // Name
+  //   ];
+  //   worksheet['!cols'] = colWidths;
+
+  //   // Apply heading style (like bold text and background color)
+  //   const range = XLSX.utils.decode_range(worksheet['!ref']);
+  //   for (let C = range.s.c; C <= range.e.c; C++) {
+  //     const cell = worksheet[XLSX.utils.encode_cell({ r: 0, c: C })];
+  //     if (cell) {
+  //       cell.s = {
+  //         font: { bold: true, color: { rgb: "FFFFFF" } },  // White text color
+  //         fill: { fgColor: { rgb: "4F81BD" } },  // Blue background color
+  //         alignment: { horizontal: "center", vertical: "center" }  // Center alignment
+  //       };
+  //     }
+  //   }
+
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
+
+  //   XLSX.writeFile(workbook, "SparePartIn.xlsx");
+  // };
+  const exportExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Spare Part In');
+
+    // Define columns
+    worksheet.columns = [
+        { header: 'Voucher Number', key: 'voucherNumber', width: 25 },
+        { header: 'Party Name', key: 'partyName', width: 25 },
+        { header: 'Spare Part Name', key: 'sparePartName', width: 25 },
+        { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
+        { header: 'Spare Part Brand Name', key: 'sparePartBrandName', width: 25 },
+        { header: 'Spare Part Specification', key: 'sparePartSpecification', width: 35 },
+        { header: 'Machine Names', key: 'machineNames', width: 40 },
+        { header: 'Quantity Purchase Order', key: 'quantityPurchaseOrder', width: 20 },
+        { header: 'Quantity Received', key: 'quantityReceived', width: 20 },
+        { header: 'Price', key: 'price', width: 15 },
+        { header: 'Total Cost', key: 'totalCost', width: 25 },
+        { header: 'Available Stock', key: 'availableStock', width: 15 },
+        { header: 'Invoice Number', key: 'invoiceNumber', width: 25 },
+        { header: 'Date', key: 'date', width: 20 },
+        { header: 'Name', key: 'name', width: 20 },
+    ];
+
+    // Style the header row
+    worksheet.getRow(1).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+    worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F81BD' } };
+    worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+    worksheet.getRow(1).height = 30;
+
+    // Add data
     const processedData = data.map(item => ({
-      Voucher_Number: item.Voucher_Number,
-      PartyName: item.PartyName,
-      SparePartName: item.SparePartName,
-      SparePartModelNumber: item.SparePartModelNumber,
-      Spare_Part_Brand_Name: item.Spare_Part_Brand_Name,
-      Spare_Part_Specification: item.Spare_Part_Specification,
-      Machine_Names: item.Machine_Names.join(', '), // Join machine names into a string
-      Quantity_Purchase_Order: item.Quantity_Purchase_Order,
-      Quantity_Recieved: item.Quantity_Recieved,
-      Price: item.Price,
-      Total_Cost: item.Total_Cost,
-      Available_Stock: item.Available_Stock,
-      Invoice_Number: item.Invoice_Number,
-      Date: item.Date,
-      Name: item.Name
+        voucherNumber: item.Voucher_Number,
+        partyName: item.PartyName,
+        sparePartName: item.SparePartName,
+        sparePartModelNumber: item.SparePartModelNumber,
+        sparePartBrandName: item.Spare_Part_Brand_Name,
+        sparePartSpecification: item.Spare_Part_Specification,
+        machineNames: item.Machine_Names.join(', '),
+        quantityPurchaseOrder: item.Quantity_Purchase_Order,
+        quantityReceived: item.Quantity_Recieved,
+        price: item.Price,
+        totalCost: item.Total_Cost,
+        availableStock: item.Available_Stock,
+        invoiceNumber: item.Invoice_Number,
+        date: item.Date,
+        name: item.Name
     }));
 
-    const worksheet = XLSX.utils.json_to_sheet([]);
-    const headers = [
-      ["Voucher Number", "Party Name", "Spare Part Name", "Spare Part Model Number",
-        "Spare Part Brand Name", "Spare Part Specification", "Machine Names",
-        "Quantity Purchase Order", "Quantity Received", "Price", "Total Cost",
-        "Available Stock", "Invoice Number", "Date", "Name"]
-    ];
-    const headerCellStyle = {
-      font: { bold: true, color: { rgb: 'FFFFFF' } }, // White text
-      fill: { fgColor: { rgb: '4F81BD' } }, // Blue background
-      alignment: { horizontal: 'center', vertical: 'center' }, // Center alignment
-    };
-    headers.forEach(header => {
-      if (worksheet[header]) {
-        worksheet[header].s = headerCellStyle;
-      }
-    });
+    worksheet.addRows(processedData);
 
+    // Apply styles to all cells
+    const totalRows = worksheet.rowCount;
+    const totalCols = worksheet.columnCount;
 
-    // Add headers with custom styles
-    XLSX.utils.sheet_add_aoa(worksheet, headers, { origin: 'A1', color: "red" });
+    for (let row = 1; row <= totalRows; row++) {
+        for (let col = 1; col <= totalCols; col++) {
+            const cell = worksheet.getCell(row, col);
 
-    // Adding the data under the header
-    XLSX.utils.sheet_add_json(worksheet, processedData, { origin: 'A2', skipHeader: true });
+            // Apply border to all cells
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
 
-    // Set column widths
-    const colWidths = [
-      { wch: 20 },  // Voucher_Number
-      { wch: 20 },  // PartyName
-      { wch: 25 },  // SparePartName
-      { wch: 25 },  // SparePartModelNumber
-      { wch: 20 },  // Spare_Part_Brand_Name
-      { wch: 30 },  // Spare_Part_Specification
-      { wch: 40 },  // Machine_Names
-      { wch: 25 },  // Quantity_Purchase_Order
-      { wch: 25 },  // Quantity_Recieved
-      { wch: 15 },  // Price
-      { wch: 20 },  // Total_Cost
-      { wch: 15 },  // Available_Stock
-      { wch: 25 },  // Invoice_Number
-      { wch: 20 },  // Date
-      { wch: 20 }   // Name
-    ];
-    worksheet['!cols'] = colWidths;
-
-    // Apply heading style (like bold text and background color)
-    const range = XLSX.utils.decode_range(worksheet['!ref']);
-    for (let C = range.s.c; C <= range.e.c; C++) {
-      const cell = worksheet[XLSX.utils.encode_cell({ r: 0, c: C })];
-      if (cell) {
-        cell.s = {
-          font: { bold: true, color: { rgb: "FFFFFF" } },  // White text color
-          fill: { fgColor: { rgb: "4F81BD" } },  // Blue background color
-          alignment: { horizontal: "center", vertical: "center" }  // Center alignment
-        };
-      }
+            // Apply additional styles to data cells
+            if (row > 1) {
+                cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                cell.font = { size: 12 };
+            }
+        }
     }
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
+    // Auto-fit row heights
+    worksheet.eachRow({ includeEmpty: true }, (row) => {
+        row.eachCell({ includeEmpty: true }, (cell) => {
+            const cellLength = cell.value ? cell.value.toString().length : 10;
+            const colWidth = worksheet.getColumn(cell.col).width;
+            if (colWidth) {
+                const basePadding = 4; // Adjust this value as needed
+                const estimatedRowHeight = Math.ceil((cellLength / colWidth) * 15) + basePadding;
+                row.height = Math.max(row.height || 0, estimatedRowHeight);
+            }
+        });
+    });
 
-    XLSX.writeFile(workbook, "SparePartIn.xlsx");
-  };
+    // Generate and save the file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'SparePartIn.xlsx';
+    link.click();
+    URL.revokeObjectURL(link.href);
+};
 
   const header = renderHeader();
 
