@@ -9,8 +9,9 @@ import axios from 'axios';
 import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
-import * as XLSX from 'xlsx';
+
 import "../Table/table.css";
+import ExcelJS from 'exceljs';
 
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
@@ -109,12 +110,107 @@ const SparePartTable = () => {
         );
     };
 
-    const exportExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part List");
-        XLSX.writeFile(workbook, "SparePart.xlsx");
+    const exportExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Spare Parts');
+    
+        // Define columns
+        worksheet.columns = [
+            { header: 'Master Spare Part Name', key: 'masterSparePartName', width: 35 },
+            { header: 'Spare Part Name', key: 'sparePartName', width: 30 },
+            { header: 'Model Number', key: 'spareNumber', width: 40 },
+            { header: 'Brand Name', key: 'brandName', width: 25 },
+            { header: 'Specification', key: 'specification', width: 40 },
+        ];
+    
+        // Style the header row
+        worksheet.getRow(1).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F81BD' } };
+        worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        worksheet.getRow(1).height = 35;
+    
+        // Add data
+        const processedData = data.map(item => ({
+            masterSparePartName: item.MasterSparePartName,
+            sparePartName: item.SparePartName,
+            spareNumber: item.SpareNumber,
+            brandName: item.BrandName,
+            specification: item.Specification,
+        }));
+    
+        worksheet.addRows(processedData);
+    
+        // Apply styles to all cells
+        const totalRows = worksheet.rowCount;
+        const totalCols = worksheet.columnCount;
+    
+        for (let row = 1; row <= totalRows; row++) {
+            for (let col = 1; col <= totalCols; col++) {
+                const cell = worksheet.getCell(row, col);
+    
+                // Apply border to all cells
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+    
+                // Apply additional styles to data cells
+                if (row > 1) {
+                    cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                    cell.font = { size: 12 };
+                }
+            }
+        }
+    
+        // Auto-fit row heights
+        worksheet.eachRow({ includeEmpty: true }, (row) => {
+          let maxRowHeight = 0;
+    
+          row.eachCell({ includeEmpty: true }, (cell) => {
+              const cellValue = cell.value ? cell.value.toString() : '';
+              const colWidth = worksheet.getColumn(cell.col).width || 10; // Fallback to 10 if no width is set
+    
+              // Estimate the number of lines the text will occupy considering word-wrap
+              const words = cellValue.split(' ');
+              let currentLineLength = 0;
+              let lineCount = 1;
+    
+              words.forEach(word => {
+                  const wordLength = word.length;
+                  if (currentLineLength + wordLength + 1 > colWidth) { // +1 for space
+                      lineCount++;
+                      currentLineLength = wordLength;
+                  } else {
+                      currentLineLength += wordLength + 1;
+                  }
+              });
+    
+              const baseLineHeight = 15; // Base height per line (adjust as needed)
+              const padding = 4; // Padding inside the cell
+    
+              // Calculate the estimated height
+              const estimatedRowHeight = (lineCount * baseLineHeight) + padding;
+              maxRowHeight = Math.max(maxRowHeight, estimatedRowHeight);
+          });
+    
+          // Apply the maximum height calculated for this row
+          if (maxRowHeight > 0) {
+              row.height = maxRowHeight;
+          }
+        });
+    
+        // Generate and save the file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'SparePartsList.xlsx';
+        link.click();
+        URL.revokeObjectURL(link.href);
     };
+    
 
     const header = renderHeader();
 

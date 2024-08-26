@@ -9,10 +9,11 @@ import axios from 'axios';
 import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
-import * as XLSX from 'xlsx';
+
 import "../Table/table.css"
 import { saveAs } from 'file-saver';
 import { Tooltip } from 'primereact/tooltip';
+import ExcelJS from 'exceljs';
 
 
 const MachineTable = () => {
@@ -113,13 +114,91 @@ const MachineTable = () => {
         );
     };
 
-    const exportExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Machine List");
-        XLSX.writeFile(workbook, "MachineList.xlsx");
+    const exportExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Machines');
+    
+        // Define columns
+        worksheet.columns = [
+            { header: 'Machine Name', key: 'machineName', width: 30 },
+            { header: 'Brand Name', key: 'machineBrandName', width: 30 },
+            { header: 'Model Number', key: 'machineModelNumber', width: 25 },
+            { header: 'Machine Number', key: 'machineNumber', width: 20 },
+        ];
+    
+        // Style the header row
+        worksheet.getRow(1).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F81BD' } };
+        worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        worksheet.getRow(1).height = 35;
+    
+        // Add data
+        const processedData = data.map(item => ({
+            machineName: item.MachineName,
+            machineBrandName: item.MachineBrandName,
+            machineModelNumber: item.MachineModelNumber,
+            machineNumber: item.MachineNumber,
+        }));
+    
+        worksheet.addRows(processedData);
+    
+        // Apply styles to all cells
+        worksheet.eachRow({ includeEmpty: true }, (row) => {
+            row.eachCell({ includeEmpty: true }, (cell) => {
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+    
+                if (row.number > 1) {
+                    cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                    cell.font = { size: 12 };
+                }
+            });
+    
+            // Auto-fit row heights
+            let maxRowHeight = 0;
+            row.eachCell({ includeEmpty: true }, (cell) => {
+                const cellValue = cell.value ? cell.value.toString() : '';
+                const colWidth = worksheet.getColumn(cell.col).width || 10;
+    
+                const words = cellValue.split(' ');
+                let currentLineLength = 0;
+                let lineCount = 1;
+    
+                words.forEach(word => {
+                    const wordLength = word.length;
+                    if (currentLineLength + wordLength + 1 > colWidth) {
+                        lineCount++;
+                        currentLineLength = wordLength;
+                    } else {
+                        currentLineLength += wordLength + 1;
+                    }
+                });
+    
+                const baseLineHeight = 15;
+                const padding = 4;
+                const estimatedRowHeight = (lineCount * baseLineHeight) + padding;
+                maxRowHeight = Math.max(maxRowHeight, estimatedRowHeight);
+            });
+    
+            if (maxRowHeight > 0) {
+                row.height = maxRowHeight;
+            }
+        });
+    
+        // Generate and save the file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'MachinesList.xlsx';
+        link.click();
+        URL.revokeObjectURL(link.href);
     };
-
+    
     const header = renderHeader();
 
     const renderSkeletonRows = () => {

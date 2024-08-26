@@ -9,7 +9,8 @@ import axios from 'axios';
 import img1 from "../../Assets/Images/plus.png";
 import { Link } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+
 import "../Table/table.css";
 
 import { saveAs } from 'file-saver';
@@ -97,12 +98,104 @@ const DataTableComponent = () => {
         );
     };
 
-    const exportExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase Orders");
-        XLSX.writeFile(workbook, "PurchaseOrders.xlsx");
+    const exportExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Purchase Orders');
+    
+        // Define columns based on your table fields
+        worksheet.columns = [
+            { header: 'Voucher Number', key: 'voucherNumber', width: 25 },
+            { header: 'Party Name', key: 'partyName', width: 45 },
+            { header: 'Company Name', key: 'companyName', width: 35 },
+            { header: 'Purchase Date', key: 'purchaseDate', width: 20 },
+            { header: 'Created By', key: 'createdBy', width: 25 },
+        ];
+    
+        // Style the header row
+        worksheet.getRow(1).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F81BD' } };
+        worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        worksheet.getRow(1).height = 35;
+    
+        // Add data (assuming `data` is your source data)
+        const processedData = data.map(item => ({
+            voucherNumber: item.Voucher_Number,
+            partyName: item.PartyName,
+            companyName: item.CompanyName,
+            purchaseDate: item.Purchase_Date,
+            createdBy: item.Created_By,
+        }));
+    
+        worksheet.addRows(processedData);
+    
+        // Apply styles to all cells
+        const totalRows = worksheet.rowCount;
+        const totalCols = worksheet.columnCount;
+    
+        for (let row = 1; row <= totalRows; row++) {
+            for (let col = 1; col <= totalCols; col++) {
+                const cell = worksheet.getCell(row, col);
+    
+                // Apply border to all cells
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+    
+                // Apply additional styles to data cells
+                if (row > 1) {
+                    cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                    cell.font = { size: 12 };
+                }
+            }
+        }
+    
+        // Auto-fit row heights based on content
+        worksheet.eachRow({ includeEmpty: true }, (row) => {
+            let maxRowHeight = 0;
+    
+            row.eachCell({ includeEmpty: true }, (cell) => {
+                const cellValue = cell.value ? cell.value.toString() : '';
+                const colWidth = worksheet.getColumn(cell.col).width || 10;
+    
+                const words = cellValue.split(' ');
+                let currentLineLength = 0;
+                let lineCount = 1;
+    
+                words.forEach(word => {
+                    const wordLength = word.length;
+                    if (currentLineLength + wordLength + 1 > colWidth) {
+                        lineCount++;
+                        currentLineLength = wordLength;
+                    } else {
+                        currentLineLength += wordLength + 1;
+                    }
+                });
+    
+                const baseLineHeight = 15;
+                const padding = 4;
+    
+                const estimatedRowHeight = (lineCount * baseLineHeight) + padding;
+                maxRowHeight = Math.max(maxRowHeight, estimatedRowHeight);
+            });
+    
+            if (maxRowHeight > 0) {
+                row.height = maxRowHeight;
+            }
+        });
+    
+        // Generate and save the file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'PurchaseOrders.xlsx';
+        link.click();
+        URL.revokeObjectURL(link.href);
     };
+    
 
     const header = renderHeader();
 

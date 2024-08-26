@@ -62,7 +62,9 @@ const MachineMaintenance = () => {
   const [showLineField, setShowLineField] = useState(false);
   const [showChamberField, setShowChamberField] = useState(false);
   const [images, setImages] = useState('')
- 
+  const [MaintenanceType, setMaintenanceType] = useState('BreakDown');
+  const [sparePartChange,setSparePartChange] = useState('Yes')
+
 
 
 
@@ -94,7 +96,7 @@ const MachineMaintenance = () => {
         try {
           const response = await axios.post(
             `${url}/Maintenance/GetMachineMaintenanceList`,
-            { MachineMaintenanceId: MachineId, PersonId:personID,reqData:"" }
+            { MachineMaintenanceId: MachineId, PersonId: personID, reqData: "" }
           );
           const maintenanceData = response.data.data[0];
           // setFormData(maintenanceData);
@@ -110,7 +112,7 @@ const MachineMaintenance = () => {
               setImages(imageObjectUrl);
             } catch (imageError) {
               console.error('Error fetching image:', imageError);
-              
+
             }
           }
           // const selectedMachine = Machine.find(
@@ -126,15 +128,15 @@ const MachineMaintenance = () => {
           // }
           setMachineName(maintenanceData['Machine Name'] ?
             { value: maintenanceData['MachineId'], label: maintenanceData['Machine Name'] } : null);
-          setMachineNumber(maintenanceData["Machine Model Number"]|| '')
+          setMachineNumber(maintenanceData["Machine Model Number"] || '')
           setStartTime(maintenanceData["BreakDown Start Time"] || '');
           setEndTime(maintenanceData["BreakDown End Time"] || '');
           setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
           setSparePartName(maintenanceData['Spare Part Name'] || '');
           setSparePartModelNo(maintenanceData['Spare Part Model Number'] ?
             { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
-            setSparePartModel(maintenanceData['Spare Part Model Number'] ?
-              { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
+          setSparePartModel(maintenanceData['Spare Part Model Number'] ?
+            { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
           // setMachineNumber(maintenanceData["Machine Number"] || '');
           setIssue(maintenanceData.Issue || '');
           setQuantity(maintenanceData.Quantity || '');
@@ -147,53 +149,53 @@ const MachineMaintenance = () => {
           // If Line is present in the data, set it
           const machineName = maintenanceData['Machine Name'];
           const showLineMachines = [
-              'Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2',
-              'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1',
-              'Stringer Machine(MS40K)-2', 'gear5'
+            'Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2',
+            'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1',
+            'Stringer Machine(MS40K)-2', 'gear5'
           ];
           const showChamberMachines = [
-              'Laminator (Jinchen)', 'Laminator (GMEE)', 'gearj'
+            'Laminator (Jinchen)', 'Laminator (GMEE)', 'gearj'
           ];
-  
-          if (showLineMachines.includes(machineName)) {
-              // Show and bind the Line field if present
-              if (maintenanceData.Line ) {
-                const lineValue = maintenanceData.Line.toLowerCase().replace(' ', '');
-                const lineOption = LineOptions.find(option => option.value.toLowerCase() === lineValue);
-                setSelectedLine(lineOption ? lineOption.value : null);
-                setShowLineField(true);
 
-                  
-                  setShowLineField(true);
-              } else {
-                  setShowLineField(false);
-              }
-              setShowChamberField(false);
+          if (showLineMachines.includes(machineName)) {
+            // Show and bind the Line field if present
+            if (maintenanceData.Line) {
+              const lineValue = maintenanceData.Line.toLowerCase().replace(' ', '');
+              const lineOption = LineOptions.find(option => option.value.toLowerCase() === lineValue);
+              setSelectedLine(lineOption ? lineOption.value : null);
+              setShowLineField(true);
+
+
+              setShowLineField(true);
+            } else {
+              setShowLineField(false);
+            }
+            setShowChamberField(false);
           } else if (showChamberMachines.includes(machineName)) {
-              // Show and bind the Chamber field if present
-              if (maintenanceData.Chamber && Array.isArray(maintenanceData.Chamber)) {
-                  const chambers = maintenanceData.Chamber.filter(chamberData => {
-                      const chamberLabel = Object.keys(chamberData)[0];
-                      const chamberName = chamberData[chamberLabel];
-                      const chamberQuantity = chamberData['ChamberQuantity'];
-                      return chamberName.trim() !== '' || chamberQuantity.trim() !== '';
-                  }).map(chamberData => {
-                      const chamberLabel = Object.keys(chamberData)[0];
-                      const chamberName = chamberData[chamberLabel];
-                      const chamberQuantity = chamberData['ChamberQuantity'];
-                      return { chamberId: chamberLabel, chamberName, chamberDetails: Number(chamberQuantity) || '' };
-                  });
-  
-                  setSelectedChambers(chambers);
-                  setShowChamberField(chambers.length > 0);
-              } else {
-                  setShowChamberField(false);
-              }
-              setShowLineField(false);
-          } else {
-              // Hide both fields if the machine name doesn't match
-              setShowLineField(false);
+            // Show and bind the Chamber field if present
+            if (maintenanceData.Chamber && Array.isArray(maintenanceData.Chamber)) {
+              const chambers = maintenanceData.Chamber.filter(chamberData => {
+                const chamberLabel = Object.keys(chamberData)[0];
+                const chamberName = chamberData[chamberLabel];
+                const chamberQuantity = chamberData['ChamberQuantity'];
+                return chamberName.trim() !== '' || chamberQuantity.trim() !== '';
+              }).map(chamberData => {
+                const chamberLabel = Object.keys(chamberData)[0];
+                const chamberName = chamberData[chamberLabel];
+                const chamberQuantity = chamberData['ChamberQuantity'];
+                return { chamberId: chamberLabel, chamberName, chamberDetails: Number(chamberQuantity) || '' };
+              });
+
+              setSelectedChambers(chambers);
+              setShowChamberField(chambers.length > 0);
+            } else {
               setShowChamberField(false);
+            }
+            setShowLineField(false);
+          } else {
+            // Hide both fields if the machine name doesn't match
+            setShowLineField(false);
+            setShowChamberField(false);
           }
           if (maintenanceData['Machine Name']) {
             await getSparePartModelListData(maintenanceData['Machine Name']);
@@ -368,13 +370,13 @@ const MachineMaintenance = () => {
     if (SparePartModelNo && !Quantity) {
       newFieldErrors.Quantity = 'Quantity is required';
     }
-    if(!fileInputRef) newFieldErrors.fileInputRef = 'Image is required';
+    if (!fileInputRef) newFieldErrors.fileInputRef = 'Image is required';
     if (showLineField && !selectedLine) {
       newFieldErrors.selectedLine = 'Line selection is required';
-  }
+    }
 
-  // Validate Chamber fields if applicable
-  
+    // Validate Chamber fields if applicable
+
     setFieldErrors(newFieldErrors);
 
 
@@ -396,6 +398,8 @@ const MachineMaintenance = () => {
         BreakDownEndTime: EndTime,
         BreakDownTotalTime: TimeTaken,
         SparePartModelNumber: SparePartModelNo?.value ?? "",
+        sparePartChange,
+        MaintenanceType,
 
         Quantity: Quantity,
         Remarks: remarks,
@@ -412,7 +416,7 @@ const MachineMaintenance = () => {
         console.log("uuid", UUID)
         let formData = new FormData()
 
-        formData.append('MachineMaintenancePdf',image);
+        formData.append('MachineMaintenancePdf', image);
         formData.append('SparePartId', UUID.stockCheck)
 
         if ((image)) {
@@ -457,47 +461,53 @@ const MachineMaintenance = () => {
   const handleBack = (e) => {
     navigate('/maintenaceList');
   };
+  const handleMaintenanceTypeChange = (e) => {
+    setMaintenanceType(e.target.value);
+  };
+  const handleSparePartChange = (e) => {
+    setSparePartChange(e.target.value);
+  };
 
   const handleMachineNameChange = (selectedMachine) => {
     console.log("Machine Name:", selectedMachine);
 
     if (selectedMachine) {
-        setMachineName(selectedMachine);
+      setMachineName(selectedMachine);
+      setSelectedLine(null);
+      setSelectedChambers([]);
+
+      // Determine field visibility based on machine selection
+      if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2', 'gear5'].includes(selectedMachine.label)) {
+        setShowLineField(true);
+        setShowChamberField(false);
+      } else if (['Laminator (Jinchen)', 'Laminator (GMEE)', 'gearj'].includes(selectedMachine.label)) {
+        setShowChamberField(true);
+        setShowLineField(false);
+      } else {
+        setShowLineField(false);
+        setShowChamberField(false);
         setSelectedLine(null);
         setSelectedChambers([]);
+      }
 
-        // Determine field visibility based on machine selection
-        if (['Stringer Machine(AMO50FS)-1', 'Stringer Machine(AMO50FS)-2', 'Stringer Machine(AMO50FS)-3', 'Stringer Machine(MS40K)-1', 'Stringer Machine(MS40K)-2', 'gear5'].includes(selectedMachine.label)) {
-            setShowLineField(true);
-            setShowChamberField(false);
-        } else if (['Laminator (Jinchen)', 'Laminator (GMEE)','gearj'].includes(selectedMachine.label)) {
-            setShowChamberField(true);
-            setShowLineField(false);
-        } else {
-            setShowLineField(false);
-            setShowChamberField(false);
-            setSelectedLine(null);
-            setSelectedChambers([]);
-        }
+      handleFieldChange("MachineName", selectedMachine.label);
 
-        handleFieldChange("MachineName", selectedMachine.label);
+      const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
 
-        const selectedMachineData = Machine.find(machine => machine.MachineId === selectedMachine.value);
+      if (selectedMachineData) {
+        setMachineNumber(selectedMachineData.MachineNumber);
+        setFieldErrors(prevErrors => {
+          const newErrors = { ...prevErrors };
+          delete newErrors.MachineNumber;
+          return newErrors;
+        });
+      }
 
-        if (selectedMachineData) {
-            setMachineNumber(selectedMachineData.MachineNumber);
-            setFieldErrors(prevErrors => {
-                const newErrors = { ...prevErrors };
-                delete newErrors.MachineNumber;
-                return newErrors;
-            });
-        }
+      getSparePartModelListData(selectedMachine.label);
 
-        getSparePartModelListData(selectedMachine.label);
-
-        console.log(selectedMachine.label);
+      console.log(selectedMachine.label);
     }
-};
+  };
 
 
   const handleLineChange = (selectedOption) => {
@@ -721,9 +731,9 @@ const MachineMaintenance = () => {
     if (file) {
       const fileURL = URL.createObjectURL(file);
       setImages(fileURL);  // Update the image state with the file URL
-       // Update the fileName state if needed
+      // Update the fileName state if needed
     }
-  
+
 
 
     if (file) {
@@ -761,7 +771,7 @@ const MachineMaintenance = () => {
           <Form onSubmit={handleSubmit}>
             <div className="subCard2">
               <Row>
-              
+
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="MachineName">
                     <Form.Label style={{ fontWeight: "bold" }}>Machine Name</Form.Label>
@@ -780,7 +790,7 @@ const MachineMaintenance = () => {
                   </Form.Group>
                 </Col>
 
-               
+
                 <Col md={4}>
                   <Form.Group controlId="MachineNumber">
                     <Form.Label style={{ fontWeight: "bold" }}>Machine Number</Form.Label>
@@ -798,31 +808,35 @@ const MachineMaintenance = () => {
                     {fieldErrors.MachineNumber && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.MachineNumber}</div>}
                   </Form.Group>
                 </Col>
-
-                <Col md={4}>
-                  <Form.Group controlId="Issue">
-                    <Form.Label style={{ fontWeight: "bold" }}>Issue</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="Issue"
-                      value={Issue}
-                      onChange={(e) => {
-                        setIssue(e.target.value)
-                        handleFieldChange('Issue', e.target.value);
-                      }}
-                      placeholder="Issue"
-
-                      // required
-                      style={!fieldErrors.Issue ? inputStyle : inputStyles}
-
-                    />
-                    {fieldErrors.Issue && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Issue}</div>}
+                <Col md={4} className='py-2'>
+                  <Form.Group controlId="MaintenanceType">
+                    <Form.Label style={{ fontWeight: "bold" }}>Maintenance Type</Form.Label>
+                    <div style={{display:"flex",gap:"5px"}}>
+                      <Form.Check
+                        type="radio"
+                        label="BreakDown"
+                        name="MaintenanceType"
+                        value="BreakDown"
+                        checked={MaintenanceType === "BreakDown"}
+                        onChange={(e) => handleMaintenanceTypeChange(e)}
+                      />
+                      <Form.Check
+                        type="radio"
+                        label="Preventive"
+                        name="MaintenanceType"
+                        value="Preventive"
+                        checked={MaintenanceType === "Preventive"}
+                        onChange={(e) => handleMaintenanceTypeChange(e)}
+                      />
+                   
+                    </div>
                   </Form.Group>
                 </Col>
 
+               
               </Row>
               <Row>
-              {showLineField && (
+                {showLineField && (
                   <Col className='py-2' md={4}>
                     <Form.Group controlId="LineField">
                       <Form.Label style={{ fontWeight: "bold" }}>Select Line</Form.Label>
@@ -832,7 +846,7 @@ const MachineMaintenance = () => {
                         options={LineOptions}
                         placeholder="Select Line"
                         styles={!fieldErrors.selectedLine ? customSelectStyles : customSelectStyles1}
-                        
+
                       />
                       {fieldErrors.selectedLine && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.selectedLine}</div>}
                     </Form.Group>
@@ -852,7 +866,7 @@ const MachineMaintenance = () => {
                             value={chamber.value}
                             checked={selectedChambers.some(selected => selected.chamberId === chamber.value)}
                             onChange={handleChamberChange}
-                           
+
                           />
                         </Col>
                         <Col xs={12}>
@@ -883,6 +897,28 @@ const MachineMaintenance = () => {
               </Row>
 
               <Row>
+              <Col md={4}>
+                  <Form.Group controlId="Issue">
+                    <Form.Label style={{ fontWeight: "bold" }}>Issue</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="Issue"
+                      value={Issue}
+                      onChange={(e) => {
+                        setIssue(e.target.value)
+                        handleFieldChange('Issue', e.target.value);
+                      }}
+                      placeholder="Issue"
+
+                      // required
+                      style={!fieldErrors.Issue ? inputStyle : inputStyles}
+
+                    />
+                    {fieldErrors.Issue && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Issue}</div>}
+                  </Form.Group>
+                </Col>
+
+               
                 <Col md={4}>
                   <Form.Group controlId="StartTime">
                     <Form.Label style={{ fontWeight: "bold" }}>BreakDown Start Time</Form.Label>
@@ -916,7 +952,11 @@ const MachineMaintenance = () => {
                     {fieldErrors.EndTime && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.EndTime}</div>}
                   </Form.Group>
                 </Col>
-                <Col md={4}>
+
+              </Row>
+
+              <Row>
+                <Col md={4} className='py-2'>
                   <Form.Group controlId="EndTime">
                     <Form.Label style={{ fontWeight: "bold" }}>Total BreakDown Time</Form.Label>
                     <Form.Control
@@ -933,9 +973,30 @@ const MachineMaintenance = () => {
                     {fieldErrors.TimeTaken && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.TimeTaken}</div>}
                   </Form.Group>
                 </Col>
-              </Row>
-
-              <Row>
+                <Col md={4} className='py-2'>
+                  <Form.Group controlId="sparePartChange">
+                    <Form.Label style={{ fontWeight: "bold" }}>Spare Part Change</Form.Label>
+                    <div style={{display:"flex",gap:"5px"}}>
+                      <Form.Check
+                        type="radio"
+                        label="Yes"
+                        name="sparePartChange"
+                        value="Yes"
+                        checked={sparePartChange === "Yes"}
+                        onChange={(e) => handleSparePartChange(e)}
+                      />
+                      <Form.Check
+                        type="radio"
+                        label="No"
+                        name="sparePartChange"
+                        value="No"
+                        checked={sparePartChange === "No"}
+                        onChange={(e) => handleSparePartChange(e)}
+                      />
+                     
+                    </div>
+                  </Form.Group>
+                </Col>
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="partModelNo">
                     <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
@@ -953,7 +1014,11 @@ const MachineMaintenance = () => {
                     {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
                   </Form.Group>
                 </Col>
-                <Col className='py-2' md={4}>
+               
+              </Row>
+
+              <Row>
+              <Col className='py-2' md={4}>
                   <Form.Group controlId="sparepartname">
                     <Form.Label style={{ fontWeight: "bold" }}>Spare Part Name</Form.Label>
                     <Form.Control
@@ -997,9 +1062,6 @@ const MachineMaintenance = () => {
                     {fieldErrors.Stock && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Stock}</div>}
                   </Form.Group>
                 </Col>
-              </Row>
-
-              <Row>
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="quantity">
                     <Form.Label style={{ fontWeight: "bold" }}>Quantity</Form.Label>
@@ -1039,7 +1101,7 @@ const MachineMaintenance = () => {
                         }
                       }}
                       placeholder="Quantity"
-                      disabled={!SparePartModelNo} 
+                      disabled={!SparePartModelNo}
 
                       //  required
                       style={!fieldErrors.Quantity ? inputStyle : inputStyles}
@@ -1047,7 +1109,10 @@ const MachineMaintenance = () => {
                     {fieldErrors.Quantity && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Quantity}</div>}
                   </Form.Group>
                 </Col>
-                <Col className='py-2' md={4}>
+               
+              </Row>
+              <Row>
+              <Col className='py-2' md={4}>
                   <Form.Group controlId="pcs">
                     <Form.Label style={{ fontWeight: "bold" }}>Solution Process</Form.Label>
                     <Form.Control
@@ -1088,8 +1153,6 @@ const MachineMaintenance = () => {
 
 
 
-              </Row>
-              <Row>
                 <Col className='py-2' md={4}>
                   <Form.Group controlId="UploadFile">
                     <Form.Label style={{ fontWeight: "bold" }}>Upload Image</Form.Label>
@@ -1106,7 +1169,7 @@ const MachineMaintenance = () => {
                       </div>
                     )}
                     <div>{fileName}</div>
-                    <div style={{display:"flex"}}>
+                    <div style={{ display: "flex" }}>
                       {images ? (
                         <img src={images} alt="Maintenance Image" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                       ) : (

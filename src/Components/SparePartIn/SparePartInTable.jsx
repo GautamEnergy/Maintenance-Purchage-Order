@@ -204,11 +204,11 @@ const SparePartInTable = () => {
 
     // Replace this with actual backend call
   };
-  const handleButtonClick = (MachineId1) => {
-    console.log("MachineIdqqqq", MachineId1);
-   // setMachineID(MachineId1)
-    setShowModal(true);
-};
+//   const handleButtonClick = (MachineId1) => {
+//     console.log("MachineIdqqqq", MachineId1);
+//    // setMachineID(MachineId1)
+//     setShowModal(true);
+// };
 
   const handleClose = () => setShowModal(false);
 
@@ -230,7 +230,7 @@ const SparePartInTable = () => {
                     icon="pi pi-plus"
                     className="p-button-rounded p-button-success"
                     style={{ marginRight: '5px', backgroundColor: '#cb34dc' }}
-                    onClick={()=>handleButtonClick(rowData.Machine_Maintenance_Id)}
+                    // onClick={()=>handleButtonClick(rowData.Machine_Maintenance_Id)}
                 />
             )}
 
@@ -410,7 +410,7 @@ const SparePartInTable = () => {
       </span>
     );
   };
-  // const exportExcel = () => {
+
   //   // Process the data before exporting to Excel
   //   const processedData = data.map(item => ({
   //     Voucher_Number: item.Voucher_Number,
