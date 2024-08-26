@@ -504,8 +504,8 @@ const SparePartInTable = () => {
         { header: 'Spare Part Name', key: 'sparePartName', width: 25 },
         { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
         { header: 'Spare Part Brand Name', key: 'sparePartBrandName', width: 35 },
-        { header: 'Spare Part Specification', key: 'sparePartSpecification', width: 60 },
-        { header: 'Machine Names', key: 'machineNames', width: 65 },
+        { header: 'Spare Part Specification', key: 'sparePartSpecification', width: 50 },
+        { header: 'Machine Names', key: 'machineNames', width: 55 },
         { header: 'Quantity Purchase Order', key: 'quantityPurchaseOrder', width: 20 },
         { header: 'Quantity Received', key: 'quantityReceived', width: 20 },
         { header: 'Price', key: 'price', width: 15 },
@@ -569,16 +569,41 @@ const SparePartInTable = () => {
 
     // Auto-fit row heights
     worksheet.eachRow({ includeEmpty: true }, (row) => {
-        row.eachCell({ includeEmpty: true }, (cell) => {
-            const cellLength = cell.value ? cell.value.toString().length : 10;
-            const colWidth = worksheet.getColumn(cell.col).width;
-            if (colWidth) {
-                const basePadding = 4; // Adjust this value as needed
-                const estimatedRowHeight = Math.ceil((cellLength / colWidth) * 15) + basePadding;
-                row.height = Math.max(row.height || 0, estimatedRowHeight);
-            }
-        });
-    });
+      let maxRowHeight = 0;
+  
+      row.eachCell({ includeEmpty: true }, (cell) => {
+          const cellValue = cell.value ? cell.value.toString() : '';
+          const colWidth = worksheet.getColumn(cell.col).width || 10; // Fallback to 10 if no width is set
+  
+          // Estimate the number of lines the text will occupy considering word-wrap
+          const words = cellValue.split(' ');
+          let currentLineLength = 0;
+          let lineCount = 1;
+  
+          words.forEach(word => {
+              const wordLength = word.length;
+              if (currentLineLength + wordLength + 1 > colWidth) { // +1 for space
+                  lineCount++;
+                  currentLineLength = wordLength;
+              } else {
+                  currentLineLength += wordLength + 1;
+              }
+          });
+  
+          const baseLineHeight = 15; // Base height per line (adjust as needed)
+          const padding = 4; // Padding inside the cell
+  
+          // Calculate the estimated height
+          const estimatedRowHeight = (lineCount * baseLineHeight) + padding;
+          maxRowHeight = Math.max(maxRowHeight, estimatedRowHeight);
+      });
+  
+      // Apply the maximum height calculated for this row
+      if (maxRowHeight > 0) {
+          row.height = maxRowHeight;
+      }
+  });
+  
 
     // Generate and save the file
     const buffer = await workbook.xlsx.writeBuffer();
