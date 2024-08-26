@@ -37,6 +37,9 @@ const SparePartInTable = () => {
   const [SparePartModelNo, setSparePartModelNo] = useState([]);
   const [SparePartName, setSparePartName] = useState('');
   const [SparePart, setSparePart] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [freightAmount, setFreightAmount] = useState('');
+  const [discountAmount, setDiscountAmount] = useState('');
 
   useEffect(() => {
     const url = localStorage.getItem('url');
@@ -201,13 +204,72 @@ const SparePartInTable = () => {
 
     // Replace this with actual backend call
   };
+  const handleButtonClick = (MachineId1) => {
+    console.log("MachineIdqqqq", MachineId1);
+   // setMachineID(MachineId1)
+    setShowModal(true);
+};
+
+  const handleClose = () => setShowModal(false);
+
+  const handleSubmit = () => {
+      // Handle form submission
+      console.log('Freight Amount:', freightAmount);
+      console.log('Discount Amount:', discountAmount);
+      // You can add further logic here to process the form data
+      handleClose(); // Close the modal after submission
+  };
   const actionBodyTemplate = (rowData) => {
     console.log(rowData)
     return (
       <React.Fragment>
         <div style={{ display: 'flex' }}>
 
-          {designation === "Super Admin" ? <Button icon="pi pi-plus" className="p-button-rounded p-button-success" data-pr-tooltip="" style={{ marginRight: '5px', backgroundColor: '#cb34dc' }} /> : ""}
+        {designation === "Super Admin" && (
+                <Button
+                    icon="pi pi-plus"
+                    className="p-button-rounded p-button-success"
+                    style={{ marginRight: '5px', backgroundColor: '#cb34dc' }}
+                    onClick={()=>handleButtonClick(rowData.Machine_Maintenance_Id)}
+                />
+            )}
+
+            <Modal show={showModal} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Enter Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="freightAmount">
+                            <Form.Label>Freight Amount</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={freightAmount}
+                                onChange={(e) => setFreightAmount(e.target.value)}
+                                placeholder="Enter Freight Amount"
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="discountAmount">
+                            <Form.Label>Discount Amount</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={discountAmount}
+                                onChange={(e) => setDiscountAmount(e.target.value)}
+                                placeholder="Enter Discount Amount"
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={()=>{handleSubmit()}}>
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </Modal>
           {rowData.Invoice_Pdf_URL != null && rowData.Invoice_Pdf_URL != "" ?
             <Button
 
@@ -334,12 +396,6 @@ const SparePartInTable = () => {
     );
   };
 
-  // const exportExcel = () => {
-  //     const worksheet = XLSX.utils.json_to_sheet(data);
-  //     const workbook = XLSX.utils.book_new();
-  //     XLSX.utils.book_append_sheet(workbook, worksheet, "Spare Part In");
-  //     XLSX.writeFile(workbook, "SparePartIn.xlsx");
-  // };
   const currencyBodyTemplate = (rowData) => {
     return (
       <span>
@@ -444,27 +500,27 @@ const SparePartInTable = () => {
     // Define columns
     worksheet.columns = [
         { header: 'Voucher Number', key: 'voucherNumber', width: 25 },
-        { header: 'Party Name', key: 'partyName', width: 25 },
+        { header: 'Party Name', key: 'partyName', width: 45 },
         { header: 'Spare Part Name', key: 'sparePartName', width: 25 },
         { header: 'Spare Part Model Number', key: 'sparePartModelNumber', width: 35 },
-        { header: 'Spare Part Brand Name', key: 'sparePartBrandName', width: 25 },
-        { header: 'Spare Part Specification', key: 'sparePartSpecification', width: 35 },
-        { header: 'Machine Names', key: 'machineNames', width: 40 },
+        { header: 'Spare Part Brand Name', key: 'sparePartBrandName', width: 35 },
+        { header: 'Spare Part Specification', key: 'sparePartSpecification', width: 60 },
+        { header: 'Machine Names', key: 'machineNames', width: 65 },
         { header: 'Quantity Purchase Order', key: 'quantityPurchaseOrder', width: 20 },
         { header: 'Quantity Received', key: 'quantityReceived', width: 20 },
         { header: 'Price', key: 'price', width: 15 },
         { header: 'Total Cost', key: 'totalCost', width: 25 },
-        { header: 'Available Stock', key: 'availableStock', width: 15 },
-        { header: 'Invoice Number', key: 'invoiceNumber', width: 25 },
+        { header: 'Available Stock', key: 'availableStock', width: 25 },
+        { header: 'Invoice Number', key: 'invoiceNumber', width: 35 },
         { header: 'Date', key: 'date', width: 20 },
-        { header: 'Name', key: 'name', width: 20 },
+        { header: 'Recieved By', key: 'name', width: 25 },
     ];
 
     // Style the header row
     worksheet.getRow(1).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
     worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F81BD' } };
     worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-    worksheet.getRow(1).height = 30;
+    worksheet.getRow(1).height = 35;
 
     // Add data
     const processedData = data.map(item => ({
@@ -477,8 +533,8 @@ const SparePartInTable = () => {
         machineNames: item.Machine_Names.join(', '),
         quantityPurchaseOrder: item.Quantity_Purchase_Order,
         quantityReceived: item.Quantity_Recieved,
-        price: item.Price,
-        totalCost: item.Total_Cost,
+        price: `${item.Currency} ${item.Price}`,
+        totalCost: `${item.Currency} ${item.Total_Cost}`,
         availableStock: item.Available_Stock,
         invoiceNumber: item.Invoice_Number,
         date: item.Date,
