@@ -10,23 +10,32 @@ body {
     background-color: #e0e0e0;
     display: flex;
     justify-content: center;
-    /* align-items: center; */
     color: #343434;
     font-family: 'Poppins', sans-serif;
 }
 
 
-
-.neumorphic-card {
+.login-card {
     background-color: #e0e0e0;
+
+    /* background: linear-gradient(to bottom,
+            #e25757 0%,
+            #b4d2ac 33.33%,
+            #8cb8c1 33.33%,
+            #bab0cc 66.66%,
+            #f8d7d7 66.66%); */
     width: 400px;
     height: auto;
-    margin: 68px;
+    margin: 26px;
     padding: 22px;
     border-radius: 10px;
+
+    /* box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.2),
+        -10px -10px 20px rgba(255, 255, 255, 0.75); */
 }
 
-.neumorphic-card img {
+.login-card img {
     width: 180px;
     height: auto;
     margin: 0 auto;
@@ -34,24 +43,21 @@ body {
     padding: 10px;
 }
 
-/* .neumorphic-form {
-    margin: 2rem 0;
-} */
 
-.neumorphic-input-wrapper {
+.login-form-input {
     width: 100%;
     margin-bottom: 0.5rem;
     display: flex;
     flex-direction: column;
 }
 
-.neumorphic-input-wrapper label {
+.login-form-input label {
     font-size: 0.9rem;
     font-weight: 400;
     margin-left: 0.8rem;
 }
 
-.neumorphic-input-wrapper input {
+.login-form-input input {
     border: none;
     outline: none;
     background: none;
@@ -66,11 +72,11 @@ body {
         inset -5px -5px 11px rgba(255, 255, 255, 0.75);
 }
 
-.neumorphic-input-wrapper input::placeholder {
+.login-form-input input::placeholder {
     font-size: 14px;
 }
 
-.neumorphic-form button {
+.login-form button {
     border: none;
     outline: none;
     background: none;
@@ -87,17 +93,26 @@ body {
 
 }
 
-.neumorphic-form button:active {
-    box-shadow:
-        inset 5px 5px 11px rgba(0, 0, 0, 0.2),
-        inset -5px -5px 11px rgba(255, 255, 255, 0.75);
+/* user icon  */
+.login-form-input:nth-child(1) input {
+    padding-left: 3rem;
+    background: url('../Assets/icons/p1.png') no-repeat;
+    background-position: 1rem center;
+    background-size: 20px 20px;
+    padding-bottom: 17px;
+
+}
+
+/* password icon  */
+.login-form-input:nth-child(2) input {
+    padding-left: 3rem;
+    background: url('../Assets/icons/l1.png') no-repeat;
+    background-position: 1rem center;
+    background-size: 20px 20px;
 }
 
 
-
-
-
-
+/* See the Password icon */
 .password-wrapper {
     position: relative;
     width: 100%;
@@ -108,18 +123,14 @@ body {
 
 .password-wrapper input {
     padding-left: 2.5rem;
-
-
     padding-left: 1.1rem;
     border-radius: 20px;
     margin: 8px 0 8px 0;
     font-size: 1.2rem;
-
-
 }
 
 .password-icon {
-  position: absolute;
+    position: absolute;
     right: 14px;
     top: 63%;
     transform: translateY(-50%);
@@ -130,7 +141,7 @@ body {
 
 /* Additional styles for smaller screens */
 @media only screen and (max-width: 600px) {
-    .neumorphic-card {
+    .login-card {
         width: 90%;
         margin: 1rem auto;
     }
@@ -138,7 +149,7 @@ body {
 
 /* Additional styles for even smaller screens */
 @media only screen and (max-width: 400px) {
-    .neumorphic-card {
+    .login-card {
         width: 80%;
         margin: 1rem auto;
     }
