@@ -3,7 +3,7 @@ import { Form, Table } from 'react-bootstrap';
 
 const BillForm = ({ formData }) => {
 
-    const { 
+    const {
         GSTdata, totalAmount, narrationDiscount, setNarrationDiscount,
         percentageDiscount, setPercentageDiscount,
         remainingAmountAfterDiscount, setRemainingAmountAfterDiscount,
@@ -24,10 +24,10 @@ const BillForm = ({ formData }) => {
         percentageCGST, setPercentageCGST,
         amountCGST, setAmountCGST,
         finalAmout, setFinalAmount,
-        transportAmmount , settransportAmmount,
-        data 
-      } = formData;
-      console.log("Amount Frieght",amountFreight)
+        transportAmmount, settransportAmmount,
+        data
+    } = formData;
+    console.log("Amount Frieght", amountFreight)
     // const [narrationDiscount, setNarrationDiscount] = useState('');
     // const [percentageDiscount, setPercentageDiscount] = useState('');
     // const [remainingAmountAfterDiscount, setRemainingAmountAfterDiscount] = useState(totalAmount);
@@ -117,34 +117,34 @@ const BillForm = ({ formData }) => {
     }, [remainingAmountAfterDiscount, totalAmount]);
     useEffect(() => {
         //console.log(remainingAmountAfterDiscount);
-        
-            const famount = (totalAmount - remainingAmountAfterDiscount) ;
-            const abcd = famount +  Number(amountFreight)
-            settransportAmmount(abcd.toFixed(2));
 
-    }, [remainingAmountAfterDiscount, totalAmount,amountFreight]);
+        const famount = (totalAmount - remainingAmountAfterDiscount);
+        const abcd = famount + Number(amountFreight)
+        settransportAmmount(abcd.toFixed(2));
+
+    }, [remainingAmountAfterDiscount, totalAmount, amountFreight]);
 
 
 
     useEffect(() => {
-        if(percentageDiscount){
-        const discountAmount = (totalAmount * percentageDiscount) / 100;
-        setRemainingAmountAfterDiscount(discountAmount.toFixed(2));
-        }else{
+        if (percentageDiscount) {
+            const discountAmount = (totalAmount * percentageDiscount) / 100;
+            setRemainingAmountAfterDiscount(discountAmount.toFixed(2));
+        } else {
             setRemainingAmountAfterDiscount(remainingAmountAfterDiscount);
         }
     }, [percentageDiscount, totalAmount]);
 
     useEffect(() => {
-   if(percentageFreight){
-        let freightAmount = (Number(discountAmmount ? discountAmmount : totalAmount) / 100) * percentageFreight;
-        console.log('Remaining Amount After Discount:', freightAmount);
-        setAmountFreight(freightAmount.toFixed(2))/** */
-        }else{
+        if (percentageFreight) {
+            let freightAmount = (Number(discountAmmount ? discountAmmount : totalAmount) / 100) * percentageFreight;
+            console.log('Remaining Amount After Discount:', freightAmount);
+            setAmountFreight(freightAmount.toFixed(2))/** */
+        } else {
             setAmountFreight(amountFreight)/** */
         }
         console.log("hheheheh");
-    
+
     }, [percentageFreight, discountAmmount]);
 
     useEffect(() => {
@@ -175,9 +175,9 @@ const BillForm = ({ formData }) => {
                 case 'discount':
                     setPercentageDiscount(value);
                     break;
-                    case 'freight':
-                        setPercentageFreight(value);
-                        break;
+                case 'freight':
+                    setPercentageFreight(value);
+                    break;
                 default:
                     break;
             }
@@ -197,10 +197,10 @@ const BillForm = ({ formData }) => {
     //     console.log('Percentage Discount:', percentageDiscount);
     //     console.log('Remaining Amount after Discount:', remainingAmountAfterDiscount);
     // };
-    
+
 
     return (
-        <Form  className="p-3" >
+        <Form className="p-3" >
             <Table bordered >
                 <thead>
                     <tr>
@@ -229,7 +229,8 @@ const BillForm = ({ formData }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageDiscount}
-                                    onChange={(e) => {handlePercentageChange('discount', e.target.value)
+                                    onChange={(e) => {
+                                        handlePercentageChange('discount', e.target.value)
                                         setRemainingAmountAfterDiscount("")
                                     }}
                                 />
@@ -238,15 +239,16 @@ const BillForm = ({ formData }) => {
                                 <Form.Control
                                     type="number"
                                     placeholder="Discount Amount"
-                                    onFocus={(e) => {e.target.value = ""
+                                    onFocus={(e) => {
+                                        e.target.value = ""
                                         setRemainingAmountAfterDiscount("");
                                         setPercentageDiscount("")
                                     }}
                                     value={remainingAmountAfterDiscount}
                                     onChange={(e) => {
                                         console.log(e.target.value)
-                                        
-                                       // setPercentageDiscount('');
+
+                                        // setPercentageDiscount('');
                                         setRemainingAmountAfterDiscount(e.target.value)
 
                                         setDiscountAmmount(totalAmount - remainingAmountAfterDiscount)
@@ -258,7 +260,7 @@ const BillForm = ({ formData }) => {
                     {data && (
                         <tr>
                             <td>2</td>
-                            <td>Freight</td>
+                            <td>Freight & Forwarding</td>
                             <td>
                                 <Form.Control
                                     type="text"
@@ -272,23 +274,26 @@ const BillForm = ({ formData }) => {
                                     type="number"
                                     placeholder="Enter %"
                                     value={percentageFreight}
-                                    onChange={(e) =>{ handlePercentageChange('freight', e.target.value)
+                                    onChange={(e) => {
+                                        handlePercentageChange('freight', e.target.value)
                                         setAmountFreight("")
                                     }
-                                
-                                }
+
+                                    }
                                 />
                             </td>
                             <td>
                                 <Form.Control
                                     type="number"
                                     placeholder="Frieght Ammount"
-                                    onFocus={(e) =>{ e.target.value = ""
+                                    onFocus={(e) => {
+                                        e.target.value = ""
                                         setAmountFreight("")
                                         setPercentageFreight("")
                                     }}
                                     value={amountFreight}
-                                    onChange={(e) =>{ setAmountFreight(e.target.value)
+                                    onChange={(e) => {
+                                        setAmountFreight(e.target.value)
                                         //setPercentageFreight("")
                                     }}
 
@@ -396,7 +401,7 @@ const BillForm = ({ formData }) => {
                 </tfoot>
             </Table>
         </Form>
-        
+
     );
 };
 
