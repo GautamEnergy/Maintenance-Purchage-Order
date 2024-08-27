@@ -11,7 +11,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 const Login = () => {
     const { setToken } = useContext(AppContext);
     const [isLoginOpen, setLoginOpen] = useState(false);
-    const [email, setEmail] = useState("");
+    const [LoginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [url, setUrl] = useState("");
@@ -38,14 +38,17 @@ const Login = () => {
         } else {
             setLoginOpen(true);
         }
+
     }, []);
+
+
 
 
     const notifySuccess = (message) => toast.success(message, { autoClose: 5000 });
     const notifyError = (message) => toast.error(message, { autoClose: 5000 });
 
     const validateInput = () => {
-        if (!email || !password) {
+        if (!LoginId || !password) {
             // setError("Please enter both email and password.");
             return false;
         }
@@ -55,7 +58,7 @@ const Login = () => {
     const userlogin = async () => {
         if (!validateInput()) return;
         console.log("Login Id")
-        console.log(email);
+        console.log(LoginId);
         console.log("Login Password");
         console.log(password);
 
@@ -63,7 +66,7 @@ const Login = () => {
 
         try {
             const res = await axios.post(`${url}/Employee/Login`, {
-                loginid: email,
+                loginid: LoginId,
                 password: password,
                 department: 'Machine Maintenance'
             });
@@ -132,27 +135,27 @@ const Login = () => {
 
 
     return (
-        <div className="neumorphic-card py-3">
+        <div className="login-card py-3">
             <img src={logo} />
-            <form onSubmit={(event) => event.preventDefault()} className="neumorphic-form">
-                <div className="neumorphic-input-wrapper">
-                    <label htmlFor="email">Login Id</label>
+            <form onSubmit={(event) => event.preventDefault()} className="login-form">
+                <div className="login-form-input">
+                    <label htmlFor="text">Login Id</label>
                     <input
-                        name="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        name="text"
+                        id="text"
+                        value={LoginId}
+                        onChange={(e) => setLoginId(e.target.value)}
                         required
                         placeholder="Please enter login ID"
                     />
                 </div>
 
-                <div className="neumorphic-input-wrapper password-wrapper">
-                    <label htmlFor="neumorphic-password">Password</label>
+                <div className="login-form-input password-wrapper">
+                    <label htmlFor="password">Password</label>
                     <input
                         type={showPassword ? "text" : "password"}
-                        name="neumorphic-password"
-                        id="neumorphic-password"
+                        name="password"
+                        id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
