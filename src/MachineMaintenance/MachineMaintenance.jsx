@@ -132,6 +132,8 @@ const MachineMaintenance = () => {
           setStartTime(maintenanceData["BreakDown Start Time"] || '');
           setEndTime(maintenanceData["BreakDown End Time"] || '');
           setTimeTaken(maintenanceData["BreakDown Total Time"] || '');
+          setMaintenanceType(maintenanceData["Maintenance Type"] || '')
+          setSparePartChange(maintenanceData["Is Spare Part Changed"] || '')
           setSparePartName(maintenanceData['Spare Part Name'] || '');
           setSparePartModelNo(maintenanceData['Spare Part Model Number'] ?
             { value: maintenanceData['SparePartId'], label: maintenanceData['Spare Part Model Number'] } : null);
@@ -398,8 +400,8 @@ const MachineMaintenance = () => {
         BreakDownEndTime: EndTime,
         BreakDownTotalTime: TimeTaken,
         SparePartModelNumber: SparePartModelNo?.value ?? "",
-        sparePartChange,
-        MaintenanceType,
+        isSparePartChanged:sparePartChange,
+        maintenanceType:MaintenanceType,
 
         Quantity: Quantity,
         Remarks: remarks,
@@ -975,8 +977,8 @@ const MachineMaintenance = () => {
                 </Col>
                 <Col md={4} className='py-2'>
                   <Form.Group controlId="sparePartChange">
-                    <Form.Label style={{ fontWeight: "bold" }}>Spare Part Change</Form.Label>
-                    <div style={{display:"flex",gap:"5px"}}>
+                    <Form.Label style={{ fontWeight: "bold" }}> Is Spare Part Changed..?</Form.Label>
+                    <div style={{display:"flex",gap:"10px"}}>
                       <Form.Check
                         type="radio"
                         label="Yes"
@@ -997,7 +999,7 @@ const MachineMaintenance = () => {
                     </div>
                   </Form.Group>
                 </Col>
-                <Col className='py-2' md={4}>
+               { sparePartChange === "Yes" ? <Col className='py-2' md={4}>
                   <Form.Group controlId="partModelNo">
                     <Form.Label style={{ fontWeight: "bold" }}>Spare Part Model Number</Form.Label>
                     <Select
@@ -1013,12 +1015,12 @@ const MachineMaintenance = () => {
                     />
                     {fieldErrors.SparePartModelNo && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartModelNo}</div>}
                   </Form.Group>
-                </Col>
+                </Col> :""}
                
               </Row>
 
               <Row>
-              <Col className='py-2' md={4}>
+              {sparePartChange==="Yes"?<Col className='py-2' md={4}>
                   <Form.Group controlId="sparepartname">
                     <Form.Label style={{ fontWeight: "bold" }}>Spare Part Name</Form.Label>
                     <Form.Control
@@ -1036,8 +1038,8 @@ const MachineMaintenance = () => {
                     />
                     {fieldErrors.SparePartName && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.SparePartName}</div>}
                   </Form.Group>
-                </Col>
-                <Col className='py-2' md={4}>
+                </Col>:""}
+               {sparePartChange === "Yes" ?<Col className='py-2' md={4}>
                   <Form.Group controlId="databox">
                     <Form.Label style={{ fontWeight: "bold" }}> Available Stock</Form.Label>
                     <div
@@ -1061,8 +1063,8 @@ const MachineMaintenance = () => {
                     </div>
                     {fieldErrors.Stock && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Stock}</div>}
                   </Form.Group>
-                </Col>
-                <Col className='py-2' md={4}>
+                </Col>:""}
+               {sparePartChange === "Yes"? <Col className='py-2' md={4}>
                   <Form.Group controlId="quantity">
                     <Form.Label style={{ fontWeight: "bold" }}>Quantity</Form.Label>
                     <Form.Control
@@ -1108,7 +1110,7 @@ const MachineMaintenance = () => {
                     />
                     {fieldErrors.Quantity && <div style={{ fontSize: "13px" }} className="text-danger">{fieldErrors.Quantity}</div>}
                   </Form.Group>
-                </Col>
+                </Col>:""}
                
               </Row>
               <Row>
